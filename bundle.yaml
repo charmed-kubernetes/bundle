@@ -1,0 +1,57 @@
+series: trusty
+services:
+  elasticsearch:
+    charm: "cs:trusty/elasticsearch-14"
+    num_units: 1
+    options:
+      firewall_enabled: false
+    annotations:
+      "gui-x": "554"
+      "gui-y": "903"
+  etcd:
+    charm: "cs:~containers/trusty/etcd-0"
+    num_units: 1
+    annotations:
+      "gui-x": "48"
+      "gui-y": "1116"
+  logspout:
+    charm: "cs:~containers/trusty/logspout-1"
+    annotations:
+      "gui-x": "319"
+      "gui-y": "1028"
+  openjdk:
+    charm: "cs:~kwmonroe/trusty/openjdk-8"
+    annotations:
+      "gui-x": "828"
+      "gui-y": "1133"
+  kubes:
+    charm: "cs:~containers/trusty/kubernetes-0"
+    num_units: 2
+    annotations:
+      "gui-x": "40"
+      "gui-y": "891"
+  logstash:
+    charm: "cs:~containers/trusty/logstash-1"
+    num_units: 1
+    annotations:
+      "gui-x": "567"
+      "gui-y": "1132"
+  kibana:
+    charm: "cs:trusty/kibana-10"
+    num_units: 1
+    annotations:
+      "gui-x": "545"
+      "gui-y": "675"
+relations:
+  - - "openjdk:java"
+    - "logstash:java"
+  - - "kibana:rest"
+    - "elasticsearch:client"
+  - - "kubes:etcd"
+    - "etcd:db"
+  - - "logspout:dockerhost"
+    - "kubes:dockerhost"
+  - - "logspout:logstash"
+    - "logstash:client"
+  - - "logstash:elasticsearch"
+    - "elasticsearch:client"
