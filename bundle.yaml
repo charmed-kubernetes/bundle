@@ -12,8 +12,8 @@ services:
     charm: "cs:~containers/trusty/etcd-0"
     num_units: 1
     annotations:
-      "gui-x": "48"
-      "gui-y": "1116"
+      "gui-x": "300"
+      "gui-y": "300"
   logspout:
     charm: "cs:~containers/trusty/logspout-1"
     annotations:
@@ -24,12 +24,12 @@ services:
     annotations:
       "gui-x": "828"
       "gui-y": "1133"
-  kubes:
+  kubernetes:
     charm: "cs:~containers/trusty/kubernetes-0"
     num_units: 2
     annotations:
-      "gui-x": "40"
-      "gui-y": "891"
+      "gui-x": "0"
+      "gui-y": "0"
   logstash:
     charm: "cs:~containers/trusty/logstash-1"
     num_units: 1
