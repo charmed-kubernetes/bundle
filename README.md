@@ -94,8 +94,8 @@ ElasticSearch is used to hold all the log data and server information logged by 
 
 # Contact Information
 
-## Upstream Project Name
+## Kubernetes details
 
-    - [Source](https://github.com/juju-solutions/bundle-observable-kubernetes)
-    - [Charm Store](https://jujucharms.com/u/containers/observable-kubernetes/bundle/)
-    - [Bug tracker](https://github.com/juju-solutions/bundle-observable-kubernetes/issues)
+- [Source](https://github.com/juju-solutions/bundle-observable-kubernetes)
+- [Charm Store](https://jujucharms.com/u/containers/observable-kubernetes/bundle/)
+- [Bug tracker](https://github.com/juju-solutions/bundle-observable-kubernetes/issues)
