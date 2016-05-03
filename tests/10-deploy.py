@@ -29,7 +29,7 @@ class TestCharm(unittest.TestCase):
             contents = yaml.safe_load(bundle_file)
             self.deployment.load(contents)
 
-        # Allow some time for Jujut to provision and deploy the bundle.
+        # Allow some time for Juju to provision and deploy the bundle.
         self.deployment.setup(timeout=SECONDS_TO_WAIT)
         # Wait for the system to settle down.
         self.deployment.sentry.wait()
@@ -51,10 +51,10 @@ class TestCharm(unittest.TestCase):
             if rc != 0:
                 message = 'The kubectl command was unsuccessful: \n' + output
                 raise Exception(message)
-            if 'Kubernetes master is running' not in output:
+            if 'Kubernetes master' not in output:
                 message = 'Kubernetes master is not running: \n' + output
                 raise Exception(message)
-            if 'KubeDNS is running' not in output:
+            if 'KubeDNS' not in output:
                 message = 'KubeDNS is not running: \n' + output
                 raise Exception(message)
 
