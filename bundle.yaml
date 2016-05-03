@@ -6,27 +6,21 @@ services:
     annotations:
       "gui-x": "1200"
       "gui-y": "600"
-    to:
-      - "0"
-      - "1"
-      - "2"
+    constraints: "arch=amd64 cpu-cores=2 mem=4G root-disk=12G"
   kubernetes:
     charm: "cs:~containers/trusty/kubernetes-1"
     num_units: 3
     annotations:
       "gui-x": "1200"
       "gui-y": "300"
-    to:
-      - "3"
-      - "4"
-      - "5"
+    constraints: "arch=amd64 cpu-cores=4 mem=8G root-disk=30G"
   filebeat:
-    charm: "cs:~containers/trusty/filebeat-6"
+    charm: "cs:trusty/filebeat-1"
     annotations:
       "gui-x": "900"
       "gui-y": "300"
   topbeat:
-    charm: "cs:~containers/trusty/topbeat-9"
+    charm: "cs:trusty/topbeat-1"
     annotations:
       "gui-x": "900"
       "gui-y": "600"
@@ -36,17 +30,13 @@ services:
     annotations:
       "gui-x": "300"
       "gui-y": "300"
-    to:
-      - "6"
   elasticsearch:
     charm: "cs:trusty/elasticsearch-14"
     num_units: 2
     annotations:
       "gui-x": "600"
       "gui-y": "300"
-    to:
-      - "7"
-      - "8"
+    constraints: "arch=amd64 cpu-cores=2 mem=4G root-disk=30G"
 relations:
   - - "kubernetes:etcd"
     - "etcd:db"
@@ -64,31 +54,3 @@ relations:
     - "etcd:juju-info"
   - - "topbeat:beats-host"
     - "etcd:juju-info"
-machines:
-  "0":
-    series: trusty
-    constraints: "arch=amd64 cpu-cores=1 cpu-power=100 mem=1740 root-disk=8192"
-  "1":
-    series: trusty
-    constraints: "arch=amd64 cpu-cores=1 cpu-power=100 mem=1740 root-disk=8192"
-  "2":
-    series: trusty
-    constraints: "arch=amd64 cpu-cores=1 cpu-power=100 mem=1740 root-disk=8192"
-  "3":
-    series: trusty
-    constraints: "arch=amd64 cpu-cores=1 cpu-power=100 mem=1740 root-disk=8192"
-  "4":
-    series: trusty
-    constraints: "arch=amd64 cpu-cores=1 cpu-power=100 mem=1740 root-disk=8192"
-  "5":
-    series: trusty
-    constraints: "arch=amd64 cpu-cores=1 cpu-power=100 mem=1740 root-disk=8192"
-  "6":
-    series: trusty
-    constraints: "arch=amd64 cpu-cores=1 cpu-power=100 mem=1740 root-disk=8192"
-  "7":
-    series: trusty
-    constraints: "arch=amd64 cpu-cores=1 cpu-power=100 mem=1740 root-disk=8192"
-  "8":
-    series: trusty
-    constraints: "arch=amd64 cpu-cores=1 cpu-power=100 mem=1740 root-disk=8192"
