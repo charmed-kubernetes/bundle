@@ -1,12 +1,12 @@
 # Production-grade Kubernetes cluster with logging and monitoring
 
-## Overview
+# Overview
 
 This is a Kubernetes bundle that also includes logging and monitoring. It is
 comprised of the following components and features:
 
 - Kubernetes (automating deployment, operations, and scaling containers)
-  - Three node Kubernetes cluster where each unit is a master and a node.  
+  - Three node Kubernetes cluster where each unit is a master and a node.
   - TLS used for communication between nodes for security.
   - ZFS used as a docker datastore for resilience and performance.
 - Etcd (distributed key value store)
@@ -20,7 +20,7 @@ comprised of the following components and features:
 
 # Usage
 
-    juju deploy cs:~containers/observable-kubernetes
+    conjure-up battlemidget/bundle-observable-kubernetes
 
 Any of the services provided can be scaled out post-deployment. The charms
 update the status messages with progress, so it is recommended to run
@@ -32,7 +32,7 @@ control the cluster:
     tar zxf kubectl_package.tar
     ./kubectl get pods
 
-You should not have the kubectl command and configuration for the cluster that
+You should now have the kubectl command and configuration for the cluster that
 was just created, you can now check the state of the cluster:
 
     ./kubectl cluster-health

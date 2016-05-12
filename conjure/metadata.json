@@ -1,0 +1,14 @@
+{
+    "container-types": {
+        "etcd": [
+            "LXD",
+            "BareMetal"
+        ],
+        "kubernetes": [
+            "LXD",
+            "BareMetal"
+        ]
+    },
+    "spell-name": "kubernetes",
+    "version": 1
+}
