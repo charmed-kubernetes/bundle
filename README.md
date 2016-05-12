@@ -32,7 +32,7 @@ control the cluster:
     tar zxf kubectl_package.tar
     ./kubectl get pods
 
-You should not have the kubectl command and configuration for the cluster that
+You should now have the kubectl command and configuration for the cluster that
 was just created, you can now check the state of the cluster:
 
     ./kubectl cluster-health
