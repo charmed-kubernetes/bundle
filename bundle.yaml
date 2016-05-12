@@ -1,58 +1,58 @@
 series: trusty
 services:
   etcd:
-    charm: "cs:~containers/trusty/etcd-2"
+    charm: cs:~containers/trusty/etcd-2
     num_units: 3
     annotations:
-      "gui-x": "1200"
-      "gui-y": "600"
-    constraints: "arch=amd64 cpu-cores=2 mem=4G root-disk=12G"
+      gui-x: '1200'
+      gui-y: '600'
+    constraints: arch=amd64 cpu-cores=2 mem=4G root-disk=12G
   kubernetes:
-    charm: "cs:~containers/trusty/kubernetes-2"
+    charm: cs:~containers/trusty/kubernetes-2
     exposed: true
     num_units: 3
     annotations:
-      "gui-x": "1200"
-      "gui-y": "300"
-    constraints: "arch=amd64 cpu-cores=4 mem=8G root-disk=30G"
+      gui-x: '1200'
+      gui-y: '300'
+    constraints: arch=amd64 cpu-cores=4 mem=8G root-disk=30G
   filebeat:
-    charm: "cs:trusty/filebeat-1"
+    charm: cs:trusty/filebeat-1
     annotations:
-      "gui-x": "900"
-      "gui-y": "300"
+      gui-x: '900'
+      gui-y: '300'
   topbeat:
-    charm: "cs:trusty/topbeat-1"
+    charm: cs:trusty/topbeat-1
     annotations:
-      "gui-x": "900"
-      "gui-y": "600"
+      gui-x: '900'
+      gui-y: '600'
   kibana:
-    charm: "cs:~containers/trusty/kibana-2"
+    charm: cs:~containers/trusty/kibana-2
     exposed: true
     num_units: 1
     annotations:
-      "gui-x": "300"
-      "gui-y": "300"
+      gui-x: '300'
+      gui-y: '300'
   elasticsearch:
-    charm: "cs:trusty/elasticsearch-14"
+    charm: cs:trusty/elasticsearch-15
     num_units: 2
     annotations:
-      "gui-x": "600"
-      "gui-y": "300"
-    constraints: "arch=amd64 cpu-cores=2 mem=4G root-disk=30G"
+      gui-x: '600'
+      gui-y: '300'
+    constraints: arch=amd64 cpu-cores=2 mem=4G root-disk=30G
 relations:
-  - - "kubernetes:etcd"
-    - "etcd:db"
-  - - "kibana:rest"
-    - "elasticsearch:client"
-  - - "filebeat:elasticsearch"
-    - "elasticsearch:client"
-  - - "topbeat:elasticsearch"
-    - "elasticsearch:client"
-  - - "topbeat:beats-host"
-    - "kubernetes:juju-info"
-  - - "filebeat:beats-host"
-    - "kubernetes:juju-info"
-  - - "filebeat:beats-host"
-    - "etcd:juju-info"
-  - - "topbeat:beats-host"
-    - "etcd:juju-info"
+- - kubernetes:etcd
+  - etcd:db
+- - kibana:rest
+  - elasticsearch:client
+- - filebeat:elasticsearch
+  - elasticsearch:client
+- - topbeat:elasticsearch
+  - elasticsearch:client
+- - topbeat:beats-host
+  - kubernetes:juju-info
+- - filebeat:beats-host
+  - kubernetes:juju-info
+- - filebeat:beats-host
+  - etcd:juju-info
+- - topbeat:beats-host
+  - etcd:juju-info
