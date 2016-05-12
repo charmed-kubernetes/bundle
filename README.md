@@ -86,11 +86,11 @@ ElasticSearch is used to hold all the log data and server information logged by 
 
 ## Known Limitations and Issues
 
- The following issues still need to be resolved with this solution and are being worked on:
+ The following are known issues and limitations with the bundle and charm code:
 
  - This bundle is not supported on LXD because Juju needs to use a LXD profile
 that can run Docker containers.
- - Killing the the Kubernetes leader will result in loss of private key
+ - Killing the the Kubernetes leader will result in loss of public key
 infrastructure (PKI).
  - No easy way to address the pods from the outside world.
  - The storage feature with ZFS does not work with trusty at this time because
