@@ -88,9 +88,13 @@ ElasticSearch is used to hold all the log data and server information logged by 
 
  The following issues still need to be resolved with this solution and are being worked on:
 
- - Killing the the Kubernetes leader will result in loss of cluster PKI.
- - No easy way to address the pods from the outside world
- - ZFS does not work on trusty (a bug that will be fixed soon) yet.
+ - This bundle is not supported on LXD because Juju needs to use a LXD profile
+that can run Docker containers.
+ - Killing the the Kubernetes leader will result in loss of private key
+infrastructure (PKI).
+ - No easy way to address the pods from the outside world.
+ - The storage feature with ZFS does not work with trusty at this time because
+the code has to be enhanced to load the zfs module.
 
 # Contact Information
 
