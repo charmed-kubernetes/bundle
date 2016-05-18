@@ -1,6 +1,6 @@
 # Production-grade Kubernetes cluster with logging and monitoring
 
-# Overview
+## Overview
 
 This is a Kubernetes bundle that also includes logging and monitoring. It is
 comprised of the following components and features:
@@ -20,7 +20,13 @@ comprised of the following components and features:
 
 # Usage
 
-    conjure-up battlemidget/bundle-observable-kubernetes
+    juju deploy cs:~containers/observable-kubernetes
+
+Note: This bundle is also conjure-up enabled. Refer to the
+[conjure-up documentation](http://conjure-up.io) to learn more.
+
+    sudo apt install conjure-up
+    conjure-up cs:~containers/observable-kubernetes to aws
 
 Any of the services provided can be scaled out post-deployment. The charms
 update the status messages with progress, so it is recommended to run
@@ -88,9 +94,13 @@ ElasticSearch is used to hold all the log data and server information logged by 
 
  The following issues still need to be resolved with this solution and are being worked on:
 
- - Killing the the Kubernetes leader will result in loss of cluster PKI.
- - No easy way to address the pods from the outside world
- - ZFS does not work on trusty (a bug that will be fixed soon) yet.
+ - This bundle is not supported on LXD because Juju needs to use a LXD profile
+that can run Docker containers.
+ - Killing the the Kubernetes leader will result in loss of private key
+infrastructure (PKI).
+ - No easy way to address the pods from the outside world.
+ - The storage feature with ZFS does not work with trusty at this time because
+the code has to be enhanced to load the zfs module.
 
 # Contact Information
 
