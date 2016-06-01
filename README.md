@@ -8,9 +8,9 @@ comprised of the following components and features:
 - Kubernetes (automating deployment, operations, and scaling containers)
   - Three node Kubernetes cluster where each unit is a master and a node.  
   - TLS used for communication between nodes for security.
-  - ZFS used as a docker datastore for resilience and performance.
+  - ZFS used as a datastore for resilience and performance.
 - Etcd (distributed key value store)
-  - Three node cluster for reliability
+  - Three node cluster for reliability.
 - Elastic stack
    - Two nodes for ElasticSearch
    - One node for a Kibana dashboard
@@ -24,30 +24,44 @@ comprised of the following components and features:
 
 Any of the services provided can be scaled out post-deployment. The charms
 update the status messages with progress, so it is recommended to run
-`watch juju status` to monitor the cluster coming up. After it is deployed you
-need to grab the kubectl and configuration from the Kubernetes leader node to
-control the cluster:
+`watch juju status` to monitor the cluster coming up.
 
-    juju scp kubernetes/0:kubectl_package.tar .
-    tar zxf kubectl_package.tar
-    ./kubectl get pods
+After the cluster is deployed you need to grab the kubectl binary and
+configuration for your cluster from the Kubernetes **master unit** to control
+the cluster. To find the master unit check the `juju status` output or run
+a command on all kubernetes units to detect the leader:  
+
+    juju run --service kubernetes is-leader
+
+Download the kubectl package from the master unit. Assuming the master is on
+unit 0:  
+
+    juju scp kubernetes/0:kubectl_package.tar.gz .
+    tar -xvzf kubectl_package.tar.gz -C k8s-charm
+    cd k8s-charm
 
 You should now have the kubectl command and configuration for the cluster that
-was just created, you can now check the state of the cluster:
+was just created. There are several ways to specify the kubectl configuration
+using the `--kubeconfig path/to/kubeconfig` is the most direct. For more
+information on
+[kubectl config](http://kubernetes.io/docs/user-guide/kubectl/kubectl_config/)
+see the Kubernetes [user guide](http://kubernetes.io/docs/user-guide/).
 
-    ./kubectl cluster-health
+To check the state of the cluster:
+
+    ./kubectl cluster-health --kubeconfig ./kubeconfig
 
 Now you can run pods inside the Kubernetes cluster:
 
-    ./kubectl create -f example.yaml
+    ./kubectl create -f example.yaml --kubeconfig ./kubeconfig
 
 List all pods in the cluster:
 
-    ./kubectl get pods
+    ./kubectl get pods --kubeconfig ./kubeconfig
 
 List all services in the cluster:
 
-    ./kubectl get svc
+    ./kubectl get svc --kubeconfig ./kubeconfig
 
 ## Scale out Usage
 
@@ -90,7 +104,7 @@ ElasticSearch is used to hold all the log data and server information logged by 
 
  - This bundle is not supported on LXD because Juju needs to use a LXD profile
 that can run Docker containers.
- - Killing the the Kubernetes leader will result in loss of private key
+ - Killing the the Kubernetes master will result in loss of private key
 infrastructure (PKI).
  - No easy way to address the pods from the outside world.
  - The storage feature with ZFS does not work with trusty at this time because
@@ -100,6 +114,6 @@ the code has to be enhanced to load the zfs module.
 
 ## Kubernetes details
 
-- [Source](https://github.com/juju-solutions/bundle-observable-kubernetes)
+- [Bundle Source](https://github.com/juju-solutions/bundle-observable-kubernetes)
 - [Charm Store](https://jujucharms.com/u/containers/observable-kubernetes/bundle/)
 - [Bug tracker](https://github.com/juju-solutions/bundle-observable-kubernetes/issues)
