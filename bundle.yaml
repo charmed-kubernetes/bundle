@@ -58,3 +58,8 @@ relations:
   - etcd:juju-info
 - - topbeat:beats-host
   - etcd:juju-info
+description: |
+  Production-grade Kubernetes cluster with logging and monitoring
+tags:
+  - conjure-kubernetes
+  - kubernetes
