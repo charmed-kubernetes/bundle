@@ -47,9 +47,9 @@ unit 0:
     cd k8s-charm
 
 You should now have the kubectl command and configuration for the cluster that
-was just created. There are several ways to specify the kubectl configuration
-using the `--kubeconfig path/to/kubeconfig` is the most direct. For more
-information on
+was just created. There are several ways to specify the configuration for the
+kubectl command, using the `--kubeconfig path/to/kubeconfig` is the most
+direct. For more information on
 [kubectl config](http://kubernetes.io/docs/user-guide/kubectl/kubectl_config/)
 see the Kubernetes [user guide](http://kubernetes.io/docs/user-guide/).
 
@@ -106,11 +106,11 @@ ElasticSearch is used to hold all the log data and server information logged by 
 
 ## Known Limitations and Issues
 
- The following issues still need to be resolved with this solution and are being worked on:
+ The following are known issues and limitations with the bundle and charm code:
 
- - This bundle is not supported on LXD because Juju needs to use a LXD profile
-that can run Docker containers.
- - Killing the the Kubernetes master will result in loss of private key
+ - This bundle is not supported on LXD at this time because Juju needs to use a
+LXD profile that can run Docker containers.
+ - Destroying the the Kubernetes master unit will result in loss of public key
 infrastructure (PKI).
  - No easy way to address the pods from the outside world.
  - The storage feature with ZFS does not work with trusty at this time because
