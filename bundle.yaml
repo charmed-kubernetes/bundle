@@ -29,6 +29,8 @@ services:
     charm: cs:~containers/trusty/kibana-4
     exposed: true
     num_units: 1
+    options:
+      dashboards: "beats"
     annotations:
       gui-x: '300'
       gui-y: '300'
@@ -56,3 +58,8 @@ relations:
   - etcd:juju-info
 - - topbeat:beats-host
   - etcd:juju-info
+description: |
+  Production-grade Kubernetes cluster with logging and monitoring
+tags:
+  - conjure-kubernetes
+  - kubernetes

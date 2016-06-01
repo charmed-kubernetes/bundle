@@ -6,7 +6,7 @@ This is a Kubernetes bundle that also includes logging and monitoring. It is
 comprised of the following components and features:
 
 - Kubernetes (automating deployment, operations, and scaling containers)
-  - Three node Kubernetes cluster where each unit is a master and a node.  
+  - Three node Kubernetes cluster where each unit is a master and a node.
   - TLS used for communication between nodes for security.
   - ZFS used as a datastore for resilience and performance.
 - Etcd (distributed key value store)
@@ -21,6 +21,12 @@ comprised of the following components and features:
 # Usage
 
     juju deploy cs:~containers/observable-kubernetes
+
+Note: This bundle is also conjure-up enabled. Refer to the
+[conjure-up documentation](http://conjure-up.io) to learn more.
+
+    sudo apt install conjure-up
+    conjure-up cs:~containers/observable-kubernetes to aws
 
 Any of the services provided can be scaled out post-deployment. The charms
 update the status messages with progress, so it is recommended to run
