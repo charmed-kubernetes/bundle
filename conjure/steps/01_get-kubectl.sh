@@ -20,7 +20,7 @@ if [ $(unitStatus kubernetes 0) != "active" ]; then
 fi
 
 # TODO: Convert to an actionable item
-juju scp kubernetes/0:kubectl_package.tar $KUBECTL_PATH/.
+juju scp kubernetes/0:kubectl_package.tar.gz $KUBECTL_PATH/.
 cd $KUBECTL_PATH && tar zxf kubectl_package.tar
 
 exposeResult "Cluster can now be accessed with $KUBECTL_PATH/kubectl application" 0 "true"
