@@ -21,6 +21,6 @@ fi
 
 # TODO: Convert to an actionable item
 juju scp kubernetes/0:kubectl_package.tar.gz $KUBECTL_PATH/.
-cd $KUBECTL_PATH && tar zxf kubectl_package.tar
+cd $KUBECTL_PATH && tar zxf kubectl_package.tar.gz
 
 exposeResult "Cluster can now be accessed with $KUBECTL_PATH/kubectl application" 0 "true"
