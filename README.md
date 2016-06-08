@@ -70,7 +70,7 @@ see the Kubernetes [user guide](http://kubernetes.io/docs/user-guide/).
 
 To check the state of the cluster:
 
-    ./kubectl cluster-health --kubeconfig ./kubeconfig
+    ./kubectl cluster-info --kubeconfig ./kubeconfig
 
 Now you can run pods inside the Kubernetes cluster:
 
