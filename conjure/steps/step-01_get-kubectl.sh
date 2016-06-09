@@ -1,6 +1,4 @@
 #!/bin/bash
-#
-# Title: Get kubectl for controlling a Kubernetes Cluster
 
 . /usr/share/conjure-up/hooklib/common.sh
 
