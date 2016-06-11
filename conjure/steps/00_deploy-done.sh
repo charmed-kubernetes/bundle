@@ -9,6 +9,9 @@ services=("etcd" \
           "kubernetes")
 
 checkUnitsForErrors $services
-checkUnitsForActive $services
+
+if [ $(unitStatus kubernetes 0) != "active" ]; then
+    exposeResult "Kubernetes is not ready" 0 "false"
+fi
 
 exposeResult "Applications ready" 0 "true"
