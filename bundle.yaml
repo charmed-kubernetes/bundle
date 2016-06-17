@@ -1,14 +1,14 @@
 series: trusty
 services:
   etcd:
-    charm: cs:~containers/trusty/etcd-2
+    charm: cs:~containers/trusty/etcd-3
     num_units: 3
     annotations:
       gui-x: '1200'
       gui-y: '600'
     constraints: arch=amd64 cpu-cores=2 mem=4G root-disk=12G
   kubernetes:
-    charm: cs:~containers/trusty/kubernetes-4
+    charm: cs:~containers/trusty/kubernetes-5
     expose: true
     num_units: 3
     annotations:
