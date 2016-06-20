@@ -1,17 +1,31 @@
-#!/bin/bash
+#!/usr/bin/env python3
 
-. /usr/share/conjure-up/hooklib/common.sh
+# Global imports
+import sys
+
+# Conjure-up specific
+sys.path.insert(0, '/usr/share/conjure-up/hooklib')
+import juju  # noqa
+from writer import log, success, fail, error  # noqa
 
 
-services=("etcd" \
-          "elasticsearch" \
-          "kibana" \
-          "kubernetes")
+def main():
+    log.debug("Running deploy-done for OpenStack installation.")
+    juju_status = juju.status()
+    agent_states = []
+    for k, v in juju_status['applications'].items():
+        if 'units' in v:
+            for unit in v['units']:
+                unit = v['units'][unit]['workload-status']['current']
+                agent_states.append(unit)
+    if any([state == 'error' for state in agent_states]):
+        error('Error in one of the applications deployment')
 
-checkUnitsForErrors $services
+    if all([state == 'active' for state in agent_states]):
+        success('Applications are ready')
 
-if [ $(unitStatus kubernetes 0) != "active" ]; then
-    exposeResult "Kubernetes is not ready" 0 "false"
-fi
+    fail('Applications not ready yet')
 
-exposeResult "Applications ready" 0 "true"
+
+if __name__ == "__main__":
+    main()
