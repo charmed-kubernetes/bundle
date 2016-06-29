@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+
+# Global imports
+import sys
+
+# Conjure-up specific
+sys.path.insert(0, '/usr/share/conjure-up/hooklib')
+import juju  # noqa
+from writer import log, success, fail, error  # noqa
+
+
+def main():
+    log.debug("Running deploy-done for Kubernetes installation.")
+    agent_states = juju.agent_states()
+    if any([state == 'error' for _, state, _ in agent_states]):
+        error('Error in one of the applications deployment')
+
+    if all([state == 'active' for _, state, _ in agent_states]):
+        success('Applications are ready')
+
+    fail('Applications not ready yet')
+
+
+if __name__ == "__main__":
+    main()
