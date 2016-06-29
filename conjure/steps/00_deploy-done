@@ -10,18 +10,12 @@ from writer import log, success, fail, error  # noqa
 
 
 def main():
-    log.debug("Running deploy-done for OpenStack installation.")
-    juju_status = juju.status()
-    agent_states = []
-    for k, v in juju_status['applications'].items():
-        if 'units' in v:
-            for unit in v['units']:
-                unit = v['units'][unit]['workload-status']['current']
-                agent_states.append(unit)
-    if any([state == 'error' for state in agent_states]):
+    log.debug("Running deploy-done for Kubernetes installation.")
+    agent_states = juju.agent_states()
+    if any([state == 'error' for _, state, _ in agent_states]):
         error('Error in one of the applications deployment')
 
-    if all([state == 'active' for state in agent_states]):
+    if all([state == 'active' for _, state, _ in agent_states]):
         success('Applications are ready')
 
     fail('Applications not ready yet')

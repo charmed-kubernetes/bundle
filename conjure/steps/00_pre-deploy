@@ -16,4 +16,4 @@ if [ $JUJU_PROVIDERTYPE = "lxd" ] || [ $JUJU_PROVIDERTYPE = "localhost" ]; then
 
 fi
 
-exposeResult "Finished post bootstrap tasks..." 0 "true"
+exposeResult "Finished pre deploy tasks..." 0 "true"
