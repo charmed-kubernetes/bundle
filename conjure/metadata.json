@@ -1,4 +1,5 @@
 {
     "friendly-name": "Kubernetes",
-    "version": 1
+    "version": 1,
+    "cloud-blacklist": ["localhost"]
 }
