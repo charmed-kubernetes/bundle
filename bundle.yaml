@@ -61,5 +61,5 @@ relations:
 description: |
   Production-grade Kubernetes cluster with logging and monitoring
 tags:
-  - conjure-kubernetes
+  - conjure-up-kubernetes
   - kubernetes
