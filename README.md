@@ -43,6 +43,13 @@ charms are accessible with public addresses on most clouds. If you would like
 to remove external access then run the command `juju unexpose kibana` and
 `juju unexpose kubernetes`.
 
+Run `juju status` to get the status of the cluster deployment, we recommend 
+doing `watch juju status` in a separate terminal to watch the cluster come up. 
+Wait for etcd and kubernetes to report that they're ready before moving on: 
+
+    (leader) Cluster is healthy
+    (master) Kubernetes running.
+
 ### Alternate deployment methods
 
 This bundle is enabled with an alternate method of deployment called
