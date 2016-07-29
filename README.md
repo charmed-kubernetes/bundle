@@ -6,9 +6,8 @@ This is a Kubernetes bundle that also includes logging and monitoring. It is
 comprised of the following components and features:
 
 - Kubernetes (automating deployment, operations, and scaling containers)
-  - Three node Kubernetes cluster where each unit is a master and a node.
+  - Three node Kubernetes cluster with one master and two worker nodes.
   - TLS used for communication between nodes for security.
-  - ZFS used as a datastore for resilience and performance.
 - Etcd (distributed key value store)
   - Three node cluster for reliability.
 - Elastic stack
