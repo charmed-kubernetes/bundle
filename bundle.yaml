@@ -15,6 +15,7 @@ services:
 #    constraints: arch=amd64 cpu-cores=2 root-disk=12G
   kubernetes:
     charm: cs:~containers/trusty/kubernetes-5
+    version: v.1.2.3
     expose: true
     num_units: 3
     annotations:
