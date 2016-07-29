@@ -1,3 +1,9 @@
+# The machine constraints for each service in this bundle
+# have been commented out so you don't run into quota
+# problems on public clouds. Modify and uncomment the
+# constraints: lines for each service to reflect your
+# deployment before moving to production.
+#
 series: trusty
 services:
   etcd:
@@ -6,7 +12,7 @@ services:
     annotations:
       gui-x: '1200'
       gui-y: '600'
-    constraints: arch=amd64 cpu-cores=2 mem=4G root-disk=12G
+#    constraints: arch=amd64 cpu-cores=2 root-disk=12G
   kubernetes:
     charm: cs:~containers/trusty/kubernetes-5
     expose: true
@@ -14,7 +20,7 @@ services:
     annotations:
       gui-x: '1200'
       gui-y: '300'
-    constraints: arch=amd64 cpu-cores=4 mem=8G root-disk=30G
+#    constraints: arch=amd64 cpu-cores=8 mem=8G root-disk=30G
   filebeat:
     charm: cs:trusty/filebeat-2
     annotations:
@@ -39,8 +45,8 @@ services:
     num_units: 2
     annotations:
       gui-x: '600'
-      gui-y: '300'
-    constraints: arch=amd64 cpu-cores=2 mem=4G root-disk=30G
+      eui-y: '300'
+#    constraints: arch=amd64 cpu-cores=2 mem=4G root-disk=30G
 relations:
 - - kubernetes:etcd
   - etcd:db
