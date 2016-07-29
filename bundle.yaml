@@ -45,7 +45,7 @@ services:
     num_units: 2
     annotations:
       gui-x: '600'
-      eui-y: '300'
+      gui-y: '300'
 #    constraints: arch=amd64 cpu-cores=2 mem=4G root-disk=30G
 relations:
 - - kubernetes:etcd
