@@ -45,10 +45,9 @@ to remove external access then run the command `juju unexpose kibana` and
 
 Run `juju status` to get the status of the cluster deployment, we recommend 
 doing `watch juju status` in a separate terminal to watch the cluster come up. 
-Wait for etcd and kubernetes to report that they're ready before moving on: 
 
-    (leader) Cluster is healthy
-    (master) Kubernetes running.
+ - etcd should show `(leader) Cluster is healthy`
+ - kubernetes should show `Kubernetes running` for each node.
 
 ### Alternate deployment methods
 
