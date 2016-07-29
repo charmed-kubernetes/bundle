@@ -6,9 +6,8 @@ This is a Kubernetes bundle that also includes logging and monitoring. It is
 comprised of the following components and features:
 
 - Kubernetes (automating deployment, operations, and scaling containers)
-  - Three node Kubernetes cluster where each unit is a master and a node.
+  - Three node Kubernetes cluster with one master and two worker nodes.
   - TLS used for communication between nodes for security.
-  - ZFS used as a datastore for resilience and performance.
 - Etcd (distributed key value store)
   - Three node cluster for reliability.
 - Elastic stack
@@ -18,16 +17,36 @@ comprised of the following components and features:
      - Filebeat for forwarding logs to ElasticSearch
      - Topbeat for inserting server monitoring data to ElasticSearch
 
+By default this bundle will use whatever the default machine type for your cloud
+is, we recommend modifying for proper production use. 
+
 # Usage
 
 ## Deploy the bundle
 
-    juju deploy cs:~containers/observable-kubernetes
+    juju deploy observable-kubernetes
+
+This will deploy the bundle with default constraints. This is useful for lab
+environments, however for real-world use you should provide high CPU and memory
+instances to kubernetes, you do this by cloning our source repository:
+
+    git clone https://github.com/juju-solutions/bundle-observable-kubernetes.git observable-kubernetes
+    cd observable-kubernetes
+
+Then modify `bundle.yaml` to fit your needs, it is commented for your convenience.
+
+    juju deploy .
 
 This bundle exposes the kubernetes and kibana charms by default, meaning those
 charms are accessible with public addresses on most clouds. If you would like
 to remove external access then run the command `juju unexpose kibana` and
 `juju unexpose kubernetes`.
+
+Run `juju status` to get the status of the cluster deployment, we recommend 
+doing `watch juju status` in a separate terminal to watch the cluster come up. 
+
+ - etcd should show `(leader) Cluster is healthy`
+ - kubernetes should show `Kubernetes running` for each node.
 
 ### Alternate deployment methods
 
@@ -56,8 +75,9 @@ Download the kubectl package from the master unit. Assuming the master is on
 unit 0:  
 
     juju scp kubernetes/0:kubectl_package.tar.gz .
-    tar -xvzf kubectl_package.tar.gz -C k8s-charm
-    cd k8s-charm
+    mkdir kubectl
+    tar -xvzf kubectl_package.tar.gz -C kubectl
+    cd kubectl
 
 ## Control the cluster
 
