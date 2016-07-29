@@ -76,8 +76,9 @@ Download the kubectl package from the master unit. Assuming the master is on
 unit 0:  
 
     juju scp kubernetes/0:kubectl_package.tar.gz .
-    tar -xvzf kubectl_package.tar.gz -C k8s-charm
-    cd k8s-charm
+    mkdir kubectl
+    tar -xvzf kubectl_package.tar.gz -C kubectl
+    cd kubectl
 
 ## Control the cluster
 
