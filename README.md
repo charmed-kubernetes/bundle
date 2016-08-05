@@ -173,7 +173,7 @@ infrastructure (PKI).
  - No easy way to address the pods from the outside world.
  - The storage feature with ZFS is in Tech Preview mode and does not work with
 trusty at this time. You may force xenial deployment and pilot ZFS storage,
-however its not recommended by default at this time.
+however its not recommended by default.
  - Etcd installation may fail on units running Juju 1.25. There is a work-around
 by deploying etcd as Xenial series "--series=xenial", however you will have
 to deploy xenial series beats to gain monitoring of your Etcd units.
