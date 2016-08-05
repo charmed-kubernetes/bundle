@@ -18,7 +18,7 @@ comprised of the following components and features:
      - Topbeat for inserting server monitoring data to ElasticSearch
 
 By default this bundle will use whatever the default machine type for your cloud
-is, we recommend modifying for proper production use. 
+is, we recommend modifying for proper production use.
 
 # Usage
 
@@ -42,8 +42,8 @@ charms are accessible with public addresses on most clouds. If you would like
 to remove external access then run the command `juju unexpose kibana` and
 `juju unexpose kubernetes`.
 
-Run `juju status` to get the status of the cluster deployment, we recommend 
-doing `watch juju status` in a separate terminal to watch the cluster come up. 
+Run `juju status` to get the status of the cluster deployment, we recommend
+doing `watch juju status` in a separate terminal to watch the cluster come up.
 
  - etcd should show `(leader) Cluster is healthy`
  - kubernetes should show `Kubernetes running` for each node.
@@ -62,7 +62,7 @@ update the status messages with progress, so it is recommended to run
 `watch juju status` to monitor the charm status messages while the cluster is
 deployed.
 
-## Download kubectl
+## Interact with your cluster post deployment
 
 After the cluster is deployed you need to download the kubectl binary and
 configuration for your cluster from the Kubernetes **master unit** to control
@@ -171,8 +171,12 @@ LXD profile that can run Docker containers.
  - Destroying the the Kubernetes master unit will result in loss of public key
 infrastructure (PKI).
  - No easy way to address the pods from the outside world.
- - The storage feature with ZFS does not work with trusty at this time because
-the code has to be enhanced to load the zfs module.
+ - The storage feature with ZFS is in Tech Preview mode and does not work with
+trusty at this time. You may force xenial deployment and pilot ZFS storage,
+however its not recommended by default at this time.
+ - Etcd installation may fail on units running Juju 1.25. There is a work-around
+by deploying etcd as Xenial series "--series=xenial", however you will have
+to deploy xenial series beats to gain monitoring of your Etcd units.
 
 # Contact Information
 
