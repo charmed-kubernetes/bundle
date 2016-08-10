@@ -178,6 +178,48 @@ however its not recommended by default.
 by deploying etcd as Xenial series "--series=xenial", however you will have
 to deploy xenial series beats to gain monitoring of your Etcd units.
 
+
+
+###  The charm told me to see the README
+
+You've been directed here because you're deploying this etcd charm onto a
+pre-Xenial and non-amd64-based Ubuntu platform, and we don't have etcd and
+etcdctl binaries for that platform. You will need to obtain such binaries
+somehow yourself (e.g. by downloading and building from source), then tell
+Juju about those binaries as detailed below.
+
+#### Usage with your own binaries
+
+This charm supports resources, which means you can supply your own release of
+etcd and etcdctl to this charm. Which by nature makes it highly deployable on
+multiple architectures.
+
+#### Supply your own binaries
+
+```shell
+juju upgrade-charm etcd --resource etcd=./path/to/etcd --resource etcdtcl=./path/to/etcdctl
+juju list-resources etcd
+```
+
+You will see your binaries have been provided by username@local, and the charm
+will reconfigure itself to deploy the provided binaries.
+
+#### To test the binaries (an example for amd64 hosts)
+
+If you are simply deploying etcd, and the charm has halted demanding resources
+by telling you to consult the README, you can use a script contained in the
+charm itself.
+
+```shell
+charm pull etcd
+cd etcd
+make fetch_resources
+...
+cd resources
+tar xvfz etcd*.tar.gz
+```
+
+
 # Contact Information
 
 ## Kubernetes details
