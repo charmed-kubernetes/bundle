@@ -1,5 +1,3 @@
 packages:
-  - python3-amulet
-python_packages:
   - amulet
 tests: 10-deploy.py
