@@ -4,45 +4,53 @@
 # constraints: lines for each service to reflect your
 # deployment before moving to production.
 #
-series: trusty
+series: xenial
+description: |
+  Production-grade Kubernetes cluster with logging and monitoring
+tags:
+- conjure-up-kubernetes
+- kubernetes
 services:
-  etcd:
-    charm: cs:~containers/trusty/etcd-3
-    num_units: 3
-    annotations:
-      gui-x: '1200'
-      gui-y: '600'
-#    constraints: arch=amd64 cpu-cores=2 root-disk=12G
   kubernetes:
-    charm: cs:~containers/trusty/kubernetes-5
-    version: v.1.2.3
+    charm: cs:~containers/xenial/kubernetes-8
+    options:
+      version: v1.3.5
     expose: true
     num_units: 3
     annotations:
       gui-x: '1200'
       gui-y: '300'
 #    constraints: arch=amd64 cpu-cores=8 mem=8G root-disk=30G
+  etcd:
+    charm: cs:xenial/etcd-8
+    num_units: 3
+    annotations:
+      gui-x: '1200'
+      gui-y: '600'
+#    constraints: arch=amd64 cpu-cores=2 root-disk=12G
   filebeat:
-    charm: cs:trusty/filebeat-2
+    charm: cs:xenial/filebeat-4
     annotations:
       gui-x: '900'
       gui-y: '300'
   topbeat:
-    charm: cs:trusty/topbeat-2
+    charm: cs:xenial/topbeat-4
     annotations:
       gui-x: '900'
       gui-y: '600'
   kibana:
-    charm: cs:~containers/trusty/kibana-4
+    series: trusty
+    charm: cs:trusty/kibana-14
     expose: true
     num_units: 1
     options:
-      dashboards: "beats"
+      dashboards: beats
     annotations:
       gui-x: '300'
       gui-y: '300'
   elasticsearch:
-    charm: cs:trusty/elasticsearch-15
+    series: trusty
+    charm: cs:trusty/elasticsearch-17
     num_units: 2
     annotations:
       gui-x: '600'
@@ -65,8 +73,3 @@ relations:
   - etcd:juju-info
 - - topbeat:beats-host
   - etcd:juju-info
-description: |
-  Production-grade Kubernetes cluster with logging and monitoring
-tags:
-  - conjure-up-kubernetes
-  - kubernetes
