@@ -12,7 +12,7 @@ tags:
 - kubernetes
 services:
   kubernetes:
-    charm: cs:~containers/xenial/kubernetes-8
+    charm: cs:xenial/kubernetes-7
     options:
       version: v1.3.5
     expose: true
