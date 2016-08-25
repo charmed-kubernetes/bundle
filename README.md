@@ -69,8 +69,14 @@ configuration for your cluster from the Kubernetes **master unit** to control
 the cluster. To find the master unit check the `juju status` output or run
 a command on all kubernetes units to detect the leader:  
 
+Juju 1.x:
+
     juju run --service kubernetes is-leader
 
+Juju 2.x:
+
+    juju run --application kubernetes is-leader
+    
 Download the kubectl package from the master unit. Assuming the master is on
 unit 0:  
 
