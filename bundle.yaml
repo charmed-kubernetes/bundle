@@ -50,7 +50,7 @@ services:
       gui-y: '300'
   elasticsearch:
     series: trusty
-    charm: cs:trusty/elasticsearch-17
+    charm: cs:trusty/elasticsearch-18
     num_units: 2
     annotations:
       gui-x: '600'
