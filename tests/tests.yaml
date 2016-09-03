@@ -1,3 +1,4 @@
 packages:
   - amulet
 tests: 10-deploy.py
+reset: false
