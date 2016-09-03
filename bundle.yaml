@@ -12,9 +12,9 @@ tags:
 - kubernetes
 services:
   kubernetes:
-    charm: cs:xenial/kubernetes-7
+    charm: cs:xenial/kubernetes-8
     options:
-      version: v1.3.5
+      version: v1.3.6
     expose: true
     num_units: 3
     annotations:
