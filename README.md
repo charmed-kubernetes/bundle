@@ -1,13 +1,14 @@
-# Production-grade Kubernetes cluster with logging and monitoring
+# Canonical Kubernetes
 
 ## Overview
 
-This is a Kubernetes bundle that also includes logging and monitoring. It is
-comprised of the following components and features:
+This is a Kubernetes cluster that includes logging, monitoring, and operational
+knowledge. It is comprised of the following components and features:
 
-- Kubernetes (automating deployment, operations, and scaling containers)
+- Kubernetes (automated deployment, operations, and scaling)
   - Three node Kubernetes cluster with one master and two worker nodes.
   - TLS used for communication between nodes for security.
+  - Flannel networking plugin
 - Etcd (distributed key value store)
   - Three node cluster for reliability.
 - Elastic stack
@@ -17,52 +18,46 @@ comprised of the following components and features:
      - Filebeat for forwarding logs to ElasticSearch
      - Topbeat for inserting server monitoring data to ElasticSearch
 
-By default this bundle will use whatever the default machine type for your cloud
-is, we recommend modifying for proper production use.
-
 # Usage
 
 ## Deploy the bundle
 
-    juju deploy observable-kubernetes
+    juju deploy canonical-kubernetes
 
-This will deploy the bundle with default constraints. This is useful for lab
+This will deploy the Canonical Kubernetes offering with default constraints. This is useful for lab
 environments, however for real-world use you should provide high CPU and memory
 instances to kubernetes, you do this by cloning our source repository:
 
-    git clone https://github.com/juju-solutions/bundle-observable-kubernetes.git observable-kubernetes
-    cd observable-kubernetes
+    git clone https://github.com/juju-solutions/bundle-canonical-kubernetes.git canonical-kubernetes
+    cd canonical-kubernetes
 
 Then modify `bundle.yaml` to fit your needs, it is commented for your convenience.
 
-    juju deploy .
+    juju deploy ./bundle.yaml
 
-This bundle exposes the kubernetes and kibana charms by default, meaning those
-charms are accessible with public addresses on most clouds. If you would like
-to remove external access then run the command `juju unexpose kibana` and
-`juju unexpose kubernetes`.
+This bundle exposes the kubernetes and kibana applications by default. This
+means those charms are accessible through the public addresses on most your
+cloud. If you would like to remove external access, run:
 
-Run `juju status` to get the status of the cluster deployment, we recommend
-doing `watch juju status` in a separate terminal to watch the cluster come up.
+    juju unexpose kibana
+    juju unexpose kubernetes
 
- - etcd should show `(leader) Cluster is healthy`
- - kubernetes should show `Kubernetes running` for each node.
+To get the status of the deployment, run `juju status`. For a constant update,
+this can be used with `watch`.
+
+ - etcd should display `Cluster is healthy`
+ - kubernetes should display `Kubernetes running` for each node.
 
 ### Alternate deployment methods
 
-This bundle is enabled with an alternate method of deployment called
-"conjure-up". Refer to the
+This bundle is enabled with an alternate method via `conjure-up`, a big
+software installer. Refer to the
 [conjure-up documentation](http://conjure-up.io) to learn more.
 
     sudo apt install conjure-up
-    conjure-up cs:~containers/observable-kubernetes to aws
+    conjure-up canonical-kubernetes
 
-Any of the applications can be scaled out post-deployment. The charms
-update the status messages with progress, so it is recommended to run
-`watch juju status` to monitor the charm status messages while the cluster is
-deployed.
-
-## Interact with your cluster post deployment
+## Interacting with the Kubernetes cluster
 
 After the cluster is deployed you need to download the kubectl binary and
 configuration for your cluster from the Kubernetes **master unit** to control
@@ -112,6 +107,11 @@ List all services in the cluster:
 
 # Scale out Usage
 
+Any of the applications can be scaled out post-deployment. The charms
+update the status messages with progress, so it is recommended to run
+`watch juju status` to monitor the charm status messages while the cluster is
+deployed.
+
 By default pods are will automatically be spread throughout the Kubernetes
 clusters you have deployed.
 
@@ -150,7 +150,7 @@ Beats. You can add more Elasticsearch nodes by using the Juju command:
 
     juju add-unit elasticsearch
 
-## Access Kibana dashboard
+## Accessing the Kibana dashboard
 
 The Kibana dashboard can display real time graphs and charts on the details of
 the cluster. The Beats charms are sending metrics to the Elasticsearch and
@@ -183,7 +183,6 @@ however its not recommended by default.
  - Etcd installation may fail on units running Juju 1.25. There is a work-around
 by deploying etcd as Xenial series "--series=xenial", however you will have
 to deploy xenial series beats to gain monitoring of your Etcd units.
-
 
 
 ###  The charm told me to see the README
@@ -225,11 +224,10 @@ cd resources
 tar xvfz etcd*.tar.gz
 ```
 
-
 # Contact Information
 
 ## Kubernetes details
 
-- [Bundle Source](https://github.com/juju-solutions/bundle-observable-kubernetes)
-- [Charm Store](https://jujucharms.com/u/containers/observable-kubernetes/bundle/)
-- [Bug tracker](https://github.com/juju-solutions/bundle-observable-kubernetes/issues)
+- [Charm Store](https://jujucharms.com/canonical-kubernetes/bundle/)
+- [Bundle Source](https://github.com/juju-solutions/bundle-canonical-kubernetes)
+- [Bug tracker](https://github.com/juju-solutions/bundle-canonical-kubernetes/issues)
