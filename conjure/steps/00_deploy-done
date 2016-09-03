@@ -10,7 +10,7 @@ from writer import log, success, fail, error  # noqa
 
 
 def main():
-    log.debug("Running deploy-done for Kubernetes installation.")
+    log.debug("Running deploy-done for Canonical Kubernetes installation.")
     agent_states = juju.agent_states()
     agent_states_no_es = []
     for row in agent_states:
