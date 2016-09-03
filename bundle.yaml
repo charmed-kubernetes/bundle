@@ -6,10 +6,10 @@
 #
 series: xenial
 description: |
-  Production-grade Kubernetes cluster with logging and monitoring
+  Production-grade Canonical Kubernetes cluster featuring logging and monitoring
 tags:
-- conjure-up-kubernetes
 - kubernetes
+- containers
 services:
   kubernetes:
     charm: cs:xenial/kubernetes-8
