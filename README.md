@@ -20,6 +20,10 @@ knowledge. It is comprised of the following components and features:
 
 # Usage
 
+This bundle is for multi-node deployments, for individual deployments for developers, use the
+smaller [kubernetes-core](http://jujucharms.com/kubernetes-core) bundle, or
+ [kubeup.sh](http://kubernetes.io/docs/getting-started-guides/juju/). 
+
 ## Deploy the bundle
 
     juju deploy canonical-kubernetes
