@@ -1,5 +1,7 @@
 # Canonical Kubernetes
 
+![](https://img.shields.io/badge/release-beta-yellow.svg) ![](https://img.shields.io/badge/kubernetes-1.3.6-brightgreen.svg) ![](https://img.shields.io/badge/juju-1.25+-brightgreen.svg)
+
 ## Overview
 
 This is a Kubernetes cluster that includes logging, monitoring, and operational
