@@ -1,3 +1,9 @@
+# The machine constraints for each service in this bundle
+# have been commented out so you don't run into quota
+# problems on public clouds. Modify and uncomment the
+# constraints: lines for each service to reflect your
+# deployment before moving to production.
+#
 series: xenial
 applications: 
   filebeat: 
@@ -11,8 +17,6 @@ applications:
     annotations: 
       "gui-x": "800"
       "gui-y": "850"
-    to: 
-      - "0"
   flannel: 
     charm: "cs:~containers/flannel-0"
     annotations: 
@@ -25,32 +29,26 @@ applications:
     annotations: 
       "gui-x": "450"
       "gui-y": "250"
-    to: 
-      - "3"
   easyrsa: 
     charm: "cs:~containers/easyrsa-0"
     num_units: 1
     annotations: 
       "gui-x": "450"
       "gui-y": "550"
-    to: 
-      - "4"
   "kubernetes-worker": 
     charm: "cs:~containers/kubernetes-worker-0"
-    num_units: 1
+    num_units: 3
     annotations: 
       "gui-x": "100"
       "gui-y": "850"
-    to: 
-      - "1"
+#    constraints: cpu-cores=4 mem=15G root-disk=30G
   elasticsearch: 
     charm: "cs:trusty/elasticsearch-18"
-    num_units: 1
+    num_units: 2
     annotations: 
       "gui-x": "450"
       "gui-y": "1150"
-    to: 
-      - "5"
+#    constraints: cpu-cores=2 mem=4G root-disk=30G
   topbeat: 
     charm: "cs:topbeat-4"
     annotations: 
@@ -64,16 +62,13 @@ applications:
     annotations: 
       "gui-x": "800"
       "gui-y": "1150"
-    to: 
-      - "6"
   etcd: 
     charm: "cs:~containers/etcd-11"
-    num_units: 1
+    num_units: 3
     annotations: 
       "gui-x": "800"
       "gui-y": "550"
-    to: 
-      - "2"
+#    constraints: cpu-cores=2 root-disk=12G
 relations: 
   - - "filebeat:beats-host"
     - "kubernetes-worker:juju-info"
@@ -109,18 +104,3 @@ relations:
     - "easyrsa:client"
   - - "kibana:rest"
     - "elasticsearch:client"
-machines: 
-  "0": 
-    series: xenial
-  "1": 
-    series: xenial
-  "2": 
-    series: xenial
-  "3": 
-    series: xenial
-  "4": 
-    series: xenial
-  "5": 
-    series: trusty
-  "6": 
-    series: trusty
