@@ -35,7 +35,7 @@ class TestLocalBundle(unittest.TestCase):
         cls.deployment.setup(timeout=SECONDS_TO_WAIT)
         # Attach local resources to charms
         print ("=================================")
-        cmd = ['attach_local_resources.sh']
+        cmd = ['tests/attach_local_resources.sh']
         subprocess.check_call(cmd)
         # Wait for the system to settle down.
         cls.deployment.sentry.wait()
