@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set +ex
+
 # This is for deploying local charms, and attaching local resources. How
 # you obtain these resources is up to the operator
 
