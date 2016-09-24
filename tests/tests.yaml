@@ -2,7 +2,7 @@ packages:
   - amulet
 # Only execute the 20- series in the bundle level tests. let bundletester
 # pre-execute the 10- series test for unit level integration tests
-tests: '[^20]-*'
+tests: '[^20]*'
 # Rely on the bundle_deploy phase to pre-load the execution environment
 # for testing
 reset: false
