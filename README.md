@@ -1,6 +1,6 @@
 # Canonical Kubernetes
 
-![](https://img.shields.io/badge/release-beta-yellow.svg) ![](https://img.shields.io/badge/kubernetes-1.3.6-brightgreen.svg) ![](https://img.shields.io/badge/juju-1.25+-brightgreen.svg)
+![](https://img.shields.io/badge/release-beta-yellow.svg) ![](https://img.shields.io/badge/kubernetes-1.4.0-beta10-brightgreen.svg) ![](https://img.shields.io/badge/juju-1.25+-brightgreen.svg)
 
 ## Overview
 
@@ -11,6 +11,10 @@ knowledge. It is comprised of the following components and features:
   - Three node Kubernetes cluster with one master and two worker nodes.
   - TLS used for communication between nodes for security.
   - Flannel networking plugin
+  - A load balancer for HA kubernetes-master (Experimental)
+- EasyRSA
+  - Performs the role of a certificate authority serving self signed certificates
+    to the requesting units of the cluster.
 - Etcd (distributed key value store)
   - Three node cluster for reliability.
 - Elastic stack
@@ -22,118 +26,171 @@ knowledge. It is comprised of the following components and features:
 
 # Usage
 
-This bundle is for multi-node deployments, for individual deployments for developers, use the
-smaller [kubernetes-core](http://jujucharms.com/kubernetes-core) bundle, or
- [kubeup.sh](http://kubernetes.io/docs/getting-started-guides/juju/). 
+This bundle is for multi-node deployments, for individual deployments for
+developers, use the smaller
+[kubernetes-core](http://jujucharms.com/kubernetes-core) bundle.
 
 ## Deploy the bundle
 
-    juju deploy canonical-kubernetes
+```
+juju deploy canonical-kubernetes
+```
 
-This will deploy the Canonical Kubernetes offering with default constraints. This is useful for lab
-environments, however for real-world use you should provide high CPU and memory
-instances to kubernetes, you do this by cloning our source repository:
+This will deploy the Canonical Kubernetes offering with default constraints.
+This is useful for lab environments, however for real-world use you should
+provide high CPU and memory instances to kubernetes-worker.
 
-    git clone https://github.com/juju-solutions/bundle-canonical-kubernetes.git canonical-kubernetes
-    cd canonical-kubernetes
+You can do this by editing the [bundle](https://github.com/juju-solutions/bundle-canonical-kubernetes)
+to fit your needs, it is commented for your convenience.
 
-Then modify `bundle.yaml` to fit your needs, it is commented for your convenience.
+```
+juju deploy ./bundle.yaml
+```
 
-    juju deploy ./bundle.yaml
+This bundle exposes the kubeapi-load-balancer and kibana applications by default.
+This means those charms are accessible through the public addresses.
 
-This bundle exposes the kubernetes and kibana applications by default. This
-means those charms are accessible through the public addresses on most your
-cloud. If you would like to remove external access, run:
+If you would like to remove external access, unexpose the applications:
 
-    juju unexpose kibana
-    juju unexpose kubernetes
+```
+juju unexpose kibana
+juju unexpose kubernetes
+```
 
 To get the status of the deployment, run `juju status`. For a constant update,
 this can be used with `watch`.
 
- - etcd should display `Cluster is healthy`
- - kubernetes should display `Kubernetes running` for each node.
-
+```
+watch -c juju status --color
+```
 ### Alternate deployment methods
+
+#### Usage with your own binaries
+
+In order to support restricted-network deployments, the charms in this bundle
+support [juju resources](https://jujucharms.com/docs/2.0/developer-resources#managing-resources).
+
+This allows you to `juju attach` the resources built for the architecture of
+your cloud.
+
+```
+juju attach kubernetes-master kubernetes=~/path/to/kubernetes-master.tar.gz
+```
+
+#### Conjure Up
 
 This bundle is enabled with an alternate method via `conjure-up`, a big
 software installer. Refer to the
 [conjure-up documentation](http://conjure-up.io) to learn more.
 
-    sudo apt install conjure-up
-    conjure-up canonical-kubernetes
+```
+sudo apt install conjure-up
+conjure-up canonical-kubernetes
+```
 
 ## Interacting with the Kubernetes cluster
 
-After the cluster is deployed you need to download the kubectl binary and
-configuration for your cluster from the Kubernetes **master unit** to control
-the cluster. To find the master unit check the `juju status` output or run
-a command on all kubernetes units to detect the leader:  
+After the cluster is deployed you may assume control over the Kubernetes cluster
+from any kubernetes-master, or kubernetes-worker node.
 
-Juju 1.x:
+To download the credentials and client application to your local workstation:
 
-    juju run --service kubernetes is-leader
+```
+# Create the kubectl config directory.
+mkdir -p ~/.kube
 
-Juju 2.x:
+# Copy the kubeconfig to the default location.
+juju scp kubernetes-master/0:config ~/.kube/config
 
-    juju run --application kubernetes is-leader
-    
-Download the kubectl package from the master unit. Assuming the master is on
-unit 0:  
+# Fetch a binary for the architecture you have deployed.
+juju scp kubernetes-master/0:kubectl ./kubectl
 
-    juju scp kubernetes/0:kubectl_package.tar.gz .
-    mkdir kubectl
-    tar -xvzf kubectl_package.tar.gz -C kubectl
-    cd kubectl
+# Query the cluster.
+./kubectl cluster-info
 
-## Control the cluster
+```
 
-You now have the kubectl command and configuration for the cluster that
-was just created. There are several ways to specify the configuration for the
-kubectl command, using the `--kubeconfig path/to/kubeconfig` is the most
-direct. For more information on
-[kubectl config](http://kubernetes.io/docs/user-guide/kubectl/kubectl_config/)
-see the Kubernetes [user guide](http://kubernetes.io/docs/user-guide/).
+### Control the cluster
+
+kubectl is the command line utility to interact with a Kubernetes cluster.
+
+
+#### Minimal getting started
 
 To check the state of the cluster:
 
-    ./kubectl cluster-info --kubeconfig ./kubeconfig
+```
+./kubectl cluster-info
+```
+
+List all nodes in the cluster:
+
+```
+./kubectl get nodes
+```
 
 Now you can run pods inside the Kubernetes cluster:
 
-    ./kubectl create -f example.yaml --kubeconfig ./kubeconfig
+```
+./kubectl create -f example.yaml
+```
 
 List all pods in the cluster:
 
-    ./kubectl get pods --kubeconfig ./kubeconfig
+
+```
+./kubectl get pods
+```
 
 List all services in the cluster:
 
-    ./kubectl get svc --kubeconfig ./kubeconfig
+```
+./kubectl get svc
+```
+
+For expanded information on kubectl beyond what this README provides, please
+see the [kubectl overview](http://kubernetes.io/docs/user-guide/kubectl-overview/)
+which contains practical examples and an API reference.
+
+Additionally if you need to manage multiple clusters, there is more information
+about configuring kubectl with the
+[kubectl config guide](http://kubernetes.io/docs/user-guide/kubectl/kubectl_config/)
+
+
 
 # Scale out Usage
 
 Any of the applications can be scaled out post-deployment. The charms
-update the status messages with progress, so it is recommended to run
-`watch juju status` to monitor the charm status messages while the cluster is
-deployed.
+update the status messages with progress, so it is recommended to run.
 
-By default pods are will automatically be spread throughout the Kubernetes
-clusters you have deployed.
+```
+watch -c juju status --color
+```
 
-### Scaling Kubernetes
 
-To add more Kubernetes nodes to the cluster:
+### Scaling kubernetes-worker
 
-    juju add-unit kubernetes
+kubernetes-worker nodes are the load-bearing units of a Kubernetes cluster.
+
+By default pods are automatically spread throughout the kubernetes-worker units
+that you have deployed.
+
+To add more kubernetes-worker units to the cluster:
+
+```
+juju add-unit kubernetes-worker
+```
 
 or specify machine constraints to create larger nodes:
 
-    juju add-unit kubernetes --constraints "cpu-cores=8 mem=32G"
+```
+juju add-unit kubernetes-worker --constraints "cpu-cores=8 mem=32G"
+```
 
 Refer to the
 [machine constraints documentation](https://jujucharms.com/docs/stable/charms-constraints)
-for other machine constraints that might be useful for the Kubernetes nodes.
+for other machine constraints that might be useful for the kubernetes-worker units.
+
 
 ### Scaling Etcd
 
@@ -143,7 +200,9 @@ the bundle defaults to three instances in this cluster.
 For more scalability, we recommend between 3 and 9 etcd nodes. If you want to
 add more nodes:  
 
-    juju add-unit etcd
+```
+juju add-unit etcd
+```
 
 The CoreOS etcd documentation has a chart for the
 [optimal cluster size](https://coreos.com/etcd/docs/latest/admin_guide.html#optimal-cluster-size)
@@ -154,12 +213,14 @@ to determine fault tolerance.
 ElasticSearch is used to hold all the log data and server information logged by
 Beats. You can add more Elasticsearch nodes by using the Juju command:
 
-    juju add-unit elasticsearch
+```
+juju add-unit elasticsearch
+```
 
 ## Accessing the Kibana dashboard
 
 The Kibana dashboard can display real time graphs and charts on the details of
-the cluster. The Beats charms are sending metrics to the Elasticsearch and
+the cluster. The Beats charms are sending metrics to Elasticsearch and
 Kibana displays the data with graphs and charts.
 
 Get the charm's public address from the `juju status` command.
@@ -178,62 +239,14 @@ Get the charm's public address from the `juju status` command.
 
  The following are known issues and limitations with the bundle and charm code:
 
- - This bundle is not supported on LXD at this time because Juju needs to use a
-LXD profile that can run Docker containers.
- - Destroying the the Kubernetes master unit will result in loss of public key
-infrastructure (PKI).
+ - kubernetes-worker is not supported on LXD at this time.
+ - Destroying the the easyrsa charm will result in loss of public key
+ infrastructure (PKI).
  - No easy way to address the pods from the outside world.
- - The storage feature with ZFS is in Tech Preview mode and does not work with
-trusty at this time. You may force xenial deployment and pilot ZFS storage,
-however its not recommended by default.
- - Etcd installation may fail on units running Juju 1.25. There is a work-around
-by deploying etcd as Xenial series "--series=xenial", however you will have
-to deploy xenial series beats to gain monitoring of your Etcd units.
-
-
-###  The charm told me to see the README
-
-You've been directed here because you're deploying this etcd charm onto a
-pre-Xenial and non-amd64-based Ubuntu platform, and we don't have etcd and
-etcdctl binaries for that platform. You will need to obtain such binaries
-somehow yourself (e.g. by downloading and building from source), then tell
-Juju about those binaries as detailed below.
-
-#### Usage with your own binaries
-
-This charm supports resources, which means you can supply your own release of
-etcd and etcdctl to this charm. Which by nature makes it highly deployable on
-multiple architectures.
-
-#### Supply your own binaries
-
-```shell
-juju upgrade-charm etcd --resource etcd=./path/to/etcd --resource etcdtcl=./path/to/etcdctl
-juju list-resources etcd
-```
-
-You will see your binaries have been provided by username@local, and the charm
-will reconfigure itself to deploy the provided binaries.
-
-#### To test the binaries (an example for amd64 hosts)
-
-If you are simply deploying etcd, and the charm has halted demanding resources
-by telling you to consult the README, you can use a script contained in the
-charm itself.
-
-```shell
-charm pull etcd
-cd etcd
-make fetch_resources
-...
-cd resources
-tar xvfz etcd*.tar.gz
-```
-
-# Contact Information
 
 ## Kubernetes details
 
+- [User Guide](http://kubernetes.io/docs/user-guide/).
 - [Charm Store](https://jujucharms.com/canonical-kubernetes/bundle/)
 - [Bundle Source](https://github.com/juju-solutions/bundle-canonical-kubernetes)
 - [Bug tracker](https://github.com/juju-solutions/bundle-canonical-kubernetes/issues)
