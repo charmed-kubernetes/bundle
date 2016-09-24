@@ -5,71 +5,102 @@
 # deployment before moving to production.
 #
 series: xenial
-description: |
-  Production-grade Canonical Kubernetes cluster featuring logging and monitoring
-tags:
-- kubernetes
-- containers
-services:
-  kubernetes:
-    charm: cs:xenial/kubernetes-8
-    options:
-      version: v1.3.6
-    expose: true
-    num_units: 3
-    annotations:
-      gui-x: '1200'
-      gui-y: '300'
-#    constraints: arch=amd64 cpu-cores=8 mem=8G root-disk=30G
-  etcd:
-    charm: cs:xenial/etcd-8
-    num_units: 3
-    annotations:
-      gui-x: '1200'
-      gui-y: '600'
-#    constraints: arch=amd64 cpu-cores=2 root-disk=12G
-  filebeat:
-    charm: cs:xenial/filebeat-4
-    annotations:
-      gui-x: '900'
-      gui-y: '300'
-  topbeat:
-    charm: cs:xenial/topbeat-4
-    annotations:
-      gui-x: '900'
-      gui-y: '600'
-  kibana:
-    series: trusty
-    charm: cs:trusty/kibana-14
-    expose: true
+applications: 
+  filebeat: 
+    charm: "cs:filebeat-4"
+    annotations: 
+      "gui-x": "500"
+      "gui-y": "950"
+  "kubernetes-master": 
+    charm: "cs:~containers/kubernetes-master-0"
     num_units: 1
-    options:
-      dashboards: beats
-    annotations:
-      gui-x: '300'
-      gui-y: '300'
-  elasticsearch:
-    series: trusty
-    charm: cs:trusty/elasticsearch-18
+    annotations: 
+      "gui-x": "800"
+      "gui-y": "850"
+  flannel: 
+    charm: "cs:~containers/flannel-0"
+    annotations: 
+      "gui-x": "500"
+      "gui-y": "750"
+  "kubeapi-load-balancer": 
+    charm: "cs:~containers/kubeapi-load-balancer-0"
+    num_units: 1
+    expose: true
+    annotations: 
+      "gui-x": "450"
+      "gui-y": "250"
+  easyrsa: 
+    charm: "cs:~containers/easyrsa-0"
+    num_units: 1
+    annotations: 
+      "gui-x": "450"
+      "gui-y": "550"
+  "kubernetes-worker": 
+    charm: "cs:~containers/kubernetes-worker-0"
+    num_units: 3
+    annotations: 
+      "gui-x": "100"
+      "gui-y": "850"
+#    constraints: cpu-cores=4 mem=15G root-disk=30G
+  elasticsearch: 
+    charm: "cs:trusty/elasticsearch-18"
     num_units: 2
-    annotations:
-      gui-x: '600'
-      gui-y: '300'
-#    constraints: arch=amd64 cpu-cores=2 mem=4G root-disk=30G
-relations:
-- - kubernetes:etcd
-  - etcd:db
-- - kibana:rest
-  - elasticsearch:client
-- - filebeat:elasticsearch
-  - elasticsearch:client
-- - topbeat:elasticsearch
-  - elasticsearch:client
-- - topbeat:beats-host
-  - kubernetes:juju-info
-- - filebeat:beats-host
-  - kubernetes:juju-info
-- - filebeat:beats-host
-  - etcd:juju-info
-- - topbeat:beats-host
-  - etcd:juju-info
+    annotations: 
+      "gui-x": "450"
+      "gui-y": "1150"
+#    constraints: cpu-cores=2 mem=4G root-disk=30G
+  topbeat: 
+    charm: "cs:topbeat-4"
+    annotations: 
+      "gui-x": "300"
+      "gui-y": "1000"
+  kibana: 
+    charm: "cs:trusty/kibana-14"
+    num_units: 1
+    options: 
+      dashboards: beats
+    annotations: 
+      "gui-x": "800"
+      "gui-y": "1150"
+  etcd: 
+    charm: "cs:~containers/etcd-11"
+    num_units: 3
+    annotations: 
+      "gui-x": "800"
+      "gui-y": "550"
+#    constraints: cpu-cores=2 root-disk=12G
+relations: 
+  - - "filebeat:beats-host"
+    - "kubernetes-worker:juju-info"
+  - - "elasticsearch:client"
+    - "topbeat:elasticsearch"
+  - - "elasticsearch:client"
+    - "filebeat:elasticsearch"
+  - - "topbeat:beats-host"
+    - "kubernetes-worker:juju-info"
+  - - "kubernetes-master:kube-api-endpoint"
+    - "kubeapi-load-balancer:apiserver"
+  - - "filebeat:beats-host"
+    - "kubernetes-master:juju-info"
+  - - "kubernetes-master:loadbalancer"
+    - "kubeapi-load-balancer:loadbalancer"
+  - - "kubernetes-master:cluster-dns"
+    - "kubernetes-worker:kube-dns"
+  - - "kubernetes-master:certificates"
+    - "easyrsa:client"
+  - - "kubernetes-master:etcd"
+    - "etcd:db"
+  - - "kubernetes-master:sdn-plugin"
+    - "flannel:host"
+  - - "kubernetes-worker:certificates"
+    - "easyrsa:client"
+  - - "kubernetes-worker:sdn-plugin"
+    - "flannel:host"
+  - - "kubernetes-worker:kube-api-endpoint"
+    - "kubeapi-load-balancer:website"
+  - - "flannel:etcd"
+    - "etcd:db"
+  - - "kubeapi-load-balancer:certificates"
+    - "easyrsa:client"
+  - - "kibana:rest"
+    - "elasticsearch:client"
