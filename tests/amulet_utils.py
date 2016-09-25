@@ -1,3 +1,21 @@
+import subprocess
+import yaml
+
+
+def attach_resource(charm, resource, resource_path):
+    ''' Upload a resource to a deployed model.
+    :param: charm - the application to attach the resource
+    :param: resource - The charm's resouce key
+    :param: resource_path - the path on disk to upload the
+    resource'''
+
+    # the primary reason for this method is to replace a shell
+    # script in the $ROOT dir of the charm
+    cmd = ['juju', 'attach', charm, "{}={}".format(resource, resource_path)]
+
+    # Poll the controller to determine if resource placement is needed
+    if not _has_resource(charm, resource):
+        subprocess.call(cmd)
 
 
 def check_systemd_service(unit, service):
@@ -11,6 +29,14 @@ def check_systemd_service(unit, service):
     systemctl_is_enabled = 'systemctl is-enabled {0}'
     output, enabled = run(unit, systemctl_is_enabled.format(service))
     return active == 0 and enabled == 0
+
+
+def get_leader(units):
+    """Return the leader unit for the array of units."""
+    for unit in units:
+        out = unit.run('is-leader')
+        if out[0] == 'True':
+            return unit
 
 
 def kubectl(command, kubeconfig='', namespace='', json=False):
@@ -58,3 +84,20 @@ def valid_key(unit, path):
     output, begin = unit.run('grep "BEGIN PRIVATE KEY" {0}'.format(path))
     output, end = unit.run('grep "END PRIVATE KEY" {0}'.format(path))
     return begin == 0 and end == 0
+
+
+def _has_resource(charm, resource):
+    ''' Poll the controller to determine if we need to upload a resource
+    '''
+    cmd = ['juju', 'resources', charm, '--format=yaml']
+    output = subprocess.check_output(cmd)
+    resource_list = yaml.safe_load(output)
+    for resource in resource_list['resources']:
+        # We can assume this is the correct resource if it has a filesize
+        # matches the name of the resource in the charms resource stream
+        if 'name' in resource and (charm in resource['name'] and
+                                   resource['size'] > 0):
+            # Display the found resource
+            print('Uploading {} for {}'.format(resource['name'], charm))
+            return True
+    return False

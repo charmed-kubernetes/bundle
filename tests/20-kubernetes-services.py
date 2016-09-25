@@ -5,25 +5,23 @@ import os
 import unittest
 import yaml
 
-from amulet_utils import (
-    check_systemd_service,
-    kubectl,
-    run,
-    valid_certificate,
-    valid_key
-)
+from amulet_utils import attach_resource
+from amulet_utils import check_systemd_service
+from amulet_utils import kubectl
+from amulet_utils import run
+from amulet_utils import valid_certificate
+from amulet_utils import valid_key
 
 SECONDS_TO_WAIT = 1200
 
 
-class TestLocalBundle(unittest.TestCase):
+class IntegrationTest(unittest.TestCase):
     ''' Test Local Bundle tests the top down view of the kubernetes deployment,
         and will perform baseline verification that all deployed
         applications have performed their role in the setup'''
 
     @classmethod
     def setUpClass(cls):
-        """Read the bundle in and deploy the bundle."""
         # Get the relative bundle path from the environment variable.
         cls.bundle = os.getenv('BUNDLE', 'local.yaml')
         # Create a path to the bundle based on this file's location.
@@ -40,17 +38,28 @@ class TestLocalBundle(unittest.TestCase):
         # Allow some time for Juju to provision and deploy the bundle.
         cls.deployment.setup(timeout=SECONDS_TO_WAIT)
         # Attach local resources to charms
-        # print("=================================")
-        # cmd = ['tests/attach_local_resources.sh']
-        # subprocess.check_call(cmd)
+        res_path = '/home/ubuntu/resources/{}'
+        attach_resource('easyrsa', 'easyrsa',
+                        res_path.format('EasyRSA-3.0.1.tgz'))
+        attach_resource('flannel', 'flannel',
+                        res_path.format('flannel-v0.6.1-amd64.tar.gz'))
+        attach_resource('kubernetes-master', 'kubernetes',
+                        res_path.format('kubernetes-master.tar.gz'))
+        attach_resource('kubernetes-worker', 'kubernetes',
+                        res_path.format('kubernetes-worker.tar.gz'))
+
         # Wait for the system to settle down.
         cls.deployment.sentry.wait()
 
+        # Make every unit available through self reference
+        # eg: for worker in self.workers:
+        #         print(worker.info['public-address'])
+        cls.easyrsas = cls.deployment.sentry['easyrsa']
+        cls.etcds = cls.deployment.sentry['etcd']
+        cls.flannels = cls.deployment.sentry['flannel']
+        cls.loadbalancers = cls.deployment.sentry['kubeapi-load-balancer']
         cls.masters = cls.deployment.sentry['kubernetes-master']
         cls.workers = cls.deployment.sentry['kubernetes-worker']
-        cls.etcds = cls.deployment.sentry['etcd']
-        cls.easyrsas = cls.deployment.sentry['easyrsa']
-        cls.loadbalancers = cls.deployment.sentry['kubeapi-load-balancer']
 
     def test_master_services(self):
         '''Test if the master services are running.'''
@@ -137,6 +146,36 @@ class TestLocalBundle(unittest.TestCase):
             output, rc = run(unit, get_pods)
             self.assertTrue(rc == 0)
             self.assertTrue('kube-dns' in output)
+
+    def test_etcd_binary_placement(self):
+        ''' Ensure the etcd binary is placed on the host'''
+        for etcd in self.etcds:
+            etcdstat = etcd.file_stat('/usr/local/bin/etcd')
+            assert etcdstat['size'] > 0
+            etcdctlstat = etcd.file_stat('/usr/local/bin/etcdctl')
+            assert etcdctlstat['size'] > 0
+
+    def test_flannel_binary_placement(self):
+        ''' Ensure the flannel binary is placed on the host'''
+        for flannel in self.flannels:
+            stat = flannel.file_stat('/usr/local/bin/flanneld')
+            assert stat['size'] > 0
+
+    def test_flannel_environment_file(self):
+        ''' Ensure the flannel environment file exists'''
+
+        # FLANNEL_NETWORK=10.1.0.0/16
+        # FLANNEL_SUBNET=10.1.90.1/24
+        # FLANNEL_MTU=1410
+        # FLANNEL_IPMASQ=false
+
+        for flannel in self.flannels:
+            cont = flannel.file_contents('/var/run/flannel/subnet.env')
+            assert 'FLANNEL_NETWORK' in cont
+            assert 'FLANNEL_SUBNET' in cont
+            assert 'FLANNEL_MTU' in cont
+            assert 'FLANNEL_IPMASQ' in cont
+
 
 # TODO Test creating a small container or pod and delete it.
 
