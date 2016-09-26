@@ -256,7 +256,12 @@ microbot-ingress   microbot.104.198.77.197.xip.io   10.128.0.4   80        5m
 
 ```
 
-At this point, visit the url in the HOSTS section.
+
+When all the pods are listed as Running, the endpoint has more than one host you are ready to visit the address in the hosts section of the ingress liting.
+
+As you refresh the page, you will be greeted with a microbot serving from one
+of the microbot replica pods. refreshing will show you another microbot with a
+different hostname, as the requests are load balanced throug all the replicas.
 
 To learn more about [Kubernetes Ingress](http://kubernetes.io/docs/user-guide/ingress.html)
 and how to really tune the Ingress Controller beyond defaults (such as TLS and
