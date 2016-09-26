@@ -34,7 +34,9 @@ developers, use the smaller
 ## Deploy the bundle
 
 ```
+
 juju deploy canonical-kubernetes
+
 ```
 
 This will deploy the Canonical Kubernetes offering with default constraints.
@@ -45,7 +47,9 @@ You can do this by editing the [bundle](https://github.com/juju-solutions/bundle
 to fit your needs, it is commented for your convenience.
 
 ```
+
 juju deploy ./bundle.yaml
+
 ```
 
 This bundle exposes the kubeapi-load-balancer and kibana applications by default.
@@ -54,16 +58,21 @@ This means those charms are accessible through the public addresses.
 If you would like to remove external access, unexpose the applications:
 
 ```
+
 juju unexpose kibana
 juju unexpose kubernetes
+
 ```
 
 To get the status of the deployment, run `juju status`. For a constant update,
 this can be used with `watch`.
 
 ```
+
 watch -c juju status --color
+
 ```
+
 ### Alternate deployment methods
 
 #### Usage with your own binaries
@@ -75,7 +84,9 @@ This allows you to `juju attach` the resources built for the architecture of
 your cloud.
 
 ```
+
 juju attach kubernetes-master kubernetes=~/path/to/kubernetes-master.tar.gz
+
 ```
 
 #### Conjure Up
@@ -87,6 +98,7 @@ software installer. Refer to the
 ```
 sudo apt install conjure-up
 conjure-up canonical-kubernetes
+
 ```
 
 ## Interacting with the Kubernetes cluster
@@ -96,17 +108,34 @@ from any kubernetes-master, or kubernetes-worker node.
 
 To download the credentials and client application to your local workstation:
 
+
+Create the kubectl config directory.
+
 ```
-# Create the kubectl config directory.
 mkdir -p ~/.kube
 
-# Copy the kubeconfig to the default location.
+```
+
+Copy the kubeconfig to the default location.
+
+```
+
 juju scp kubernetes-master/0:config ~/.kube/config
 
-# Fetch a binary for the architecture you have deployed.
+```
+
+Fetch a binary for the architecture you have deployed.
+
+```
+
 juju scp kubernetes-master/0:kubectl ./kubectl
 
-# Query the cluster.
+```
+
+Query the cluster.
+
+```
+
 ./kubectl cluster-info
 
 ```
@@ -257,15 +286,19 @@ microbot-ingress   microbot.104.198.77.197.xip.io   10.128.0.4   80        5m
 ```
 
 
-When all the pods are listed as Running, the endpoint has more than one host you are ready to visit the address in the hosts section of the ingress liting.
+When all the pods are listed as Running, the endpoint has more than one host
+you are ready to visit the address in the hosts section of the ingress listing.
+
+Its normal to see a 502/503 error during initial application turnup.
 
 As you refresh the page, you will be greeted with a microbot serving from one
 of the microbot replica pods. refreshing will show you another microbot with a
-different hostname, as the requests are load balanced throug all the replicas.
+different hostname, as the requests are load balanced through out the replicas.
 
 To learn more about [Kubernetes Ingress](http://kubernetes.io/docs/user-guide/ingress.html)
 and how to really tune the Ingress Controller beyond defaults (such as TLS and
-websocket support) view the [nginx-ingress-controller](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx)
+websocket support) view the
+[nginx-ingress-controller](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx)
 project on github.
 
 
@@ -276,6 +309,7 @@ update the status messages with progress, so it is recommended to run.
 
 ```
 watch -c juju status --color
+
 ```
 
 
@@ -309,10 +343,12 @@ Etcd is used as a key-value store for the Kubernetes cluster. For reliability
 the bundle defaults to three instances in this cluster.
 
 For more scalability, we recommend between 3 and 9 etcd nodes. If you want to
-add more nodes:  
+add more nodes:
 
 ```
+
 juju add-unit etcd
+
 ```
 
 The CoreOS etcd documentation has a chart for the
@@ -325,7 +361,9 @@ ElasticSearch is used to hold all the log data and server information logged by
 Beats. You can add more Elasticsearch nodes by using the Juju command:
 
 ```
+
 juju add-unit elasticsearch
+
 ```
 
 ## Accessing the Kibana dashboard
