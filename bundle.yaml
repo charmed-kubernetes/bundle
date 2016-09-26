@@ -5,71 +5,71 @@
 # deployment before moving to production.
 #
 series: xenial
-applications: 
-  filebeat: 
+applications:
+  filebeat:
     charm: "cs:filebeat-4"
-    annotations: 
+    annotations:
       "gui-x": "500"
       "gui-y": "950"
-  "kubernetes-master": 
-    charm: "cs:~containers/kubernetes-master-0"
+  "kubernetes-master":
+    charm: "cs:~containers/kubernetes-master-1"
     num_units: 1
-    annotations: 
+    annotations:
       "gui-x": "800"
       "gui-y": "850"
-  flannel: 
-    charm: "cs:~containers/flannel-0"
-    annotations: 
+  flannel:
+    charm: "cs:~containers/flannel-1"
+    annotations:
       "gui-x": "500"
       "gui-y": "750"
-  "kubeapi-load-balancer": 
-    charm: "cs:~containers/kubeapi-load-balancer-0"
+  "kubeapi-load-balancer":
+    charm: "cs:~containers/kubeapi-load-balancer-1"
     num_units: 1
     expose: true
-    annotations: 
+    annotations:
       "gui-x": "450"
       "gui-y": "250"
-  easyrsa: 
-    charm: "cs:~containers/easyrsa-0"
+  easyrsa:
+    charm: "cs:~containers/easyrsa-1"
     num_units: 1
-    annotations: 
+    annotations:
       "gui-x": "450"
       "gui-y": "550"
-  "kubernetes-worker": 
-    charm: "cs:~containers/kubernetes-worker-0"
+  "kubernetes-worker":
+    charm: "cs:~containers/kubernetes-worker-1"
     num_units: 3
-    annotations: 
+    annotations:
       "gui-x": "100"
       "gui-y": "850"
 #    constraints: cpu-cores=4 mem=15G root-disk=30G
-  elasticsearch: 
+  elasticsearch:
     charm: "cs:trusty/elasticsearch-18"
     num_units: 2
-    annotations: 
+    annotations:
       "gui-x": "450"
       "gui-y": "1150"
 #    constraints: cpu-cores=2 mem=4G root-disk=30G
-  topbeat: 
+  topbeat:
     charm: "cs:topbeat-4"
-    annotations: 
+    annotations:
       "gui-x": "300"
       "gui-y": "1000"
-  kibana: 
+  kibana:
     charm: "cs:trusty/kibana-14"
     num_units: 1
-    options: 
+    options:
       dashboards: beats
-    annotations: 
+    annotations:
       "gui-x": "800"
       "gui-y": "1150"
-  etcd: 
-    charm: "cs:~containers/etcd-11"
+  etcd:
+    charm: "cs:~containers/etcd-12"
     num_units: 3
-    annotations: 
+    annotations:
       "gui-x": "800"
       "gui-y": "550"
 #    constraints: cpu-cores=2 root-disk=12G
-relations: 
+relations:
   - - "filebeat:beats-host"
     - "kubernetes-worker:juju-info"
   - - "elasticsearch:client"
