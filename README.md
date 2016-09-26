@@ -1,6 +1,6 @@
-# Canonical Kubernetes
+# The Canonical Distribution of Kubernetes
 
-![](https://img.shields.io/badge/release-beta-yellow.svg) ![](https://img.shields.io/badge/kubernetes-1.4.0-beta10-brightgreen.svg) ![](https://img.shields.io/badge/juju-1.25+-brightgreen.svg)
+![](https://img.shields.io/badge/release-beta-yellow.svg) ![](https://img.shields.io/badge/kubernetes-1.4.0.beta11-brightgreen.svg) ![](https://img.shields.io/badge/juju-2.0+-brightgreen.svg)
 
 ## Overview
 
@@ -12,6 +12,7 @@ knowledge. It is comprised of the following components and features:
   - TLS used for communication between nodes for security.
   - Flannel networking plugin
   - A load balancer for HA kubernetes-master (Experimental)
+  - Optional Ingress Controller and Dashboard (on worker/master respectively)
 - EasyRSA
   - Performs the role of a certificate authority serving self signed certificates
     to the requesting units of the cluster.
@@ -156,6 +157,95 @@ Additionally if you need to manage multiple clusters, there is more information
 about configuring kubectl with the
 [kubectl config guide](http://kubernetes.io/docs/user-guide/kubectl/kubectl_config/)
 
+
+### Using Ingress
+
+The kubernetes worker charm supports deploying an NGINX ingress controller.
+In Kubernetes, workloads are declared using pod, service, and ingress definitions.
+
+An ingress controller is provided to you by default, deployed into the [default
+namespace](http://kubernetes.io/docs/user-guide/namespaces/) of the cluster.
+If one is not available, you may deploy this with
+
+```
+juju config kubernetes-worker ingress=true
+```
+
+Ingress resources are DNS mappings to your containers, routed through [endpoints](http://kubernetes.io/docs/user-guide/services/)
+
+
+As an example:
+
+```
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: microbot
+  name: microbot
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: microbot
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: microbot
+    spec:
+      containers:
+      - image: dontrebootme/microbot:v1
+        imagePullPolicy: ""
+        name: microbot
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          timeoutSeconds: 30
+        resources: {}
+      restartPolicy: Always
+      serviceAccountName: ""
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: microbot
+  labels:
+    app: microbot
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: microbot
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+ name: microbot-ingress
+spec:
+ rules:
+   - host: {{ PUBLIC_ADDRESS_OF_WORKER }}.xip.io
+     http:
+       paths:
+         - path: /
+           backend:
+             serviceName: microbot
+             servicePort: 80
+```
+
+To learn more about [Kubernetes Ingress](http://kubernetes.io/docs/user-guide/ingress.html)
+and how to really tune the Ingress Controller beyond defaults (such as TLS and
+websocket support) view the [nginx-ingress-controller](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx)
+project on github.
 
 
 # Scale out Usage
