@@ -1,6 +1,6 @@
 # The Canonical Distribution of Kubernetes
 
-![](https://img.shields.io/badge/release-beta-yellow.svg) ![](https://img.shields.io/badge/kubernetes-1.4.0.beta11-brightgreen.svg) ![](https://img.shields.io/badge/juju-2.0+-brightgreen.svg)
+![](https://img.shields.io/badge/release-beta-yellow.svg) ![](https://img.shields.io/badge/kubernetes-1.4.0-brightgreen.svg) ![](https://img.shields.io/badge/juju-2.0+-brightgreen.svg)
 
 ## Overview
 
@@ -34,7 +34,9 @@ developers, use the smaller
 ## Deploy the bundle
 
 ```
+
 juju deploy canonical-kubernetes
+
 ```
 
 This will deploy the Canonical Kubernetes offering with default constraints.
@@ -45,7 +47,9 @@ You can do this by editing the [bundle](https://github.com/juju-solutions/bundle
 to fit your needs, it is commented for your convenience.
 
 ```
+
 juju deploy ./bundle.yaml
+
 ```
 
 This bundle exposes the kubeapi-load-balancer and kibana applications by default.
@@ -54,16 +58,21 @@ This means those charms are accessible through the public addresses.
 If you would like to remove external access, unexpose the applications:
 
 ```
+
 juju unexpose kibana
 juju unexpose kubernetes
+
 ```
 
 To get the status of the deployment, run `juju status`. For a constant update,
 this can be used with `watch`.
 
 ```
+
 watch -c juju status --color
+
 ```
+
 ### Alternate deployment methods
 
 #### Usage with your own binaries
@@ -75,7 +84,9 @@ This allows you to `juju attach` the resources built for the architecture of
 your cloud.
 
 ```
+
 juju attach kubernetes-master kubernetes=~/path/to/kubernetes-master.tar.gz
+
 ```
 
 #### Conjure Up
@@ -87,6 +98,7 @@ software installer. Refer to the
 ```
 sudo apt install conjure-up
 conjure-up canonical-kubernetes
+
 ```
 
 ## Interacting with the Kubernetes cluster
@@ -96,17 +108,34 @@ from any kubernetes-master, or kubernetes-worker node.
 
 To download the credentials and client application to your local workstation:
 
+
+Create the kubectl config directory.
+
 ```
-# Create the kubectl config directory.
 mkdir -p ~/.kube
 
-# Copy the kubeconfig to the default location.
+```
+
+Copy the kubeconfig to the default location.
+
+```
+
 juju scp kubernetes-master/0:config ~/.kube/config
 
-# Fetch a binary for the architecture you have deployed.
+```
+
+Fetch a binary for the architecture you have deployed.
+
+```
+
 juju scp kubernetes-master/0:kubectl ./kubectl
 
-# Query the cluster.
+```
+
+Query the cluster.
+
+```
+
 ./kubectl cluster-info
 
 ```
@@ -171,80 +200,105 @@ If one is not available, you may deploy this with
 juju config kubernetes-worker ingress=true
 ```
 
-Ingress resources are DNS mappings to your containers, routed through [endpoints](http://kubernetes.io/docs/user-guide/services/)
+Ingress resources are DNS mappings to your containers,
+routed through [endpoints](http://kubernetes.io/docs/user-guide/services/)
 
 
-As an example:
+As an example for users unfamiliar with kubernetes, we've packaged an action
+to both deploy an example and clean itself up:
 
 ```
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  creationTimestamp: null
-  labels:
-    app: microbot
-  name: microbot
-spec:
-  replicas: 5
-  selector:
-    matchLabels:
-      app: microbot
-  strategy: {}
-  template:
-    metadata:
-      creationTimestamp: null
-      labels:
-        app: microbot
-    spec:
-      containers:
-      - image: dontrebootme/microbot:v1
-        imagePullPolicy: ""
-        name: microbot
-        ports:
-        - containerPort: 80
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 5
-          timeoutSeconds: 30
-        resources: {}
-      restartPolicy: Always
-      serviceAccountName: ""
-status: {}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: microbot
-  labels:
-    app: microbot
-spec:
-  ports:
-    - port: 80
-      protocol: TCP
-      targetPort: 80
-  selector:
-    app: microbot
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
- name: microbot-ingress
-spec:
- rules:
-   - host: {{ PUBLIC_ADDRESS_OF_WORKER }}.xip.io
-     http:
-       paths:
-         - path: /
-           backend:
-             serviceName: microbot
-             servicePort: 80
+juju run-action kubernetes-worker/0 microbot replicas=5
 ```
+
+This performs the following:
+
+It creates a deployment titled 'microbots' comprised of 5 replicas defined
+during the run of the action. It also creates a service named 'microbots'
+which binds an 'endpoint', using all 5 of the 'microbots' pods.
+
+Finally, it will create an ingress resource, which points at a [xip.io](https://xip.io)
+domain to aid in simulating having a proper DNS
+
+
+#### Running the packaged simulation
+
+```
+$ juju run-action kubernetes-worker/0 microbot replicas=5
+
+Action queued with id: db7cc72b-5f35-4a4d-877c-284c4b776eb8
+
+$ juju show-action-output db7cc72b-5f35-4a4d-877c-284c4b776eb8
+
+results:
+  address: microbot.104.198.77.197.xip.io
+status: completed
+timing:
+  completed: 2016-09-26 20:42:42 +0000 UTC
+  enqueued: 2016-09-26 20:42:39 +0000 UTC
+  started: 2016-09-26 20:42:41 +0000 UTC
+
+```
+
+At this point, you can inspect the cluster to observe the workload coming online.
+
+#### List the pods
+```
+
+$ kubectl get po
+
+NAME                             READY     STATUS    RESTARTS   AGE
+default-http-backend-e1add       1/1       Running   0          1h
+microbot-1855935831-9g2ke        0/1       Pending   0          1m
+microbot-1855935831-gn84s        0/1       Pending   0          1m
+microbot-1855935831-o86yr        1/1       Running   0          1m
+nginx-ingress-controller-0f7r6   1/1       Running   0          1h
+
+```
+
+#### List the services and endpoints
+
+```
+
+$ kubectl get svc,ep
+
+NAME                       CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+svc/default-http-backend   10.1.177.22    <none>        80/TCP    1h
+svc/kubernetes             10.1.0.1       <none>        443/TCP   2h
+svc/microbot               10.1.56.226    <none>        80/TCP    3m
+
+NAME                      ENDPOINTS                                AGE
+ep/default-http-backend   10.1.19.5:80                             1h
+ep/kubernetes             10.128.0.2:6443                          2h
+ep/microbot               10.1.19.7:80,10.1.19.8:80,10.1.19.9:80   3m
+
+```
+
+#### List the ingress resources
+
+```
+$ kubectl get ing
+
+NAME               HOSTS                            ADDRESS      PORTS     AGE
+microbot-ingress   microbot.104.198.77.197.xip.io   10.128.0.4   80        5m
+
+
+```
+
+
+When all the pods are listed as Running, the endpoint has more than one host
+you are ready to visit the address in the hosts section of the ingress listing.
+
+Its normal to see a 502/503 error during initial application turnup.
+
+As you refresh the page, you will be greeted with a microbot serving from one
+of the microbot replica pods. refreshing will show you another microbot with a
+different hostname, as the requests are load balanced through out the replicas.
 
 To learn more about [Kubernetes Ingress](http://kubernetes.io/docs/user-guide/ingress.html)
 and how to really tune the Ingress Controller beyond defaults (such as TLS and
-websocket support) view the [nginx-ingress-controller](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx)
+websocket support) view the
+[nginx-ingress-controller](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx)
 project on github.
 
 
@@ -255,6 +309,7 @@ update the status messages with progress, so it is recommended to run.
 
 ```
 watch -c juju status --color
+
 ```
 
 
@@ -288,10 +343,12 @@ Etcd is used as a key-value store for the Kubernetes cluster. For reliability
 the bundle defaults to three instances in this cluster.
 
 For more scalability, we recommend between 3 and 9 etcd nodes. If you want to
-add more nodes:  
+add more nodes:
 
 ```
+
 juju add-unit etcd
+
 ```
 
 The CoreOS etcd documentation has a chart for the
@@ -304,7 +361,9 @@ ElasticSearch is used to hold all the log data and server information logged by
 Beats. You can add more Elasticsearch nodes by using the Juju command:
 
 ```
+
 juju add-unit elasticsearch
+
 ```
 
 ## Accessing the Kibana dashboard
