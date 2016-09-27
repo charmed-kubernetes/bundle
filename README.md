@@ -4,11 +4,11 @@
 
 ## Overview
 
-This is a Kubernetes cluster that includes logging, monitoring, and operational
+This is a Kubernetes 1.4.0 cluster that includes logging, monitoring, and operational
 knowledge. It is comprised of the following components and features:
 
 - Kubernetes (automated deployment, operations, and scaling)
-  - Three node Kubernetes cluster with one master and two worker nodes.
+  - Four node Kubernetes cluster with one master and three worker nodes.
   - TLS used for communication between nodes for security.
   - Flannel networking plugin
   - A load balancer for HA kubernetes-master (Experimental)
@@ -39,7 +39,7 @@ juju deploy canonical-kubernetes
 
 ```
 
-This will deploy the Canonical Kubernetes offering with default constraints.
+This will deploy the Canonical Distribution of Kubernetes offering with default constraints.
 This is useful for lab environments, however for real-world use you should
 provide high CPU and memory instances to kubernetes-worker.
 
@@ -109,7 +109,7 @@ from any kubernetes-master, or kubernetes-worker node.
 To download the credentials and client application to your local workstation:
 
 
-Create the kubectl config directory.
+Create the ./kubectl config directory.
 
 ```
 mkdir -p ~/.kube
@@ -178,12 +178,12 @@ List all services in the cluster:
 ./kubectl get svc
 ```
 
-For expanded information on kubectl beyond what this README provides, please
+For expanded information on ./kubectl beyond what this README provides, please
 see the [kubectl overview](http://kubernetes.io/docs/user-guide/kubectl-overview/)
 which contains practical examples and an API reference.
 
 Additionally if you need to manage multiple clusters, there is more information
-about configuring kubectl with the
+about configuring ./kubectl with the
 [kubectl config guide](http://kubernetes.io/docs/user-guide/kubectl/kubectl_config/)
 
 
@@ -245,7 +245,7 @@ At this point, you can inspect the cluster to observe the workload coming online
 #### List the pods
 ```
 
-$ kubectl get po
+$ ./kubectl get po
 
 NAME                             READY     STATUS    RESTARTS   AGE
 default-http-backend-e1add       1/1       Running   0          1h
@@ -260,7 +260,7 @@ nginx-ingress-controller-0f7r6   1/1       Running   0          1h
 
 ```
 
-$ kubectl get svc,ep
+$ ./kubectl get svc,ep
 
 NAME                       CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
 svc/default-http-backend   10.1.177.22    <none>        80/TCP    1h
@@ -277,7 +277,7 @@ ep/microbot               10.1.19.7:80,10.1.19.8:80,10.1.19.9:80   3m
 #### List the ingress resources
 
 ```
-$ kubectl get ing
+$ ./kubectl get ing
 
 NAME               HOSTS                            ADDRESS      PORTS     AGE
 microbot-ingress   microbot.104.198.77.197.xip.io   10.128.0.4   80        5m
