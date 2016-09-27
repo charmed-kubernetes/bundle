@@ -38,6 +38,7 @@ applications:
   "kubernetes-worker":
     charm: "cs:~containers/kubernetes-worker-2"
     num_units: 3
+    expose: true
     annotations:
       "gui-x": "100"
       "gui-y": "850"
