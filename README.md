@@ -57,7 +57,7 @@ If you would like to remove external access, unexpose the applications:
 
 ```
 juju unexpose kibana
-juju unexpose kubapi-load-balancer
+juju unexpose kubeapi-load-balancer
 ```
 
 To get the status of the deployment, run `juju status`. For a constant update,
@@ -82,16 +82,6 @@ your cloud.
 juju attach kubernetes-master kubernetes=~/path/to/kubernetes-master.tar.gz
 ```
 
-#### Conjure Up
-
-This bundle is enabled with an alternate method via `conjure-up`, a big
-software installer. Refer to the
-[conjure-up documentation](http://conjure-up.io) to learn more.
-
-```
-sudo apt install conjure-up
-conjure-up canonical-kubernetes
-```
 
 ## Interacting with the Kubernetes cluster
 
@@ -161,7 +151,7 @@ List all pods in the cluster:
 List all services in the cluster:
 
 ```
-./kubectl get svc
+./kubectl get services
 ```
 
 For expanded information on kubectl beyond what this README provides, please
@@ -222,61 +212,54 @@ which binds an 'endpoint', using all 5 of the 'microbots' pods.
 
 #### Running the packaged simulation
 
-```
-$ juju run-action kubernetes-worker/0 microbot replicas=5
 
-Action queued with id: db7cc72b-5f35-4a4d-877c-284c4b776eb8
+    $ juju run-action kubernetes-worker/0 microbot replicas=3
+    Action queued with id: db7cc72b-5f35-4a4d-877c-284c4b776eb8
 
-$ juju show-action-output db7cc72b-5f35-4a4d-877c-284c4b776eb8
+    $ juju show-action-output db7cc72b-5f35-4a4d-877c-284c4b776eb8
+    results:
+      address: microbot.104.198.77.197.xip.io
+    status: completed
+    timing:
+      completed: 2016-09-26 20:42:42 +0000 UTC
+      enqueued: 2016-09-26 20:42:39 +0000 UTC
+      started: 2016-09-26 20:42:41 +0000 UTC
 
-results:
-  address: microbot.104.198.77.197.xip.io
-status: completed
-timing:
-  completed: 2016-09-26 20:42:42 +0000 UTC
-  enqueued: 2016-09-26 20:42:39 +0000 UTC
-  started: 2016-09-26 20:42:41 +0000 UTC
-```
 
 At this point, you can inspect the cluster to observe the workload coming online.
 
 #### List the pods
 
-```
-$ kubectl get po
 
-NAME                             READY     STATUS    RESTARTS   AGE
-default-http-backend-e1add       1/1       Running   0          1h
-microbot-1855935831-9g2ke        0/1       Pending   0          1m
-microbot-1855935831-gn84s        0/1       Pending   0          1m
-microbot-1855935831-o86yr        1/1       Running   0          1m
-nginx-ingress-controller-0f7r6   1/1       Running   0          1h
-```
+    $ kubectl get pods
+    NAME                             READY     STATUS    RESTARTS   AGE
+    default-http-backend-kh1dt       1/1       Running   0          1h
+    microbot-1855935831-58shp        1/1       Running   0          1h
+    microbot-1855935831-9d16f        1/1       Running   0          1h
+    microbot-1855935831-l5rt8        1/1       Running   0          1h
+    nginx-ingress-controller-hv5c2   1/1       Running   0          1h
+
+
 
 #### List the services and endpoints
 
-```
-$ kubectl get svc,ep
+    $ kubectl get services,endpoints
+    NAME                       CLUSTER-IP    EXTERNAL-IP   PORT(S)   AGE
+    svc/default-http-backend   10.1.225.82   <none>        80/TCP    1h
+    svc/kubernetes             10.1.0.1      <none>        443/TCP   1h
+    svc/microbot               10.1.44.173   <none>        80/TCP    1h
+    NAME                      ENDPOINTS                               AGE
+    ep/default-http-backend   10.1.68.2:80                            1h
+    ep/kubernetes             172.31.31.139:6443                      1h
+    ep/microbot               10.1.20.3:80,10.1.68.3:80,10.1.7.4:80   1h
 
-NAME                       CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
-svc/default-http-backend   10.1.177.22    <none>        80/TCP    1h
-svc/kubernetes             10.1.0.1       <none>        443/TCP   2h
-svc/microbot               10.1.56.226    <none>        80/TCP    3m
-
-NAME                      ENDPOINTS                                AGE
-ep/default-http-backend   10.1.19.5:80                             1h
-ep/kubernetes             10.128.0.2:6443                          2h
-ep/microbot               10.1.19.7:80,10.1.19.8:80,10.1.19.9:80   3m
-```
 
 #### List the ingress resources
 
-```
-$ kubectl get ing
+    $ kubectl get ingress
+    NAME               HOSTS                          ADDRESS         PORTS     AGE
+    microbot-ingress   microbot.52.38.62.235.xip.io   172.31.26.109   80        1h
 
-NAME               HOSTS                            ADDRESS      PORTS     AGE
-microbot-ingress   microbot.104.198.77.197.xip.io   10.128.0.4   80        5m
-```
 
 When all the pods are listed as Running, the endpoint has more than one host
 you are ready to visit the address in the hosts section of the ingress listing.
@@ -399,7 +382,7 @@ Get the charm's public address from the `juju status` command.
 
 ## Kubernetes details
 
-- [User Guide](http://kubernetes.io/docs/user-guide/).
-- [Charm Store](https://jujucharms.com/canonical-kubernetes/bundle/)
+- [Kubernetes User Guide](http://kubernetes.io/docs/user-guide/)
+- [The Canonical Distribution of Kubernetes ](https://jujucharms.com/canonical-kubernetes/bundle/)
 - [Bundle Source](https://github.com/juju-solutions/bundle-canonical-kubernetes)
 - [Bug tracker](https://github.com/juju-solutions/bundle-canonical-kubernetes/issues)
