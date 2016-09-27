@@ -33,44 +33,38 @@ developers, use the smaller
 
 ## Deploy the bundle
 
-```
 
+```
 juju deploy canonical-kubernetes
-
 ```
 
-This will deploy the Canonical Kubernetes offering with default constraints.
-This is useful for lab environments, however for real-world use you should
-provide high CPU and memory instances to kubernetes-worker.
+This will deploy the Canonical Distribution of Kubernetes offering with default
+constraints. This is useful for lab environments, however for real-world use
+you should provide higher CPU and memory instances to kubernetes-worker units.
 
-You can do this by editing the [bundle](https://github.com/juju-solutions/bundle-canonical-kubernetes)
-to fit your needs, it is commented for your convenience.
+You can increase the constraints by editing the
+[bundle.yaml](https://github.com/juju-solutions/bundle-canonical-kubernetes)
+to fit your needs by removing the `#` comment character.
 
 ```
-
 juju deploy ./bundle.yaml
-
 ```
 
-This bundle exposes the kubeapi-load-balancer and kibana applications by default.
-This means those charms are accessible through the public addresses.
+This bundle exposes the kubeapi-load-balancer and kibana applications by 
+default. This means those charms are accessible through the public addresses.
 
 If you would like to remove external access, unexpose the applications:
 
 ```
-
 juju unexpose kibana
 juju unexpose kubernetes
-
 ```
 
 To get the status of the deployment, run `juju status`. For a constant update,
 this can be used with `watch`.
 
 ```
-
 watch -c juju status --color
-
 ```
 
 ### Alternate deployment methods
@@ -78,15 +72,14 @@ watch -c juju status --color
 #### Usage with your own binaries
 
 In order to support restricted-network deployments, the charms in this bundle
-support [juju resources](https://jujucharms.com/docs/2.0/developer-resources#managing-resources).
+support 
+[juju resources](https://jujucharms.com/docs/2.0/developer-resources#managing-resources).
 
 This allows you to `juju attach` the resources built for the architecture of
 your cloud.
 
 ```
-
 juju attach kubernetes-master kubernetes=~/path/to/kubernetes-master.tar.gz
-
 ```
 
 #### Conjure Up
@@ -98,7 +91,6 @@ software installer. Refer to the
 ```
 sudo apt install conjure-up
 conjure-up canonical-kubernetes
-
 ```
 
 ## Interacting with the Kubernetes cluster
@@ -108,36 +100,28 @@ from any kubernetes-master, or kubernetes-worker node.
 
 To download the credentials and client application to your local workstation:
 
-
 Create the kubectl config directory.
 
 ```
 mkdir -p ~/.kube
-
 ```
 
 Copy the kubeconfig to the default location.
 
 ```
-
 juju scp kubernetes-master/0:config ~/.kube/config
-
 ```
 
 Fetch a binary for the architecture you have deployed.
 
 ```
-
 juju scp kubernetes-master/0:kubectl ./kubectl
-
 ```
 
 Query the cluster.
 
 ```
-
 ./kubectl cluster-info
-
 ```
 
 ### Control the cluster
@@ -179,7 +163,8 @@ List all services in the cluster:
 ```
 
 For expanded information on kubectl beyond what this README provides, please
-see the [kubectl overview](http://kubernetes.io/docs/user-guide/kubectl-overview/)
+see the 
+[kubectl overview](http://kubernetes.io/docs/user-guide/kubectl-overview/)
 which contains practical examples and an API reference.
 
 Additionally if you need to manage multiple clusters, there is more information
@@ -189,36 +174,37 @@ about configuring kubectl with the
 
 ### Using Ingress
 
-The kubernetes worker charm supports deploying an NGINX ingress controller.
-In Kubernetes, workloads are declared using pod, service, and ingress definitions.
+The kubernetes-worker charm supports deploying an NGINX ingress controller. 
+Ingress allows access from the Internet to containers inside the cluster 
+running web services. In Kubernetes, workloads are declared using pod, service,
+and ingress definitions.
 
-An ingress controller is provided to you by default, deployed into the [default
-namespace](http://kubernetes.io/docs/user-guide/namespaces/) of the cluster.
-If one is not available, you may deploy this with
+An ingress controller is provided to you by default, deployed into the 
+[default namespace](http://kubernetes.io/docs/user-guide/namespaces/) of the 
+cluster. If one is not available, you may deploy this with:
 
 ```
 juju config kubernetes-worker ingress=true
 ```
 
-Ingress resources are DNS mappings to your containers,
-routed through [endpoints](http://kubernetes.io/docs/user-guide/services/)
+Ingress resources are DNS mappings to your containers, routed through
+[endpoints](http://kubernetes.io/docs/user-guide/services/)
 
-
-As an example for users unfamiliar with kubernetes, we've packaged an action
-to both deploy an example and clean itself up:
+As an example for users unfamiliar with Kubernetes, we packaged an action to 
+both deploy an example and clean itself up:
 
 ```
 juju run-action kubernetes-worker/0 microbot replicas=5
 ```
 
-This performs the following:
+This action performs the following steps:
 
-It creates a deployment titled 'microbots' comprised of 5 replicas defined
+- It creates a deployment titled 'microbots' comprised of 5 replicas defined
 during the run of the action. It also creates a service named 'microbots'
 which binds an 'endpoint', using all 5 of the 'microbots' pods.
 
-Finally, it will create an ingress resource, which points at a [xip.io](https://xip.io)
-domain to aid in simulating having a proper DNS
+- Finally, it will create an ingress resource, which points at a 
+[xip.io](https://xip.io) domain to simulate a proper DNS service.
 
 
 #### Running the packaged simulation
@@ -237,14 +223,13 @@ timing:
   completed: 2016-09-26 20:42:42 +0000 UTC
   enqueued: 2016-09-26 20:42:39 +0000 UTC
   started: 2016-09-26 20:42:41 +0000 UTC
-
 ```
 
 At this point, you can inspect the cluster to observe the workload coming online.
 
 #### List the pods
-```
 
+```
 $ kubectl get po
 
 NAME                             READY     STATUS    RESTARTS   AGE
@@ -253,13 +238,11 @@ microbot-1855935831-9g2ke        0/1       Pending   0          1m
 microbot-1855935831-gn84s        0/1       Pending   0          1m
 microbot-1855935831-o86yr        1/1       Running   0          1m
 nginx-ingress-controller-0f7r6   1/1       Running   0          1h
-
 ```
 
 #### List the services and endpoints
 
 ```
-
 $ kubectl get svc,ep
 
 NAME                       CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
@@ -271,7 +254,6 @@ NAME                      ENDPOINTS                                AGE
 ep/default-http-backend   10.1.19.5:80                             1h
 ep/kubernetes             10.128.0.2:6443                          2h
 ep/microbot               10.1.19.7:80,10.1.19.8:80,10.1.19.9:80   3m
-
 ```
 
 #### List the ingress resources
@@ -281,21 +263,20 @@ $ kubectl get ing
 
 NAME               HOSTS                            ADDRESS      PORTS     AGE
 microbot-ingress   microbot.104.198.77.197.xip.io   10.128.0.4   80        5m
-
-
 ```
-
 
 When all the pods are listed as Running, the endpoint has more than one host
 you are ready to visit the address in the hosts section of the ingress listing.
 
-Its normal to see a 502/503 error during initial application turnup.
+It is normal to see a 502/503 error during initial application turnup.
 
-As you refresh the page, you will be greeted with a microbot serving from one
-of the microbot replica pods. refreshing will show you another microbot with a
-different hostname, as the requests are load balanced through out the replicas.
+As you refresh the page, you will be greeted with a microbot web page, serving 
+from one of the microbot replica pods. Refreshing will show you another 
+microbot with a different hostname, as the requests are load balanced through 
+out the replicas.
 
-To learn more about [Kubernetes Ingress](http://kubernetes.io/docs/user-guide/ingress.html)
+To learn more about 
+[Kubernetes Ingress](http://kubernetes.io/docs/user-guide/ingress.html)
 and how to really tune the Ingress Controller beyond defaults (such as TLS and
 websocket support) view the
 [nginx-ingress-controller](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx)
@@ -309,13 +290,11 @@ update the status messages with progress, so it is recommended to run.
 
 ```
 watch -c juju status --color
-
 ```
-
 
 ### Scaling kubernetes-worker
 
-kubernetes-worker nodes are the load-bearing units of a Kubernetes cluster.
+The kubernetes-worker nodes are the load-bearing units of a Kubernetes cluster.
 
 By default pods are automatically spread throughout the kubernetes-worker units
 that you have deployed.
@@ -346,9 +325,7 @@ For more scalability, we recommend between 3 and 9 etcd nodes. If you want to
 add more nodes:
 
 ```
-
 juju add-unit etcd
-
 ```
 
 The CoreOS etcd documentation has a chart for the
@@ -361,9 +338,7 @@ ElasticSearch is used to hold all the log data and server information logged by
 Beats. You can add more Elasticsearch nodes by using the Juju command:
 
 ```
-
 juju add-unit elasticsearch
-
 ```
 
 ## Accessing the Kibana dashboard
@@ -388,10 +363,9 @@ Get the charm's public address from the `juju status` command.
 
  The following are known issues and limitations with the bundle and charm code:
 
- - kubernetes-worker is not supported on LXD at this time.
+ - The kubernetes-worker is not supported on LXD at this time.
  - Destroying the the easyrsa charm will result in loss of public key
  infrastructure (PKI).
- - No easy way to address the pods from the outside world.
 
 ## Kubernetes details
 
