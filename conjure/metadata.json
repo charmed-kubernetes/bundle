@@ -1,5 +1,0 @@
-{
-    "friendly-name": "Canonical Kubernetes",
-    "version": 1,
-    "cloud-blacklist": ["localhost"]
-}
