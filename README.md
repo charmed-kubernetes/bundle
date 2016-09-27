@@ -4,11 +4,11 @@
 
 ## Overview
 
-This is a Kubernetes cluster that includes logging, monitoring, and operational
+This is a Kubernetes 1.4.0 cluster that includes logging, monitoring, and operational
 knowledge. It is comprised of the following components and features:
 
 - Kubernetes (automated deployment, operations, and scaling)
-  - Three node Kubernetes cluster with one master and two worker nodes.
+  - Four node Kubernetes cluster with one master and three worker nodes.
   - TLS used for communication between nodes for security.
   - Flannel networking plugin
   - A load balancer for HA kubernetes-master (Experimental)
@@ -197,8 +197,16 @@ cluster. If one is not available, you may deploy this with:
 juju config kubernetes-worker ingress=true
 ```
 
-Ingress resources are DNS mappings to your containers, routed through
-[endpoints](http://kubernetes.io/docs/user-guide/services/)
+In any case, in order to use the ingress, you will need to expose the worker service via
+
+```
+juju expose kubernetes-worker
+```
+
+which will open ports 80 and 443 of the worker nodes. 
+
+Ingress resources are DNS mappings to your containers,
+routed through [endpoints](http://kubernetes.io/docs/user-guide/services/)
 
 As an example for users unfamiliar with Kubernetes, we packaged an action to 
 both deploy an example and clean itself up.
@@ -243,7 +251,7 @@ At this point, you can inspect the cluster to observe the workload coming online
 #### List the pods
 
 ```
-$ kubectl get po
+$ ./kubectl get po
 
 NAME                             READY     STATUS    RESTARTS   AGE
 default-http-backend-e1add       1/1       Running   0          1h
@@ -256,7 +264,8 @@ nginx-ingress-controller-0f7r6   1/1       Running   0          1h
 #### List the services and endpoints
 
 ```
-$ kubectl get svc,ep
+
+$ ./kubectl get svc,ep
 
 NAME                       CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
 svc/default-http-backend   10.1.177.22    <none>        80/TCP    1h
@@ -272,7 +281,7 @@ ep/microbot               10.1.19.7:80,10.1.19.8:80,10.1.19.9:80   3m
 #### List the ingress resources
 
 ```
-$ kubectl get ing
+$ ./kubectl get ing
 
 NAME               HOSTS                            ADDRESS      PORTS     AGE
 microbot-ingress   microbot.104.198.77.197.xip.io   10.128.0.4   80        5m
