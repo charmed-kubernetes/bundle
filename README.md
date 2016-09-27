@@ -50,14 +50,14 @@ to fit your needs by removing the `#` comment character.
 juju deploy ./bundle.yaml
 ```
 
-This bundle exposes the kubeapi-load-balancer and kibana applications by 
-default. This means those charms are accessible through the public addresses.
+This bundle exposes the kubeapi-load-balancer and kibana charms by default
+This means those charms are accessible through their public addresses.
 
 If you would like to remove external access, unexpose the applications:
 
 ```
 juju unexpose kibana
-juju unexpose kubernetes
+juju unexpose kubapi-load-balancer
 ```
 
 To get the status of the deployment, run `juju status`. For a constant update,
@@ -112,7 +112,9 @@ Copy the kubeconfig to the default location.
 juju scp kubernetes-master/0:config ~/.kube/config
 ```
 
-Fetch a binary for the architecture you have deployed.
+Fetch a binary for the architecture you have deployed. If your client is a 
+different architecture you will need to get the appropriate `kubectl` binary 
+through other means.
 
 ```
 juju scp kubernetes-master/0:kubectl ./kubectl
@@ -176,10 +178,18 @@ about configuring kubectl with the
 
 The kubernetes-worker charm supports deploying an NGINX ingress controller. 
 Ingress allows access from the Internet to containers inside the cluster 
-running web services. In Kubernetes, workloads are declared using pod, service,
-and ingress definitions.
+running web services. 
 
-An ingress controller is provided to you by default, deployed into the 
+First allow the Internet access to the kubernetes-worker charm with with the
+following Juju command:
+
+```
+juju expose kubernetes-worker
+```
+
+In Kubernetes, workloads are declared using pod, service, and ingress 
+definitions. An ingress controller is provided to you by default, deployed into
+the 
 [default namespace](http://kubernetes.io/docs/user-guide/namespaces/) of the 
 cluster. If one is not available, you may deploy this with:
 
@@ -191,7 +201,10 @@ Ingress resources are DNS mappings to your containers, routed through
 [endpoints](http://kubernetes.io/docs/user-guide/services/)
 
 As an example for users unfamiliar with Kubernetes, we packaged an action to 
-both deploy an example and clean itself up:
+both deploy an example and clean itself up.
+
+To deploy 5 replicas of the microbot web application inside the Kubernetes
+cluster run the following command:
 
 ```
 juju run-action kubernetes-worker/0 microbot replicas=5
@@ -274,6 +287,23 @@ As you refresh the page, you will be greeted with a microbot web page, serving
 from one of the microbot replica pods. Refreshing will show you another 
 microbot with a different hostname, as the requests are load balanced through 
 out the replicas.
+
+#### Clean up microbot
+
+There is also an action to clean up the microbot applications. When you are 
+done using the microbot application you can delete them from the pods with
+one Juju action:
+
+```
+juju run-action kubernetes-worker/0 microbot delete=true
+```
+
+If you no longer need Internet access to your workers remember to unexpose the
+kubernetes-worker charm:
+
+```
+juju unexpose kubernetes-worker
+```
 
 To learn more about 
 [Kubernetes Ingress](http://kubernetes.io/docs/user-guide/ingress.html)
