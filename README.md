@@ -200,6 +200,14 @@ If one is not available, you may deploy this with
 juju config kubernetes-worker ingress=true
 ```
 
+In any case, in order to use the ingress, you will need to expose the worker service via
+
+```
+juju expose kubernetes-worker
+```
+
+which will open ports 80 and 443 of the worker nodes. 
+
 Ingress resources are DNS mappings to your containers,
 routed through [endpoints](http://kubernetes.io/docs/user-guide/services/)
 
