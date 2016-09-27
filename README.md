@@ -109,7 +109,7 @@ from any kubernetes-master, or kubernetes-worker node.
 To download the credentials and client application to your local workstation:
 
 
-Create the ./kubectl config directory.
+Create the kubectl config directory.
 
 ```
 mkdir -p ~/.kube
@@ -178,12 +178,12 @@ List all services in the cluster:
 ./kubectl get svc
 ```
 
-For expanded information on ./kubectl beyond what this README provides, please
+For expanded information on kubectl beyond what this README provides, please
 see the [kubectl overview](http://kubernetes.io/docs/user-guide/kubectl-overview/)
 which contains practical examples and an API reference.
 
 Additionally if you need to manage multiple clusters, there is more information
-about configuring ./kubectl with the
+about configuring kubectl with the
 [kubectl config guide](http://kubernetes.io/docs/user-guide/kubectl/kubectl_config/)
 
 
