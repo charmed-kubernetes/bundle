@@ -8,22 +8,22 @@ This is a Kubernetes cluster that includes logging, monitoring, and operational
 knowledge. It is comprised of the following components and features:
 
 - Kubernetes (automated deployment, operations, and scaling)
-  - Three node Kubernetes cluster with one master and two worker nodes.
-  - TLS used for communication between nodes for security.
-  - Flannel networking plugin
-  - A load balancer for HA kubernetes-master (Experimental)
-  - Optional Ingress Controller and Dashboard (on worker/master respectively)
+     - Three node Kubernetes cluster with one master and two worker nodes.
+     - TLS used for communication between nodes for security.
+     - Flannel networking plugin
+     - A load balancer for HA kubernetes-master (Experimental)
+     - Optional Ingress Controller and Dashboard (on worker/master respectively)
 - EasyRSA
-  - Performs the role of a certificate authority serving self signed certificates
-    to the requesting units of the cluster.
+     - Performs the role of a certificate authority serving self signed certificates
+       to the requesting units of the cluster.
 - Etcd (distributed key value store)
-  - Three node cluster for reliability.
+     - Three node cluster for reliability.
 - Elastic stack
-   - Two nodes for ElasticSearch
-   - One node for a Kibana dashboard
-   - Beats on every Kubernetes and Etcd node:
-     - Filebeat for forwarding logs to ElasticSearch
-     - Topbeat for inserting server monitoring data to ElasticSearch
+     - Two nodes for ElasticSearch
+     - One node for a Kibana dashboard
+     - Beats on every Kubernetes and Etcd node:
+          - Filebeat for forwarding logs to ElasticSearch
+          - Topbeat for inserting server monitoring data to ElasticSearch
 
 # Usage
 
