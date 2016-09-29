@@ -69,6 +69,8 @@ watch -c juju status --color
 
 ### Alternate deployment methods
 
+
+
 #### Usage with your own binaries
 
 In order to support restricted-network deployments, the charms in this bundle
@@ -82,6 +84,16 @@ your cloud.
 juju attach kubernetes-master kubernetes=~/path/to/kubernetes-master.tar.gz
 ```
 
+#### Conjure Up
+
+This bundle is enabled with an alternate method via `conjure-up`, a big
+software installer. Refer to the
+[conjure-up documentation](http://conjure-up.io) to learn more.
+
+```
+sudo apt install conjure-up
+conjure-up canonical-kubernetes
+```
 
 ## Interacting with the Kubernetes cluster
 
