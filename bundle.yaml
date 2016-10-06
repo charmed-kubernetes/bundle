@@ -12,13 +12,13 @@ applications:
       "gui-x": "450"
       "gui-y": "950"
   "kubernetes-master":
-    charm: "cs:~containers/kubernetes-master-2"
+    charm: "cs:~containers/kubernetes-master-3"
     num_units: 1
     annotations:
       "gui-x": "800"
       "gui-y": "850"
   flannel:
-    charm: "cs:~containers/flannel-2"
+    charm: "cs:~containers/flannel-3"
     annotations:
       "gui-x": "450"
       "gui-y": "750"
@@ -36,7 +36,7 @@ applications:
       "gui-x": "450"
       "gui-y": "550"
   "kubernetes-worker":
-    charm: "cs:~containers/kubernetes-worker-2"
+    charm: "cs:~containers/kubernetes-worker-3"
     num_units: 3
     expose: true
     annotations:
