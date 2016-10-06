@@ -74,7 +74,7 @@ watch -c juju status --color
 #### Usage with your own binaries
 
 In order to support restricted-network deployments, the charms in this bundle
-support 
+support
 [juju resources](https://jujucharms.com/docs/2.0/developer-resources#managing-resources).
 
 This allows you to `juju attach` the resources built for the architecture of
@@ -114,8 +114,8 @@ Copy the kubeconfig to the default location.
 juju scp kubernetes-master/0:config ~/.kube/config
 ```
 
-Fetch a binary for the architecture you have deployed. If your client is a 
-different architecture you will need to get the appropriate `kubectl` binary 
+Fetch a binary for the architecture you have deployed. If your client is a
+different architecture you will need to get the appropriate `kubectl` binary
 through other means.
 
 ```
@@ -127,6 +127,20 @@ Query the cluster.
 ```
 ./kubectl cluster-info
 ```
+
+### Accessing the Kubernetes Dashboard
+
+With `kubectl` placed in your `$PATH` and having the config placed, you may
+establish a secure tunnel to your cluster with the following command:
+
+```
+./kubectl proxy
+```
+
+By default, this establishes a proxy running on your local machine and the
+kubernetes-master unit. To reach the Kubernetes dashboard, visit
+`http://localhost:8001/ui`
+
 
 ### Control the cluster
 
@@ -167,7 +181,7 @@ List all services in the cluster:
 ```
 
 For expanded information on kubectl beyond what this README provides, please
-see the 
+see the
 [kubectl overview](http://kubernetes.io/docs/user-guide/kubectl-overview/)
 which contains practical examples and an API reference.
 
@@ -178,9 +192,9 @@ about configuring kubectl with the
 
 ### Using Ingress
 
-The kubernetes-worker charm supports deploying an NGINX ingress controller. 
-Ingress allows access from the Internet to containers inside the cluster 
-running web services. 
+The kubernetes-worker charm supports deploying an NGINX ingress controller.
+Ingress allows access from the Internet to containers inside the cluster
+running web services.
 
 First allow the Internet access to the kubernetes-worker charm with with the
 following Juju command:
@@ -189,10 +203,10 @@ following Juju command:
 juju expose kubernetes-worker
 ```
 
-In Kubernetes, workloads are declared using pod, service, and ingress 
+In Kubernetes, workloads are declared using pod, service, and ingress
 definitions. An ingress controller is provided to you by default, deployed into
-the 
-[default namespace](http://kubernetes.io/docs/user-guide/namespaces/) of the 
+the
+[default namespace](http://kubernetes.io/docs/user-guide/namespaces/) of the
 cluster. If one is not available, you may deploy this with:
 
 ```
@@ -202,7 +216,7 @@ juju config kubernetes-worker ingress=true
 Ingress resources are DNS mappings to your containers, routed through
 [endpoints](http://kubernetes.io/docs/user-guide/services/)
 
-As an example for users unfamiliar with Kubernetes, we packaged an action to 
+As an example for users unfamiliar with Kubernetes, we packaged an action to
 both deploy an example and clean itself up.
 
 To deploy 5 replicas of the microbot web application inside the Kubernetes
@@ -218,7 +232,7 @@ This action performs the following steps:
 during the run of the action. It also creates a service named 'microbots'
 which binds an 'endpoint', using all 5 of the 'microbots' pods.
 
-- Finally, it will create an ingress resource, which points at a 
+- Finally, it will create an ingress resource, which points at a
 [xip.io](https://xip.io) domain to simulate a proper DNS service.
 
 
@@ -278,14 +292,14 @@ you are ready to visit the address in the hosts section of the ingress listing.
 
 It is normal to see a 502/503 error during initial application turnup.
 
-As you refresh the page, you will be greeted with a microbot web page, serving 
-from one of the microbot replica pods. Refreshing will show you another 
-microbot with a different hostname, as the requests are load balanced through 
+As you refresh the page, you will be greeted with a microbot web page, serving
+from one of the microbot replica pods. Refreshing will show you another
+microbot with a different hostname, as the requests are load balanced through
 out the replicas.
 
 #### Clean up microbot
 
-There is also an action to clean up the microbot applications. When you are 
+There is also an action to clean up the microbot applications. When you are
 done using the microbot application you can delete them from the pods with
 one Juju action:
 
@@ -300,7 +314,7 @@ kubernetes-worker charm:
 juju unexpose kubernetes-worker
 ```
 
-To learn more about 
+To learn more about
 [Kubernetes Ingress](http://kubernetes.io/docs/user-guide/ingress.html)
 and how to really tune the Ingress Controller beyond defaults (such as TLS and
 websocket support) view the
