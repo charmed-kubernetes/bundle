@@ -33,8 +33,10 @@ developers, use the smaller
 
 ## Proxy configuration
 
-If you're operating behind a proxy, you'll need to configure your model
-appropriately before deploying the Kubernetes bundle.
+If you are operating behind a proxy (i.e., your charms are running in a
+limited-egress environment and can not reach IP addresses external to their
+network), you will need to configure your model appropriately before deploying
+the Kubernetes bundle.
 
 First, configure your model's `http-proxy` and `https-proxy` settings with your
 proxy (here we use `squid.internal:3128` as an example):
@@ -43,9 +45,10 @@ proxy (here we use `squid.internal:3128` as an example):
 $ juju model-config http-proxy=http://squid.internal:3128 https-proxy=https://squid.internal:3128
 ```
 
-You'll also need to add `localhost` to the `no-proxy` model configuration
-setting, along with any internal subnets you're using. The following example
-includes two subnets:
+Because services often need to reach machines on their own network (including
+themselves), you will also need to add `localhost` to the `no-proxy` model
+configuration setting, along with any internal subnets you're using. The
+following example includes two subnets:
 
 ```sh
 $ juju model-config no-proxy=localhost,10.5.5.0/24,10.246.64.0/21
