@@ -31,8 +31,37 @@ This bundle is for multi-node deployments, for individual deployments for
 developers, use the smaller
 [kubernetes-core](http://jujucharms.com/kubernetes-core) bundle.
 
-## Deploy the bundle
+## Proxy configuration
 
+If you are operating behind a proxy (i.e., your charms are running in a
+limited-egress environment and can not reach IP addresses external to their
+network), you will need to configure your model appropriately before deploying
+the Kubernetes bundle.
+
+First, configure your model's `http-proxy` and `https-proxy` settings with your
+proxy (here we use `squid.internal:3128` as an example):
+
+```sh
+$ juju model-config http-proxy=http://squid.internal:3128 https-proxy=https://squid.internal:3128
+```
+
+Because services often need to reach machines on their own network (including
+themselves), you will also need to add `localhost` to the `no-proxy` model
+configuration setting, along with any internal subnets you're using. The
+following example includes two subnets:
+
+```sh
+$ juju model-config no-proxy=localhost,10.5.5.0/24,10.246.64.0/21
+```
+
+After deploying the bundle, you need to configure the `kubernetes-worker` charm
+to use your proxy:
+
+```sh
+$ juju config kubernetes-worker http_proxy=http://squid.internal:3128 https_proxy=https://squid.internal:3128
+```
+
+## Deploy the bundle
 
 ```
 juju deploy canonical-kubernetes
@@ -49,6 +78,10 @@ to fit your needs by removing the `#` comment character.
 ```
 juju deploy ./bundle.yaml
 ```
+
+> Note: If you're operating behind a proxy, remember to set the `kubernetes-worker`
+proxy configuration options as described in the Proxy configuration section
+above.
 
 This bundle exposes the kubeapi-load-balancer and kibana charms by default
 This means those charms are accessible through their public addresses.
