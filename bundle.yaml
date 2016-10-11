@@ -18,7 +18,7 @@ applications:
       "gui-x": "800"
       "gui-y": "850"
   flannel:
-    charm: "cs:~containers/flannel-3"
+    charm: "cs:~containers/flannel-4"
     annotations:
       "gui-x": "450"
       "gui-y": "750"
