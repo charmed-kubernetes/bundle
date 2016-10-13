@@ -1,55 +1,36 @@
 #!/usr/bin/python3
 
 import amulet
-import os
 import unittest
-import yaml
 
-from amulet_utils import attach_resource
 from amulet_utils import check_systemd_service
 from amulet_utils import kubectl
 from amulet_utils import run
 from amulet_utils import valid_certificate
 from amulet_utils import valid_key
 
-SECONDS_TO_WAIT = 1200
+SECONDS_TO_WAIT = 300
 
 
 class IntegrationTest(unittest.TestCase):
-    ''' Test Local Bundle tests the top down view of the kubernetes deployment,
-        and will perform baseline verification that all deployed
-        applications have performed their role in the setup'''
 
     @classmethod
     def setUpClass(cls):
-        # Get the relative bundle path from the environment variable.
-        cls.bundle = os.getenv('BUNDLE', 'local.yaml')
-        # Create a path to the bundle based on this file's location.
-        cls.bundle_path = os.path.join(cls.bundle)
-        # Normalize the path to the bundle.
-        cls.bundle_path = os.path.abspath(cls.bundle_path)
-
-        print('Deploying bundle: {0}'.format(cls.bundle_path))
         cls.deployment = amulet.Deployment()
-        with open(cls.bundle_path, 'r') as bundle_file:
-            contents = yaml.safe_load(bundle_file)
-            cls.deployment.load(contents)
+
+        # Editors Note:  Instead of declaring the bundle in the amulet
+        # setup stanza, rely on bundletester to deploy the bundle on
+        # this tests behalf.  When coupled with reset:false in
+        # tests.yaml this yields faster test runs per bundle.
 
         # Allow some time for Juju to provision and deploy the bundle.
         cls.deployment.setup(timeout=SECONDS_TO_WAIT)
-        # Attach local resources to charms
-        res_path = '/home/ubuntu/resources/{}'
-        attach_resource('easyrsa', 'easyrsa',
-                        res_path.format('EasyRSA-3.0.1.tgz'))
-        attach_resource('flannel', 'flannel',
-                        res_path.format('flannel-v0.6.1-amd64.tar.gz'))
-        attach_resource('kubernetes-master', 'kubernetes',
-                        res_path.format('kubernetes-master.tar.gz'))
-        attach_resource('kubernetes-worker', 'kubernetes',
-                        res_path.format('kubernetes-worker.tar.gz'))
 
         # Wait for the system to settle down.
-        cls.deployment.sentry.wait()
+        application_messages = {'kubernetes-worker':
+                                'Kubernetes worker running.'}
+        cls.deployment.sentry.wait_for_messages(application_messages,
+                                                timeout=600)
 
         # Make every unit available through self reference
         # eg: for worker in self.workers:
