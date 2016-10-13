@@ -9,28 +9,28 @@ from amulet_utils import run
 from amulet_utils import valid_certificate
 from amulet_utils import valid_key
 
-# Turn this down. With reset=false in tests.yaml we dont have to wait for
-# standup
 SECONDS_TO_WAIT = 300
 
 
 class IntegrationTest(unittest.TestCase):
-    ''' Test Local Bundle tests the top down view of the kubernetes deployment,
-        and will perform baseline verification that all deployed
-        applications have performed their role in the setup'''
 
     @classmethod
     def setUpClass(cls):
         cls.deployment = amulet.Deployment()
 
+        # Editors Note:  Instead of declaring the bundle in the amulet
+        # setup stanza, rely on bundletester to deploy the bundle on
+        # this tests behalf.  When coupled with reset:false in
+        # tests.yaml this yields faster test runs per bundle.
+
         # Allow some time for Juju to provision and deploy the bundle.
         cls.deployment.setup(timeout=SECONDS_TO_WAIT)
-        # Attach local resources to charms
 
         # Wait for the system to settle down.
         application_messages = {'kubernetes-worker':
                                 'Kubernetes worker running.'}
-        cls.deployment.sentry.wait_for_messages(application_messages)
+        cls.deployment.sentry.wait_for_messages(application_messages,
+                                                timeout=600)
 
         # Make every unit available through self reference
         # eg: for worker in self.workers:
