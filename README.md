@@ -100,11 +100,79 @@ this can be used with `watch`.
 watch -c juju status --color
 ```
 
-### Alternate deployment methods
+## Alternate deployment methods
+
+### Deploying storage
+
+The Canonical Distribution of Kubernetes allows you to connect with durable
+storage devices such as [Ceph](http;//ceph.com). When paired with the
+[Juju Storage](https://jujucharms.com/docs/2.0/charms-storage) feature you
+can add durable storage easily and across all clouds.
+
+Deploy the ceph-mon and ceph-osd charms.
+
+```
+juju deploy cs:ceph-mon -n 3
+juju deploy cs:ceph-osd -n 3
+```
+
+Relate the charms:
+```
+juju add-relation ceph-mon ceph-osd
+```
+
+List the storage pools available to Juju for your cloud:
+
+```
+$ juju storage-pools
+Name     Provider  Attrs
+ebs      ebs       
+ebs-ssd  ebs       volume-type=ssd
+loop     loop      
+rootfs   rootfs    
+tmpfs    tmpfs
+```
+
+Add a storage pool to the ceph-osd charm:
+
+```
+juju add-storage ceph-osd/0 osd-devices=ebs,10G,1
+juju add-storage ceph-osd/1 osd-devices=ebs,10G,1
+juju add-storage ceph-osd/2 osd-devices=ebs,10G,1
+```
+
+Next is to relate the storage cluster with the kubernetes-master charm:
+
+```
+juju add-relation kubernetes-master ceph-mon
+```
+
+We are now ready to enlist Persistent Volumes in Kubernetes which our workloads
+can consume via Persistent Volume (PV) claims.
+
+```
+juju run-action kubernetes-master/0 create-rbd-pv name=test size=50
+```
+
+This example created a "test" Radios Block Device (rbd) in the size of 50 MB.
+
+Use watch on your Kubernetes cluster like the following, you should see the PV
+become enlisted and be marked as available:
+
+```
+$ watch kubectl get pv --all-namespaces
+
+NAME CAPACITY   ACCESSMODES   STATUS    CLAIM              REASON    AGE
+
+test   50M          RWO       Available                              10s
+```
+
+To consume these Persistent Volumes, your pods will need an associated PVC with
+them, and is outside the scope of this README. See:
+http://kubernetes.io/docs/user-guide/persistent-volumes/ for more information.
 
 
-
-#### Usage with your own binaries
+### Deploy with your own binaries
 
 In order to support restricted-network deployments, the charms in this bundle
 support
@@ -117,10 +185,11 @@ your cloud.
 juju attach kubernetes-master kubernetes=~/path/to/kubernetes-master.tar.gz
 ```
 
-#### Interactive deployment using Conjure-up
+### Interactive deployment using Conjure-up
 
 `conjure-up` is an interactive, terminal UI deployment tool for Juju bundles.
-After installing conjure-up, you can deploy the canonical-kubernetes bundle and tweak config values with one command:
+After installing conjure-up, you can deploy the canonical-kubernetes bundle and
+tweak config values with one command:
 
 ```
 sudo apt install conjure-up
@@ -132,8 +201,8 @@ Refer to the
 
 ## Interacting with the Kubernetes cluster
 
-After the cluster is deployed you may assume control over the Kubernetes cluster
-from any kubernetes-master, or kubernetes-worker node.
+After the cluster is deployed you may assume control over the Kubernetes 
+cluster from any kubernetes-master, or kubernetes-worker node.
 
 To download the credentials and client application to your local workstation:
 
@@ -143,7 +212,7 @@ Create the kubectl config directory.
 mkdir -p ~/.kube
 ```
 
-Copy the kubeconfig to the default location.
+Copy the kubeconfig file to the default location.
 
 ```
 juju scp kubernetes-master/0:config ~/.kube/config
@@ -163,7 +232,7 @@ Query the cluster.
 ./kubectl cluster-info
 ```
 
-### Accessing the Kubernetes Dashboard
+### Accessing the Kubernetes dashboard
 
 With `kubectl` placed in your `$PATH` and having the config placed, you may
 establish a secure tunnel to your cluster with the following command:
@@ -240,8 +309,7 @@ juju expose kubernetes-worker
 
 In Kubernetes, workloads are declared using pod, service, and ingress
 definitions. An ingress controller is provided to you by default, deployed into
-the
-[default namespace](http://kubernetes.io/docs/user-guide/namespaces/) of the
+the [default namespace](http://kubernetes.io/docs/user-guide/namespaces/) of the
 cluster. If one is not available, you may deploy this with:
 
 ```
@@ -271,8 +339,9 @@ which binds an 'endpoint', using all 5 of the 'microbots' pods.
 [xip.io](https://xip.io) domain to simulate a proper DNS service.
 
 
-#### Running the packaged simulation
+#### Running the packaged example
 
+You can run a Juju action to create a example microbot web application:
 
     $ juju run-action kubernetes-worker/0 microbot replicas=3
     Action queued with id: db7cc72b-5f35-4a4d-877c-284c4b776eb8
@@ -287,7 +356,8 @@ which binds an 'endpoint', using all 5 of the 'microbots' pods.
       started: 2016-09-26 20:42:41 +0000 UTC
 
 
-At this point, you can inspect the cluster to observe the workload coming online.
+At this point, you can inspect the cluster to observe the workload coming
+online.
 
 #### List the pods
 
@@ -332,7 +402,7 @@ from one of the microbot replica pods. Refreshing will show you another
 microbot with a different hostname, as the requests are load balanced through
 out the replicas.
 
-#### Clean up microbot
+#### Clean up example
 
 There is also an action to clean up the microbot applications. When you are
 done using the microbot application you can delete them from the pods with
@@ -387,7 +457,8 @@ juju add-unit kubernetes-worker --constraints "cpu-cores=8 mem=32G"
 
 Refer to the
 [machine constraints documentation](https://jujucharms.com/docs/stable/charms-constraints)
-for other machine constraints that might be useful for the kubernetes-worker units.
+for other machine constraints that might be useful for the kubernetes-worker
+units.
 
 
 ### Scaling Etcd
