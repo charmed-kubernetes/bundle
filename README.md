@@ -105,7 +105,7 @@ watch -c juju status --color
 ### Deploying storage
 
 The Canonical Distribution of Kubernetes allows you to connect with durable
-storage devices such as [Ceph](http;//ceph.com). When paired with the
+storage devices such as [Ceph](http://ceph.com). When paired with the
 [Juju Storage](https://jujucharms.com/docs/2.0/charms-storage) feature you
 can add durable storage easily and across all clouds.
 
