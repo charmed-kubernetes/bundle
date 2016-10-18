@@ -480,7 +480,7 @@ Use watch on your Kubernetes cluster like the following, you should see the PV
 become enlisted and be marked as available:
 
 ```
-$ watch kubectl get pv --all-namespaces
+$ watch kubectl get pv
 
 NAME CAPACITY   ACCESSMODES   STATUS    CLAIM              REASON    AGE
 
