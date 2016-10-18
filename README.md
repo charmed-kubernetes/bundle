@@ -102,12 +102,12 @@ watch -c juju status --color
 
 ## Alternate deployment methods
 
-### Deploying storage
+### Deploying with storage
 
 The Canonical Distribution of Kubernetes allows you to connect with durable
 storage devices such as [Ceph](http://ceph.com). When paired with the
 [Juju Storage](https://jujucharms.com/docs/2.0/charms-storage) feature you
-can add durable storage easily and across all clouds.
+can add durable storage easily and across most public clouds.
 
 Deploy the ceph-mon and ceph-osd charms.
 
@@ -132,6 +132,8 @@ loop     loop
 rootfs   rootfs    
 tmpfs    tmpfs
 ```
+> **Note**: This listing is for the Amazon Web Services public cloud.
+> Different clouds may have different pool names.
 
 Add a storage pool to the ceph-osd charm:
 
@@ -341,7 +343,7 @@ which binds an 'endpoint', using all 5 of the 'microbots' pods.
 
 #### Running the packaged example
 
-You can run a Juju action to create a example microbot web application:
+You can run a Juju action to create an example microbot web application:
 
     $ juju run-action kubernetes-worker/0 microbot replicas=3
     Action queued with id: db7cc72b-5f35-4a4d-877c-284c4b776eb8
