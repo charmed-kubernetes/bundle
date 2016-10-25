@@ -12,7 +12,7 @@ services:
       "gui-x": "450"
       "gui-y": "950"
   "kubernetes-master":
-    charm: "cs:~containers/kubernetes-master-4"
+    charm: "cs:~containers/kubernetes-master-5"
     num_units: 1
     annotations:
       "gui-x": "800"
@@ -30,13 +30,13 @@ services:
       "gui-x": "450"
       "gui-y": "250"
   easyrsa:
-    charm: "cs:~containers/easyrsa-2"
+    charm: "cs:~containers/easyrsa-3"
     num_units: 1
     annotations:
       "gui-x": "450"
       "gui-y": "550"
   "kubernetes-worker":
-    charm: "cs:~containers/kubernetes-worker-5"
+    charm: "cs:~containers/kubernetes-worker-6"
     num_units: 3
     expose: true
     annotations:
