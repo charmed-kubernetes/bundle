@@ -1,4 +1,3 @@
-# Bundle level test. Only execute the 20 and 30 class series of tests
 tests: "*"
 # Dont test the beats stack until they have passing CWR tests in their own
 # bundle
