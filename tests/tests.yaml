@@ -6,4 +6,11 @@ excludes:
   - topbeat
   - elasticsearch
   - kibana
+# Adding tims PPA so we get current dependencies
+sources:
+  - ppa:tvansteenburgh/ppa
+packages:
+  - amulet
+  - juju-deployer
+  - python-jujuclient
 reset: false
