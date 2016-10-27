@@ -12,7 +12,8 @@ knowledge. It is comprised of the following components and features:
      - TLS used for communication between nodes for security.
      - Flannel Software Defined Network (SDN) plugin
      - A load balancer for HA kubernetes-master (Experimental)
-     - Optional Ingress Controller and Dashboard (on worker/master respectively)
+     - Optional Ingress Controller (on worker)
+     - Optional Dashboard addon (on master) including Heapster for cluster monitoring
 - EasyRSA
      - Performs the role of a certificate authority serving self signed certificates
        to the requesting units of the cluster.
@@ -165,8 +166,17 @@ Query the cluster.
 
 ### Accessing the Kubernetes dashboard
 
-With `kubectl` placed in your `$PATH` and having the config placed, you may
-establish a secure tunnel to your cluster with the following command:
+The Kubernetes dashboard addon is installed by default, along with Heapster,
+Grafana and InfluxDB for cluster monitoring. The dashboard addons can be
+enabled or disabled by setting the `enable-dashboard-addons` config on the
+`kubernetes-master` application:
+
+```
+juju config kubernetes-master enable-dashboard-addons=true
+```
+
+To access the dashboard, you may establish a secure tunnel to your cluster with
+the following command:
 
 ```
 ./kubectl proxy
@@ -175,7 +185,6 @@ establish a secure tunnel to your cluster with the following command:
 By default, this establishes a proxy running on your local machine and the
 kubernetes-master unit. To reach the Kubernetes dashboard, visit
 `http://localhost:8001/ui`
-
 
 ### Control the cluster
 
