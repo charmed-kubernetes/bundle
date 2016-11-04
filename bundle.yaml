@@ -36,7 +36,7 @@ services:
       "gui-x": "450"
       "gui-y": "550"
   "kubernetes-worker":
-    charm: "cs:~containers/kubernetes-worker-7"
+    charm: "cs:~containers/kubernetes-worker-8"
     num_units: 3
     expose: true
     annotations:
