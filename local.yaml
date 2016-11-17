@@ -5,7 +5,7 @@
 # deployment before moving to production.
 #
 series: xenial
-applications:
+services:
   "kubernetes-master":
     charm: /home/ubuntu/builds/kubernetes-master
     series: xenial
