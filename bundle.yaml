@@ -12,7 +12,7 @@ services:
       "gui-x": "450"
       "gui-y": "950"
   "kubernetes-master":
-    charm: "cs:~containers/kubernetes-master-7"
+    charm: "cs:~containers/kubernetes-master-8"
     num_units: 1
     annotations:
       "gui-x": "800"
@@ -36,7 +36,7 @@ services:
       "gui-x": "450"
       "gui-y": "550"
   "kubernetes-worker":
-    charm: "cs:~containers/kubernetes-worker-10"
+    charm: "cs:~containers/kubernetes-worker-11"
     num_units: 3
     expose: true
     annotations:
