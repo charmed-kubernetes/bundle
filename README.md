@@ -394,7 +394,8 @@ juju add-unit kubernetes-worker
 or specify machine constraints to create larger nodes:
 
 ```
-juju add-unit kubernetes-worker --constraints "cpu-cores=8 mem=32G"
+juju set-constraints kubernetes-worker mem=32G cores=8
+juju add-unit kubernetes-worker
 ```
 
 Refer to the
