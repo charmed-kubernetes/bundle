@@ -66,7 +66,7 @@ services:
       "gui-x": "800"
       "gui-y": "1150"
   etcd:
-    charm: "cs:~containers/etcd-19"
+    charm: "cs:~containers/etcd-20"
     num_units: 3
     annotations:
       "gui-x": "800"
