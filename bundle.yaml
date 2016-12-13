@@ -8,6 +8,8 @@ series: xenial
 services:
   filebeat:
     charm: "cs:filebeat-5"
+      options:
+        logpath: "/var/lib/docker/containers/*/*.log /var/log/*.log /var/log/*/*.log"
     annotations:
       "gui-x": "450"
       "gui-y": "950"
