@@ -68,13 +68,15 @@ services:
       "gui-x": "800"
       "gui-y": "1150"
   etcd:
-    charm: "cs:~containers/etcd-17"
+    charm: "cs:~containers/etcd-20"
     num_units: 3
     annotations:
       "gui-x": "800"
       "gui-y": "550"
 #    constraints: cpu-cores=2 root-disk=12G
 relations:
+  - - "etcd:certificates"
+    - "easyrsa:client"
   - - "filebeat:beats-host"
     - "kubernetes-worker:juju-info"
   - - "elasticsearch:client"
