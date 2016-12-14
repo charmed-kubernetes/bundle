@@ -54,6 +54,8 @@ relations:
     - "kubernetes-worker:kube-dns"
   - - "kubernetes-master:certificates"
     - "easyrsa:client"
+  - - "etcd:certificates"
+    - "easyrsa:client"
   - - "kubernetes-master:etcd"
     - "etcd:db"
   - - "kubernetes-worker:certificates"
