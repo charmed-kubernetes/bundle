@@ -78,13 +78,14 @@ juju deploy ./bundle.yaml
 proxy configuration options as described in the Proxy configuration section
 above.
 
-This bundle exposes the kubeapi-load-balancer charm by default, so it is
-accessible through its public address.
+This bundle exposes the kubeapi-load-balancer and kubernetes-worker charms by
+default, so they are accessible through their public addresses.
 
-If you would like to remove external access, unexpose the application:
+If you would like to remove external access, unexpose the applications:
 
 ```
 juju unexpose kubeapi-load-balancer
+juju unexpose kubernetes-worker
 ```
 
 To get the status of the deployment, run `juju status`. For a constant update,
