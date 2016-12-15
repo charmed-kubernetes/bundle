@@ -1,9 +1,3 @@
-# The machine constraints for each service in this bundle
-# have been commented out so you don't run into quota
-# problems on public clouds. Modify and uncomment the
-# constraints: lines for each service to reflect your
-# deployment before moving to production.
-#
 series: xenial
 services:
   "kubernetes-master":
@@ -13,7 +7,7 @@ services:
     annotations:
       "gui-x": "800"
       "gui-y": "850"
-  flannel:
+  "flannel":
     charm: /home/ubuntu/builds/flannel
     series: xenial
     annotations:
@@ -27,7 +21,7 @@ services:
     annotations:
       "gui-x": "450"
       "gui-y": "250"
-  easyrsa:
+  "easyrsa":
     charm: /home/ubuntu/builds/easyrsa
     num_units: 1
     series: xenial
@@ -41,7 +35,7 @@ services:
     annotations:
       "gui-x": "100"
       "gui-y": "850"
-  etcd:
+  "etcd":
     charm: /home/ubuntu/builds/etcd
     series: xenial
     num_units: 3
@@ -59,15 +53,17 @@ relations:
     - "easyrsa:client"
   - - "kubernetes-master:etcd"
     - "etcd:db"
-  - - "kubernetes-master:sdn-plugin"
-    - "flannel:host"
   - - "kubernetes-worker:certificates"
     - "easyrsa:client"
-  - - "kubernetes-worker:sdn-plugin"
-    - "flannel:host"
   - - "kubernetes-worker:kube-api-endpoint"
     - "kubeapi-load-balancer:website"
+  - - "kubeapi-load-balancer:certificates"
+    - "easyrsa:client"
   - - "flannel:etcd"
     - "etcd:db"
-  - - "kubeapi-load-balancer:certificates"
+  - - "flannel:cni"
+    - "kubernetes-master:cni"
+  - - "flannel:cni"
+    - "kubernetes-worker:cni"
+  - - "etcd:certificates"
     - "easyrsa:client"
