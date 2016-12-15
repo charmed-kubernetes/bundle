@@ -19,12 +19,6 @@ knowledge. It is comprised of the following components and features:
        to the requesting units of the cluster.
 - Etcd (distributed key value store)
      - Three node cluster for reliability.
-- Elastic stack
-     - Two nodes for ElasticSearch
-     - One node for a Kibana dashboard
-     - Beats on every Kubernetes and Etcd node:
-          - Filebeat for forwarding logs to ElasticSearch
-          - Topbeat for inserting server monitoring data to ElasticSearch
 
 # Usage
 
@@ -84,13 +78,12 @@ juju deploy ./bundle.yaml
 proxy configuration options as described in the Proxy configuration section
 above.
 
-This bundle exposes the kubeapi-load-balancer and kibana charms by default
-This means those charms are accessible through their public addresses.
+This bundle exposes the kubeapi-load-balancer charm by default, so it is
+accessible through its public address.
 
-If you would like to remove external access, unexpose the applications:
+If you would like to remove external access, unexpose the application:
 
 ```
-juju unexpose kibana
 juju unexpose kubeapi-load-balancer
 ```
 
@@ -133,7 +126,7 @@ Refer to the
 
 ## Interacting with the Kubernetes cluster
 
-After the cluster is deployed you may assume control over the Kubernetes 
+After the cluster is deployed you may assume control over the Kubernetes
 cluster from any kubernetes-master, or kubernetes-worker node.
 
 To download the credentials and client application to your local workstation:
@@ -295,7 +288,7 @@ You can run a Juju action to create an example microbot web application:
       enqueued: 2016-09-26 20:42:39 +0000 UTC
       started: 2016-09-26 20:42:41 +0000 UTC
 
-> **Note**: Your FQDN will be different and contain the address of the cloud 
+> **Note**: Your FQDN will be different and contain the address of the cloud
 > instance.
 
 At this point, you can inspect the cluster to observe the workload coming
@@ -420,15 +413,6 @@ The CoreOS etcd documentation has a chart for the
 [optimal cluster size](https://coreos.com/etcd/docs/latest/admin_guide.html#optimal-cluster-size)
 to determine fault tolerance.
 
-### Scaling Elasticsearch
-
-ElasticSearch is used to hold all the log data and server information logged by
-Beats. You can add more Elasticsearch nodes by using the Juju command:
-
-```
-juju add-unit elasticsearch
-```
-
 # Adding optional storage
 
 The Canonical Distribution of Kubernetes allows you to connect with durable
@@ -476,7 +460,7 @@ Next relate the storage cluster with the Kubernetes cluster:
 juju add-relation kubernetes-master ceph-mon
 ```
 
-We are now ready to enlist 
+We are now ready to enlist
 [Persistent Volumes](http://kubernetes.io/docs/user-guide/persistent-volumes/)
 in Kubernetes which our workloads can consume via Persistent Volume (PV) claims.
 
@@ -502,24 +486,6 @@ Persistant Volume Claim with
 them, and is outside the scope of this README. See the
 [Persistant Volumes](http://kubernetes.io/docs/user-guide/persistent-volumes/)
 documentation for more information.
-
-## Accessing the Kibana dashboard
-
-The Kibana dashboard can display real time graphs and charts on the details of
-the cluster. The Beats charms are sending metrics to Elasticsearch and
-Kibana displays the data with graphs and charts.
-
-Get the charm's public address from the `juju status` command.
-
-* Access Kibana by browser:  http://KIBANA_IP_ADDRESS/
-* Select the index pattern that you want as default from the left menu.
-  * Click the green star button to make this index a default.
-* Select "Dashboard" from the Kibana header.
-  * Click the open folder icon to Load a Saved Dashboard.
-* Select the "Topbeat Dashboard" from the left menu.
-
-![Setup Kibana](http://i.imgur.com/tgYFSjM.gif)
-
 
 ## Known Limitations and Issues
 
