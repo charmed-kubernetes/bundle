@@ -1,0 +1,11 @@
+series: xenial
+services:
+  "flannel":
+    charm: "cs:~containers/flannel-7"
+relations:
+  - - "flannel:etcd"
+    - "etcd:db"
+  - - "flannel:cni"
+    - "kubernetes-master:cni"
+  - - "flannel:cni"
+    - "kubernetes-worker:cni"

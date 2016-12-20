@@ -10,7 +10,7 @@ knowledge. It is comprised of the following components and features:
 - Kubernetes (automated deployment, operations, and scaling)
      - Three node Kubernetes cluster with one master and two worker nodes.
      - TLS used for communication between nodes for security.
-     - Flannel Software Defined Network (SDN) plugin
+     - A CNI plugin (e.g., Flannel)
      - A load balancer for HA kubernetes-master (Experimental)
      - Optional Ingress Controller (on worker)
      - Optional Dashboard addon (on master) including Heapster for cluster monitoring
