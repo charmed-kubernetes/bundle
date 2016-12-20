@@ -92,7 +92,7 @@ def main():
     out_readme_filename = os.path.join(out_bundle_name, 'README.md')
     with open(out_readme_filename, 'w') as out_readme_file:
         out_readme_file.write(readme)
-    print('Done. Your bundle can be found in %s.' % os.path.abspath(out_bundle_name))
+    print('Done. Your bundle can be found in %s' % os.path.abspath(out_bundle_name))
 
 
 if __name__ == '__main__':
