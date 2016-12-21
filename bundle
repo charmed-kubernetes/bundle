@@ -14,7 +14,7 @@ required = ['k8s', 'cni']
 class FragmentRequired(Exception):
     pass
 
-class FragmentMissingComponenet(Exception):
+class FragmentMissingComponent(Exception):
     pass
 
 class FragmentUnknown(Exception):
@@ -49,9 +49,9 @@ def validate_components(fragments):
         if not os.path.isdir(paths['root']):
             raise FragmentUnknown('Unknown fragment ' + frag)
         if not os.path.exists(paths['bundle']):
-            raise FragmentMissingComponenet('Fragment %s does not contain bundle.yaml' % frag)
+            raise FragmentMissingComponent('Fragment %s does not contain bundle.yaml' % frag)
         if not os.path.exists(paths['readme']):
-            raise FragmentMissingComponenet('Fragment %s does not contain README.md' % frag)
+            raise FragmentMissingComponent('Fragment %s does not contain README.md' % frag)
 
 
 def merge(src, dst):
