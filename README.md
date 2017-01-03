@@ -69,7 +69,7 @@ you should provide higher CPU and memory instances to kubernetes-worker units.
 > Note: If you desire to deploy this bundle locally on your laptop, see the
 > segment about Conjure-Up under Alternate Deployment Methods. Default deployment
 > via juju will not properly adjust the apparmor profile to support running
-> kubernetes in lxd. At this time, it is a necessary intermediate deployment
+> kubernetes in LXD. At this time, it is a necessary intermediate deployment
 > mechanism.
 
 You can increase the constraints by editing the
@@ -502,7 +502,7 @@ documentation for more information.
  infrastructure (PKI).
 
  - Deployment locally on LXD will require the use of conjure-up to tune
-   settings on the host's LXD installation to support docker and other
+   settings on the host's LXD installation to support Docker and other
    componentry.
 
 ## Kubernetes details
