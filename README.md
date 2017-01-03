@@ -502,7 +502,8 @@ documentation for more information.
  infrastructure (PKI).
 
  - Deployment locally on LXD will require the use of conjure-up to tune
-   settings on the hosts LXD installation to support docker and other componentry.
+   settings on the host's LXD installation to support docker and other
+   componentry.
 
 ## Kubernetes details
 
