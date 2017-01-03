@@ -86,7 +86,7 @@ def version_bundle(bundle, channel):
         charm = bundle['services'][service]['charm']
         resp = requests.get('https://api.jujucharms.com/charmstore/v5/meta/id', params={'id':charm, 'channel':channel})
         if not resp.ok:
-            raise CharmstoreQueryError(json.loads(resp.text)['Message'])
+            raise CharmstoreQueryError("Couldn't query %s %s, is it public?" % (charm, channel))
         meta = json.loads(resp.text)
         meta = [meta[k] for k in meta][0]
         copy['services'][service]['charm'] = meta['Id']
