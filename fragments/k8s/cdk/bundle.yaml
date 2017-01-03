@@ -1,21 +1,21 @@
 series: xenial
 services:
   "kubernetes-master":
-    charm: "cs:~containers/kubernetes-master-10"
+    charm: "cs:~containers/kubernetes-master"
     num_units: 1
   "kubeapi-load-balancer":
-    charm: "cs:~containers/kubeapi-load-balancer-5"
+    charm: "cs:~containers/kubeapi-load-balancer"
     num_units: 1
     expose: true
   "easyrsa":
-    charm: "cs:~containers/easyrsa-5"
+    charm: "cs:~containers/easyrsa"
     num_units: 1
   "kubernetes-worker":
-    charm: "cs:~containers/kubernetes-worker-12"
+    charm: "cs:~containers/kubernetes-worker"
     num_units: 3
     expose: true
   "etcd":
-    charm: "cs:~containers/etcd-21"
+    charm: "cs:~containers/etcd"
     num_units: 3
 relations:
   - - "kubernetes-master:kube-api-endpoint"

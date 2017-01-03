@@ -1,24 +1,24 @@
 series: xenial
 services:
   "kubernetes-master":
-    charm: "cs:~containers/kubernetes-master-9"
+    charm: "cs:~containers/kubernetes-master"
     num_units: 1
     to:
       - "0"
     expose: true
   "easyrsa":
-    charm: "cs:~containers/easyrsa-5"
+    charm: "cs:~containers/easyrsa"
     num_units: 1
     to:
       - lxd:0
   "kubernetes-worker":
-    charm: "cs:~containers/kubernetes-worker-12"
+    charm: "cs:~containers/kubernetes-worker"
     num_units: 1
     to:
       - "1"
     expose: true
   "etcd":
-    charm: "cs:~containers/etcd-21"
+    charm: "cs:~containers/etcd"
     num_units: 1
     to:
       - "0"

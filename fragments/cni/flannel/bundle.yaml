@@ -1,7 +1,7 @@
 series: xenial
 services:
   "flannel":
-    charm: "cs:~containers/flannel-7"
+    charm: "cs:~containers/flannel"
 relations:
   - - "flannel:etcd"
     - "etcd:db"

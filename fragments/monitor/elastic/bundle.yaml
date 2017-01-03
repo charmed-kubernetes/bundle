@@ -1,17 +1,17 @@
 series: xenial
 services:
   filebeat:
-    charm: "cs:filebeat-5"
+    charm: "cs:filebeat"
     options:
       logpath: "/var/lib/docker/containers/*/*.log /var/log/*.log /var/log/*/*.log"
   elasticsearch:
-    charm: "cs:trusty/elasticsearch-19"
+    charm: "cs:trusty/elasticsearch"
     series: trusty
     num_units: 2
   topbeat:
-    charm: "cs:topbeat-5"
+    charm: "cs:topbeat"
   kibana:
-    charm: "cs:trusty/kibana-15"
+    charm: "cs:trusty/kibana"
     series: trusty
     num_units: 1
     options:

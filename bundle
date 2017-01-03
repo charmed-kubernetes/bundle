@@ -5,6 +5,8 @@ import os
 import shutil
 import argparse
 import yaml
+import requests
+import json
 
 
 root_path = os.path.dirname(os.path.abspath(__file__))
@@ -20,9 +22,15 @@ class FragmentMissingComponent(Exception):
 class FragmentUnknown(Exception):
     pass
 
+class ChannelInvalid(Exception):
+    pass
+
+class CharmstoreQueryError(Exception):
+    pass
 
 def get_args():
     parser = argparse.ArgumentParser(description='Build a Kubernetes bundle for Juju.')
+    parser.add_argument('-c', '--channel', default='stable', help='the channel to use')
     parser.add_argument('fragments', metavar='frags', type=str, nargs='+', help='the bundle fragments to include in this bundle')
     return parser.parse_args()
 
@@ -54,6 +62,11 @@ def validate_components(fragments):
             raise FragmentMissingComponent('Fragment %s does not contain README.md' % frag)
 
 
+def validate_channel(channel):
+    if channel not in ['unpublished', 'stable', 'edge']:
+        raise ChannelInvalid('Invalid channel ' + channel)
+
+
 def merge(src, dst):
     #XXX: doesn't handle lists perfectly, but maybe well enough?
     for k, v in src.items():
@@ -67,10 +80,24 @@ def merge(src, dst):
             dst[k] = v
 
 
+def version_bundle(bundle, channel):
+    copy = json.loads(json.dumps(bundle))
+    for service in bundle['services']:
+        charm = bundle['services'][service]['charm']
+        resp = requests.get('https://api.jujucharms.com/charmstore/v5/meta/id', params={'id':charm, 'channel':channel})
+        if not resp.ok:
+            raise CharmstoreQueryError(json.loads(resp.text)['Message'])
+        meta = json.loads(resp.text)
+        meta = [meta[k] for k in meta][0]
+        copy['services'][service]['charm'] = meta['Id']
+    return copy
+
+
 def main():
     args = get_args()
     validate_required(args.fragments)
     validate_components(args.fragments)
+    validate_channel(args.channel)
     bundle = {}
     readme = ""
     for frag in args.fragments:
@@ -82,6 +109,7 @@ def main():
         with open(paths['readme'], 'r') as f:
             frag_readme = f.read()
         readme = '\n'.join([readme, frag_readme])
+    bundle = version_bundle(bundle, args.channel)
     out_bundle_name = 'bundle-' + '-'.join([frag.split('/')[-1] for frag in args.fragments])
     if os.path.isdir(out_bundle_name):
         shutil.rmtree(out_bundle_name)
