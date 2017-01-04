@@ -2,7 +2,6 @@
 
 
 import os
-import shutil
 import argparse
 import yaml
 import requests
@@ -127,7 +126,7 @@ def main():
     if os.path.isfile(out_readme_filename):
         raise FileExistsError('%s already exists. Aborting.' % out_readme_filename)
     if not os.path.isdir(out_bundle_name):
-        os.mkdir(out_bundle_name)
+        os.makedirs(out_bundle_name)
     with open(out_bundle_filename, 'w') as out_bundle_file:
         yaml.dump(bundle, out_bundle_file, default_flow_style=False)
     with open(out_readme_filename, 'w') as out_readme_file:

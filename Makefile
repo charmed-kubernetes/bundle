@@ -1,15 +1,9 @@
 
 default: clean
-	./bundle k8s/cdk cni/flannel
-	./bundle k8s/cdk cni/flannel monitor/elastic
-	./bundle k8s/core cni/flannel
-	./bundle k8s/core cni/flannel monitor/elastic
-	mkdir bundles
-	mv bundle-cdk-flannel bundles
-	mv bundle-cdk-flannel-elastic bundles
-	mv bundle-core-flannel bundles
-	mv bundle-core-flannel-elastic bundles
-	cp bundles/bundle-cdk-flannel/* bundles
+	./bundle k8s/cdk cni/flannel -o bundles/cdk-flannel
+	./bundle k8s/cdk cni/flannel monitor/elastic -o bundles/cdk-flannel-elastic
+	./bundle k8s/core cni/flannel -o bundles/core-flannel
+	./bundle k8s/core cni/flannel monitor/elastic -o bundles/core-flannel-elastic
 
 clean:
 	rm -rf bundles
