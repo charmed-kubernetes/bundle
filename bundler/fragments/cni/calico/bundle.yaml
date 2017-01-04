@@ -1,0 +1,11 @@
+series: xenial
+services:
+  "calico":
+    charm: "cs:~cynerva/calico"
+relations:
+  - - "calico:etcd"
+    - "etcd:db"
+  - - "calico:cni"
+    - "kubernetes-master:cni"
+  - - "calico:cni"
+    - "kubernetes-worker:cni"
