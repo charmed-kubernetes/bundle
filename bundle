@@ -28,14 +28,18 @@ class ChannelInvalid(Exception):
 class CharmstoreQueryError(Exception):
     pass
 
+
 def get_args():
+    ''' Parse cli arguments. '''
     parser = argparse.ArgumentParser(description='Build a Kubernetes bundle for Juju.')
     parser.add_argument('-c', '--channel', default='stable', help='the channel to use')
+    parser.add_argument('-o', '--outputdir', default='.', help='output directory')
     parser.add_argument('fragments', metavar='frags', type=str, nargs='+', help='the bundle fragments to include in this bundle')
     return parser.parse_args()
 
 
 def fragment_paths(fragment):
+    ''' Get the root, bundle, and readme paths for a fragment. '''
     frag_path = os.path.join(root_path, 'fragments', os.path.join(*fragment.split('/')))
     return {
         'root': frag_path,
@@ -45,6 +49,7 @@ def fragment_paths(fragment):
 
 
 def validate_required(fragments):
+    ''' Make sure the user supplied the required fragments. '''
     frags = [f.split('/')[0] for f in fragments]
     for r in required:
         if not r in frags:
@@ -52,6 +57,7 @@ def validate_required(fragments):
 
 
 def validate_components(fragments):
+    ''' Make sure the fragment path, bundle.yaml, and README.md exist. '''
     for frag in fragments:
         paths = fragment_paths(frag)
         if not os.path.isdir(paths['root']):
@@ -63,12 +69,13 @@ def validate_components(fragments):
 
 
 def validate_channel(channel):
+    ''' Make sure the supplied channel is a valid one. '''
     if channel not in ['unpublished', 'stable', 'edge']:
         raise ChannelInvalid('Invalid channel ' + channel)
 
 
 def merge(src, dst):
-    #XXX: doesn't handle lists perfectly, but maybe well enough?
+    ''' Merge a nested dictionary. '''
     for k, v in src.items():
         if isinstance(v, dict):
             n = dst.setdefault(k, {})
@@ -81,6 +88,7 @@ def merge(src, dst):
 
 
 def version_bundle(bundle, channel):
+    ''' Acquire and assign versions to charms according to their channel. '''
     copy = json.loads(json.dumps(bundle))
     for service in bundle['services']:
         charm = bundle['services'][service]['charm']
@@ -94,6 +102,7 @@ def version_bundle(bundle, channel):
 
 
 def main():
+    ''' Build a bundle. '''
     args = get_args()
     validate_required(args.fragments)
     validate_components(args.fragments)
@@ -110,14 +119,17 @@ def main():
             frag_readme = f.read()
         readme = '\n'.join([readme, frag_readme])
     bundle = version_bundle(bundle, args.channel)
-    out_bundle_name = 'bundle-' + '-'.join([frag.split('/')[-1] for frag in args.fragments])
-    if os.path.isdir(out_bundle_name):
-        shutil.rmtree(out_bundle_name)
-    os.mkdir(out_bundle_name)
+    out_bundle_name = os.path.abspath(args.outputdir)
     out_bundle_filename = os.path.join(out_bundle_name, 'bundle.yaml')
+    out_readme_filename = os.path.join(out_bundle_name, 'README.md')
+    if os.path.isfile(out_bundle_filename):
+        raise FileExistsError('%s already exists. Aborting.' % out_bundle_filename)
+    if os.path.isfile(out_readme_filename):
+        raise FileExistsError('%s already exists. Aborting.' % out_readme_filename)
+    if not os.path.isdir(out_bundle_name):
+        os.mkdir(out_bundle_name)
     with open(out_bundle_filename, 'w') as out_bundle_file:
         yaml.dump(bundle, out_bundle_file, default_flow_style=False)
-    out_readme_filename = os.path.join(out_bundle_name, 'README.md')
     with open(out_readme_filename, 'w') as out_readme_file:
         out_readme_file.write(readme)
     print('Done. Your bundle can be found in %s' % os.path.abspath(out_bundle_name))
