@@ -123,6 +123,32 @@ def version_bundle(bundle, channel):
     return copy
 
 
+def yaml_lines(data):
+    ''' Returns the number of lines in data post yaml formatting. '''
+    return len(yaml.dump(data, default_flow_style=False).split('\n'))
+
+
+def serialize(bundle):
+    ''' Serialize a bundle in a conventional form. '''
+    relations = {}
+    services = {}
+    otherwise = []
+    for k, v in bundle.items():
+        if k == 'services':
+            services['services'] = v
+        elif k == 'relations':
+            relations['relations'] = v
+        else:
+            otherwise.append({k: v})
+    otherwise.sort(key=yaml_lines)
+    out = ''
+    for o in otherwise:
+        out += yaml.dump(o, default_flow_style=False)
+    out += yaml.dump(services, default_flow_style=False)
+    out += yaml.dump(relations, default_flow_style=False)
+    return out
+
+
 def main():
     ''' Build a bundle. '''
     args = get_args()
@@ -156,7 +182,7 @@ def main():
     if not os.path.isdir(out_bundle_name):
         os.makedirs(out_bundle_name)
     with open(out_bundle_filename, 'w') as out_bundle_file:
-        yaml.dump(bundle, out_bundle_file, default_flow_style=False)
+        out_bundle_file.write(serialize(bundle))
     with open(out_readme_filename, 'w') as out_readme_file:
         out_readme_file.write(readme)
     print('Done. Your bundle can be found in %s' %
