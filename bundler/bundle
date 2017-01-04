@@ -3,9 +3,9 @@
 
 import os
 import argparse
+import json
 import yaml
 import requests
-import json
 
 
 root_path = os.path.dirname(os.path.abspath(__file__))
@@ -15,14 +15,18 @@ required = ['k8s', 'cni']
 class FragmentRequired(Exception):
     pass
 
+
 class FragmentMissingComponent(Exception):
     pass
+
 
 class FragmentUnknown(Exception):
     pass
 
+
 class ChannelInvalid(Exception):
     pass
+
 
 class CharmstoreQueryError(Exception):
     pass
@@ -30,17 +34,22 @@ class CharmstoreQueryError(Exception):
 
 def get_args():
     ''' Parse cli arguments. '''
-    parser = argparse.ArgumentParser(description='Build a Kubernetes bundle for Juju.')
-    parser.add_argument('-c', '--channel', default='stable', help='the channel to use')
-    parser.add_argument('-o', '--outputdir', default='.', help='output directory')
-    parser.add_argument('-l', '--localpath', default='/home/ubuntu/builds', help='charm root path for local bundle')
-    parser.add_argument('fragments', metavar='frags', type=str, nargs='+', help='the bundle fragments to include in this bundle')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '--channel', default='stable',
+                        help='the channel to use')
+    parser.add_argument('-o', '--outputdir', default='.',
+                        help='output directory')
+    parser.add_argument('-l', '--localpath', default='/home/ubuntu/builds',
+                        help='charm root path for local bundle')
+    parser.add_argument('fragments', metavar='frags', type=str, nargs='+',
+                        help='the bundle fragments to include in this bundle')
     return parser.parse_args()
 
 
 def fragment_paths(fragment):
     ''' Get the root, bundle, and readme paths for a fragment. '''
-    frag_path = os.path.join(root_path, 'fragments', os.path.join(*fragment.split('/')))
+    frag_path = os.path.join(root_path, 'fragments',
+                             os.path.join(*fragment.split('/')))
     return {
         'root': frag_path,
         'bundle': os.path.join(frag_path, 'bundle.yaml'),
@@ -52,7 +61,7 @@ def validate_required(fragments):
     ''' Make sure the user supplied the required fragments. '''
     frags = [f.split('/')[0] for f in fragments]
     for r in required:
-        if not r in frags:
+        if r not in frags:
             raise FragmentRequired('Required fragment type %s not found.' % r)
 
 
@@ -63,9 +72,11 @@ def validate_components(fragments):
         if not os.path.isdir(paths['root']):
             raise FragmentUnknown('Unknown fragment ' + frag)
         if not os.path.exists(paths['bundle']):
-            raise FragmentMissingComponent('Fragment %s does not contain bundle.yaml' % frag)
+            err = 'Fragment %s does not contain bundle.yaml' % frag
+            raise FragmentMissingComponent(err)
         if not os.path.exists(paths['readme']):
-            raise FragmentMissingComponent('Fragment %s does not contain README.md' % frag)
+            err = 'Fragment %s does not contain README.md' % frag
+            raise FragmentMissingComponent(err)
 
 
 def validate_channel(channel):
@@ -101,9 +112,11 @@ def version_bundle(bundle, channel):
     copy = json.loads(json.dumps(bundle))
     for service in bundle['services']:
         charm = bundle['services'][service]['charm']
-        resp = requests.get('https://api.jujucharms.com/charmstore/v5/meta/id', params={'id':charm, 'channel':channel})
+        resp = requests.get('https://api.jujucharms.com/charmstore/v5/meta/id',
+                            params={'id': charm, 'channel': channel})
         if not resp.ok:
-            raise CharmstoreQueryError("Couldn't query %s %s, is it public?" % (charm, channel))
+            err = "Couldn't query %s %s, is it public?" % (charm, channel)
+            raise CharmstoreQueryError(err)
         meta = json.loads(resp.text)
         meta = [meta[k] for k in meta][0]
         copy['services'][service]['charm'] = meta['Id']
@@ -135,16 +148,19 @@ def main():
     out_bundle_filename = os.path.join(out_bundle_name, 'bundle.yaml')
     out_readme_filename = os.path.join(out_bundle_name, 'README.md')
     if os.path.isfile(out_bundle_filename):
-        raise FileExistsError('%s already exists. Aborting.' % out_bundle_filename)
+        err = '%s already exists. Aborting.' % out_bundle_filename
+        raise FileExistsError(err)
     if os.path.isfile(out_readme_filename):
-        raise FileExistsError('%s already exists. Aborting.' % out_readme_filename)
+        err = '%s already exists. Aborting.' % out_readme_filename
+        raise FileExistsError(err)
     if not os.path.isdir(out_bundle_name):
         os.makedirs(out_bundle_name)
     with open(out_bundle_filename, 'w') as out_bundle_file:
         yaml.dump(bundle, out_bundle_file, default_flow_style=False)
     with open(out_readme_filename, 'w') as out_readme_file:
         out_readme_file.write(readme)
-    print('Done. Your bundle can be found in %s' % os.path.abspath(out_bundle_name))
+    print('Done. Your bundle can be found in %s' %
+          os.path.abspath(out_bundle_name))
 
 
 if __name__ == '__main__':
