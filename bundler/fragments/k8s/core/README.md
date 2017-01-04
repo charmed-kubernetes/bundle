@@ -60,6 +60,12 @@ $ juju config kubernetes-worker http_proxy=http://squid.internal:3128 https_prox
 juju deploy kubernetes-core
 ```
 
+> Note: If you desire to deploy this bundle locally on your laptop, see the
+> segment about Conjure-Up under Alternate Deployment Methods. Default deployment
+> via juju will not properly adjust the apparmor profile to support running
+> kubernetes in LXD. At this time, it is a necessary intermediate deployment
+> mechanism.
+
 > Note: If you're operating behind a proxy, remember to set the `kubernetes-worker`
 proxy configuration options as described in the Proxy configuration section
 above.
@@ -400,6 +406,10 @@ to determine fault tolerance.
 
  - Destroying the the easyrsa charm will result in loss of public key
  infrastructure (PKI).
+
+ - Deployment locally on LXD will require the use of conjure-up to tune
+   settings on the host's LXD installation to support Docker and other
+   componentry.
 
 ## Kubernetes details
 

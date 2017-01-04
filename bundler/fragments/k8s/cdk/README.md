@@ -66,6 +66,12 @@ This will deploy the Canonical Distribution of Kubernetes offering with default
 constraints. This is useful for lab environments, however for real-world use
 you should provide higher CPU and memory instances to kubernetes-worker units.
 
+> Note: If you desire to deploy this bundle locally on your laptop, see the
+> segment about Conjure-Up under Alternate Deployment Methods. Default deployment
+> via juju will not properly adjust the apparmor profile to support running
+> kubernetes in LXD. At this time, it is a necessary intermediate deployment
+> mechanism.
+
 You can increase the constraints by editing the
 [bundle.yaml](https://github.com/juju-solutions/bundle-canonical-kubernetes)
 to fit your needs by removing the `#` comment character.
@@ -494,6 +500,10 @@ documentation for more information.
 
  - Destroying the the easyrsa charm will result in loss of public key
  infrastructure (PKI).
+
+ - Deployment locally on LXD will require the use of conjure-up to tune
+   settings on the host's LXD installation to support Docker and other
+   componentry.
 
 ## Kubernetes details
 
