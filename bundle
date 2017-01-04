@@ -33,6 +33,7 @@ def get_args():
     parser = argparse.ArgumentParser(description='Build a Kubernetes bundle for Juju.')
     parser.add_argument('-c', '--channel', default='stable', help='the channel to use')
     parser.add_argument('-o', '--outputdir', default='.', help='output directory')
+    parser.add_argument('-l', '--localpath', default='/home/ubuntu/builds', help='charm root path for local bundle')
     parser.add_argument('fragments', metavar='frags', type=str, nargs='+', help='the bundle fragments to include in this bundle')
     return parser.parse_args()
 
@@ -69,7 +70,7 @@ def validate_components(fragments):
 
 def validate_channel(channel):
     ''' Make sure the supplied channel is a valid one. '''
-    if channel not in ['unpublished', 'stable', 'edge']:
+    if channel not in ['unpublished', 'stable', 'edge', 'local']:
         raise ChannelInvalid('Invalid channel ' + channel)
 
 
@@ -84,6 +85,15 @@ def merge(src, dst):
             dst[k] += v
         else:
             dst[k] = v
+
+
+def local_bundle(bundle, root):
+    ''' Build bundle using local paths for charms. '''
+    copy = json.loads(json.dumps(bundle))
+    for service in bundle['services']:
+        charm = bundle['services'][service]['charm'].strip().split('/')[-1]
+        copy['services'][service]['charm'] = os.path.join(root, charm)
+    return copy
 
 
 def version_bundle(bundle, channel):
@@ -117,7 +127,10 @@ def main():
         with open(paths['readme'], 'r') as f:
             frag_readme = f.read()
         readme = '\n'.join([readme, frag_readme])
-    bundle = version_bundle(bundle, args.channel)
+    if args.channel == 'local':
+        bundle = local_bundle(bundle, args.localpath)
+    else:
+        bundle = version_bundle(bundle, args.channel)
     out_bundle_name = os.path.abspath(args.outputdir)
     out_bundle_filename = os.path.join(out_bundle_name, 'bundle.yaml')
     out_readme_filename = os.path.join(out_bundle_name, 'README.md')
