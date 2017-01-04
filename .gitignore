@@ -3,6 +3,4 @@ __pycache__/
 *$py.class
 *.log
 logs
-bundles
-bundle-*
 
