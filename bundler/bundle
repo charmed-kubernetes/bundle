@@ -194,7 +194,5 @@ if __name__ == '__main__':
 
 
 # TODO:
-# - Sort the bits e.g., series then services then relations
 # - Figure out annotations. Generate automatically? Just merge?
 # - Make the readme generation a little fancier with templates?
-# - Add localize option that reformats charm locations to a given path.
