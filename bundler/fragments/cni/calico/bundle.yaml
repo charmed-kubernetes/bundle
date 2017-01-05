@@ -1,4 +1,4 @@
-series: xenial
+# This is an incomplete bundle fragment. Do not attempt to deploy.
 services:
   "calico":
     charm: "cs:~cynerva/calico"
