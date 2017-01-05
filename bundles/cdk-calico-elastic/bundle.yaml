@@ -1,13 +1,27 @@
 series: xenial
 services:
+  calico:
+    charm: cs:~cynerva/calico-14
   easyrsa:
     charm: cs:~containers/easyrsa-5
     num_units: 1
+  elasticsearch:
+    charm: cs:trusty/elasticsearch-19
+    num_units: 2
+    series: trusty
   etcd:
     charm: cs:~containers/etcd-21
     num_units: 3
-  flannel:
-    charm: cs:~containers/flannel-7
+  filebeat:
+    charm: cs:filebeat-5
+    options:
+      logpath: /var/lib/docker/containers/*/*.log /var/log/*.log /var/log/*/*.log
+  kibana:
+    charm: cs:trusty/kibana-15
+    num_units: 1
+    options:
+      dashboards: beats
+    series: trusty
   kubeapi-load-balancer:
     charm: cs:~containers/kubeapi-load-balancer-5
     expose: true
@@ -19,6 +33,8 @@ services:
     charm: cs:~containers/kubernetes-worker-12
     expose: true
     num_units: 3
+  topbeat:
+    charm: cs:topbeat-5
 relations:
 - - kubernetes-master:kube-api-endpoint
   - kubeapi-load-balancer:apiserver
@@ -38,9 +54,21 @@ relations:
   - kubeapi-load-balancer:website
 - - kubeapi-load-balancer:certificates
   - easyrsa:client
-- - flannel:etcd
+- - calico:etcd
   - etcd:db
-- - flannel:cni
+- - calico:cni
   - kubernetes-master:cni
-- - flannel:cni
+- - calico:cni
   - kubernetes-worker:cni
+- - filebeat:beats-host
+  - kubernetes-worker:juju-info
+- - elasticsearch:client
+  - topbeat:elasticsearch
+- - elasticsearch:client
+  - filebeat:elasticsearch
+- - topbeat:beats-host
+  - kubernetes-worker:juju-info
+- - filebeat:beats-host
+  - kubernetes-master:juju-info
+- - kibana:rest
+  - elasticsearch:client

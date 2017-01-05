@@ -1,13 +1,13 @@
 series: xenial
 services:
+  calico:
+    charm: cs:~cynerva/calico-14
   easyrsa:
     charm: cs:~containers/easyrsa-5
     num_units: 1
   etcd:
     charm: cs:~containers/etcd-21
     num_units: 3
-  flannel:
-    charm: cs:~containers/flannel-7
   kubeapi-load-balancer:
     charm: cs:~containers/kubeapi-load-balancer-5
     expose: true
@@ -38,9 +38,9 @@ relations:
   - kubeapi-load-balancer:website
 - - kubeapi-load-balancer:certificates
   - easyrsa:client
-- - flannel:etcd
+- - calico:etcd
   - etcd:db
-- - flannel:cni
+- - calico:cni
   - kubernetes-master:cni
-- - flannel:cni
+- - calico:cni
   - kubernetes-worker:cni

@@ -1,31 +1,29 @@
 
-# The Canonical Distribution of Kubernetes
+# Kubernetes Core Bundle
 
-![](https://img.shields.io/badge/release-beta-yellow.svg) ![](https://img.shields.io/badge/kubernetes-1.5.1-brightgreen.svg) ![](https://img.shields.io/badge/juju-2.0+-brightgreen.svg)
+![](https://img.shields.io/badge/release-beta-yellow.svg) ![](https://img.shields.io/badge/kubernetes-1.4.5-brightgreen.svg) ![](https://img.shields.io/badge/juju-2.0+-brightgreen.svg)
 
 ## Overview
 
-This is a Kubernetes cluster that includes logging, monitoring, and operational
-knowledge. It is comprised of the following components and features:
+This is a minimal Kubernetes cluster comprised of the following components and features:
 
 - Kubernetes (automated deployment, operations, and scaling)
-     - Three node Kubernetes cluster with one master and two worker nodes.
+     - Two node Kubernetes cluster with one master node and one worker node.
      - TLS used for communication between nodes for security.
      - A CNI plugin (e.g., Flannel)
-     - A load balancer for HA kubernetes-master (Experimental)
      - Optional Ingress Controller (on worker)
      - Optional Dashboard addon (on master) including Heapster for cluster monitoring
 - EasyRSA
      - Performs the role of a certificate authority serving self signed certificates
        to the requesting units of the cluster.
 - Etcd (distributed key value store)
-     - Three node cluster for reliability.
+     - One node for basic functionality.
 
 # Usage
 
-This bundle is for multi-node deployments, for individual deployments for
-developers, use the smaller
-[kubernetes-core](http://jujucharms.com/kubernetes-core) bundle.
+This bundle is for small deployments for testing and development. For
+multi-node deployments, use the larger
+[canonical-kubernetes](http://jujucharms.com/canonical-kubernetes) bundle.
 
 ## Proxy configuration
 
@@ -60,12 +58,8 @@ $ juju config kubernetes-worker http_proxy=http://squid.internal:3128 https_prox
 ## Deploy the bundle
 
 ```
-juju deploy canonical-kubernetes
+juju deploy kubernetes-core
 ```
-
-This will deploy the Canonical Distribution of Kubernetes offering with default
-constraints. This is useful for lab environments, however for real-world use
-you should provide higher CPU and memory instances to kubernetes-worker units.
 
 > Note: If you desire to deploy this bundle locally on your laptop, see the
 > segment about Conjure-Up under Alternate Deployment Methods. Default deployment
@@ -73,25 +67,16 @@ you should provide higher CPU and memory instances to kubernetes-worker units.
 > kubernetes in LXD. At this time, it is a necessary intermediate deployment
 > mechanism.
 
-You can increase the constraints by editing the
-[bundle.yaml](https://github.com/juju-solutions/bundle-canonical-kubernetes)
-to fit your needs by removing the `#` comment character.
-
-```
-juju deploy ./bundle.yaml
-```
-
 > Note: If you're operating behind a proxy, remember to set the `kubernetes-worker`
 proxy configuration options as described in the Proxy configuration section
 above.
 
-This bundle exposes the kubeapi-load-balancer and kubernetes-worker charms by
-default, so they are accessible through their public addresses.
+This bundle exposes the kubernetes-worker charm by default. This means that
+it is accessible through its public address.
 
-If you would like to remove external access, unexpose the applications:
+If you would like to remove external access, unexpose the application:
 
 ```
-juju unexpose kubeapi-load-balancer
 juju unexpose kubernetes-worker
 ```
 
@@ -102,10 +87,11 @@ this can be used with `watch`.
 watch -c juju status --color
 ```
 
-## Alternate deployment methods
+### Alternate deployment methods
 
 
-### Deploy with your own binaries
+
+#### Usage with your own binaries
 
 In order to support restricted-network deployments, the charms in this bundle
 support
@@ -118,15 +104,14 @@ your cloud.
 juju attach kubernetes-master kubernetes=~/path/to/kubernetes-master.tar.gz
 ```
 
-### Interactive deployment using Conjure-up
+#### Interactive deployment using Conjure-up
 
 `conjure-up` is an interactive, terminal UI deployment tool for Juju bundles.
-After installing conjure-up, you can deploy the canonical-kubernetes bundle and
-tweak config values with one command:
+After installing conjure-up, you can deploy the kubernetes-core bundle and tweak config values with one command:
 
 ```
 sudo apt install conjure-up
-conjure-up canonical-kubernetes
+conjure-up kubernetes-core
 ```
 
 Refer to the
@@ -134,8 +119,8 @@ Refer to the
 
 ## Interacting with the Kubernetes cluster
 
-After the cluster is deployed you may assume control over the Kubernetes
-cluster from any kubernetes-master, or kubernetes-worker node.
+After the cluster is deployed you may assume control over the Kubernetes cluster
+from any kubernetes-master, or kubernetes-worker node.
 
 To download the credentials and client application to your local workstation:
 
@@ -145,7 +130,7 @@ Create the kubectl config directory.
 mkdir -p ~/.kube
 ```
 
-Copy the kubeconfig file to the default location.
+Copy the kubeconfig to the default location.
 
 ```
 juju scp kubernetes-master/0:config ~/.kube/config
@@ -165,7 +150,7 @@ Query the cluster.
 ./kubectl cluster-info
 ```
 
-### Accessing the Kubernetes dashboard
+### Accessing the Kubernetes Dashboard
 
 The Kubernetes dashboard addon is installed by default, along with Heapster,
 Grafana and InfluxDB for cluster monitoring. The dashboard addons can be
@@ -250,7 +235,8 @@ juju expose kubernetes-worker
 
 In Kubernetes, workloads are declared using pod, service, and ingress
 definitions. An ingress controller is provided to you by default, deployed into
-the [default namespace](http://kubernetes.io/docs/user-guide/namespaces/) of the
+the
+[default namespace](http://kubernetes.io/docs/user-guide/namespaces/) of the
 cluster. If one is not available, you may deploy this with:
 
 ```
@@ -280,9 +266,8 @@ which binds an 'endpoint', using all 5 of the 'microbots' pods.
 [xip.io](https://xip.io) domain to simulate a proper DNS service.
 
 
-#### Running the packaged example
+#### Running the packaged simulation
 
-You can run a Juju action to create an example microbot web application:
 
     $ juju run-action kubernetes-worker/0 microbot replicas=3
     Action queued with id: db7cc72b-5f35-4a4d-877c-284c4b776eb8
@@ -296,11 +281,8 @@ You can run a Juju action to create an example microbot web application:
       enqueued: 2016-09-26 20:42:39 +0000 UTC
       started: 2016-09-26 20:42:41 +0000 UTC
 
-> **Note**: Your FQDN will be different and contain the address of the cloud
-> instance.
 
-At this point, you can inspect the cluster to observe the workload coming
-online.
+At this point, you can inspect the cluster to observe the workload coming online.
 
 #### List the pods
 
@@ -345,7 +327,7 @@ from one of the microbot replica pods. Refreshing will show you another
 microbot with a different hostname, as the requests are load balanced through
 out the replicas.
 
-#### Clean up example
+#### Clean up microbot
 
 There is also an action to clean up the microbot applications. When you are
 done using the microbot application you can delete them from the pods with
@@ -395,23 +377,21 @@ juju add-unit kubernetes-worker
 or specify machine constraints to create larger nodes:
 
 ```
-juju set-constraints kubernetes-worker mem=32G cores=8
-juju add-unit kubernetes-worker
+juju add-unit kubernetes-worker --constraints "cpu-cores=8 mem=32G"
 ```
 
 Refer to the
 [machine constraints documentation](https://jujucharms.com/docs/stable/charms-constraints)
-for other machine constraints that might be useful for the kubernetes-worker
-units.
+for other machine constraints that might be useful for the kubernetes-worker units.
 
 
 ### Scaling Etcd
 
-Etcd is used as a key-value store for the Kubernetes cluster. For reliability
-the bundle defaults to three instances in this cluster.
+Etcd is used as a key-value store for the Kubernetes cluster. The bundle
+defaults to one instance in this cluster.
 
-For more scalability, we recommend between 3 and 9 etcd nodes. If you want to
-add more nodes:
+For reliability and more scalability, we recommend between 3 and 9 etcd nodes.
+If you want to add more nodes:
 
 ```
 juju add-unit etcd
@@ -420,80 +400,6 @@ juju add-unit etcd
 The CoreOS etcd documentation has a chart for the
 [optimal cluster size](https://coreos.com/etcd/docs/latest/admin_guide.html#optimal-cluster-size)
 to determine fault tolerance.
-
-# Adding optional storage
-
-The Canonical Distribution of Kubernetes allows you to connect with durable
-storage devices such as [Ceph](http://ceph.com). When paired with the
-[Juju Storage](https://jujucharms.com/docs/2.0/charms-storage) feature you
-can add durable storage easily and across most public clouds.
-
-Deploy a minimum of three ceph-mon and three ceph-osd charms.
-
-```
-juju deploy cs:ceph-mon -n 3
-juju deploy cs:ceph-osd -n 3
-```
-
-Relate the charms:
-```
-juju add-relation ceph-mon ceph-osd
-```
-
-List the storage pools available to Juju for your cloud:
-
-```
-$ juju storage-pools
-Name     Provider  Attrs
-ebs      ebs       
-ebs-ssd  ebs       volume-type=ssd
-loop     loop      
-rootfs   rootfs    
-tmpfs    tmpfs
-```
-> **Note**: This listing is for the Amazon Web Services public cloud.
-> Different clouds may have different pool names.
-
-Add a storage pool to the ceph-osd charm by NAME,SIZE,COUNT:
-
-```
-juju add-storage ceph-osd/0 osd-devices=ebs,10G,1
-juju add-storage ceph-osd/1 osd-devices=ebs,10G,1
-juju add-storage ceph-osd/2 osd-devices=ebs,10G,1
-```
-
-Next relate the storage cluster with the Kubernetes cluster:
-
-```
-juju add-relation kubernetes-master ceph-mon
-```
-
-We are now ready to enlist
-[Persistent Volumes](http://kubernetes.io/docs/user-guide/persistent-volumes/)
-in Kubernetes which our workloads can consume via Persistent Volume (PV) claims.
-
-```
-juju run-action kubernetes-master/0 create-rbd-pv name=test size=50
-```
-
-This example created a "test" Radios Block Device (rbd) in the size of 50 MB.
-
-Use watch on your Kubernetes cluster like the following, you should see the PV
-become enlisted and be marked as available:
-
-```
-$ watch kubectl get pv
-
-NAME CAPACITY   ACCESSMODES   STATUS    CLAIM              REASON    AGE
-
-test   50M          RWO       Available                              10s
-```
-
-To consume these Persistent Volumes, your pods will need an associated
-Persistant Volume Claim with
-them, and is outside the scope of this README. See the
-[Persistant Volumes](http://kubernetes.io/docs/user-guide/persistent-volumes/)
-documentation for more information.
 
 ## Known Limitations and Issues
 
@@ -510,37 +416,45 @@ documentation for more information.
 
 - [Kubernetes User Guide](http://kubernetes.io/docs/user-guide/)
 - [The Canonical Distribution of Kubernetes ](https://jujucharms.com/canonical-kubernetes/bundle/)
-- [Bundle Source](https://github.com/juju-solutions/bundle-canonical-kubernetes)
+- [Bundle Source](https://github.com/juju-solutions/bundle-kubernetes-core)
 - [Bug tracker](https://github.com/juju-solutions/bundle-canonical-kubernetes/issues)
 
-# Flannel
+# Calico
 
-Flannel is a virtual network that gives a subnet to each host for use with
-container runtimes.
+> Note: this is still in an experimental state. Use at your own risk.
+
+Calico is used as a CNI plugin to manage networking for the Kubernetes cluster.
 
 ## Configuration
 
-**iface** The interface to configure the flannel SDN binding. If this value is
-empty string or undefined the code will attempt to find the default network
-adapter similar to the following command:  
-```bash
-route | grep default | head -n 1 | awk {'print $8'}
+**ipip**: Enable IP tunneling. *boolean, default false*
+
+**nat-outgoing**: NAT outgoing traffic. *boolean, default true*
+
+# Elastic Monitoring
+
+## Scaling Elasticsearch
+
+ElasticSearch is used to hold all the log data and server information logged by
+Beats. You can add more Elasticsearch nodes by using the Juju command:
+
+```
+juju add-unit elasticsearch
 ```
 
-**cidr** The network range to configure the flannel SDN to declare when
-establishing networking setup with etcd. Ensure this network range is not active
-on the vlan you're deploying to, as it will cause collisions and odd behavior
-if care is not taken when selecting a good CIDR range to assign to flannel.
+## Accessing the Kibana dashboard
 
-## Known Limitations
+The Kibana dashboard can display real time graphs and charts on the details of
+the cluster. The Beats charms are sending metrics to Elasticsearch and
+Kibana displays the data with graphs and charts.
 
-This subordinate does not support being co-located with other deployments of
-the flannel subordinate (to gain 2 vlans on a single application). If you
-require this support please file a bug.
+Get the charm's public address from the `juju status` command.
 
-This subordinate also leverages juju-resources, so it is currently only available
-on juju 2.0+ controllers.
+* Access Kibana by browser:  http://KIBANA_IP_ADDRESS/
+* Select the index pattern that you want as default from the left menu.
+  * Click the green star button to make this index a default.
+* Select "Dashboard" from the Kibana header.
+  * Click the open folder icon to Load a Saved Dashboard.
+* Select the "Topbeat Dashboard" from the left menu.
 
-## Further information
-
-- [Flannel Homepage](https://coreos.com/flannel/docs/latest/flannel-config.html)
+![Setup Kibana](http://i.imgur.com/tgYFSjM.gif)

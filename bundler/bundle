@@ -1,0 +1,198 @@
+#!/usr/bin/env python3
+
+
+import os
+import argparse
+import json
+import yaml
+import requests
+
+
+root_path = os.path.dirname(os.path.abspath(__file__))
+required = ['k8s', 'cni']
+
+
+class FragmentRequired(Exception):
+    pass
+
+
+class FragmentMissingComponent(Exception):
+    pass
+
+
+class FragmentUnknown(Exception):
+    pass
+
+
+class ChannelInvalid(Exception):
+    pass
+
+
+class CharmstoreQueryError(Exception):
+    pass
+
+
+def get_args():
+    ''' Parse cli arguments. '''
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '--channel', default='stable',
+                        help='the channel to use')
+    parser.add_argument('-o', '--outputdir', default='.',
+                        help='output directory')
+    parser.add_argument('-l', '--localpath', default='/home/ubuntu/builds',
+                        help='charm root path for local bundle')
+    parser.add_argument('fragments', metavar='frags', type=str, nargs='+',
+                        help='the bundle fragments to include in this bundle')
+    return parser.parse_args()
+
+
+def fragment_paths(fragment):
+    ''' Get the root, bundle, and readme paths for a fragment. '''
+    frag_path = os.path.join(root_path, 'fragments',
+                             os.path.join(*fragment.split('/')))
+    return {
+        'root': frag_path,
+        'bundle': os.path.join(frag_path, 'bundle.yaml'),
+        'readme': os.path.join(frag_path, 'README.md')
+    }
+
+
+def validate_required(fragments):
+    ''' Make sure the user supplied the required fragments. '''
+    frags = [f.split('/')[0] for f in fragments]
+    for r in required:
+        if r not in frags:
+            raise FragmentRequired('Required fragment type %s not found.' % r)
+
+
+def validate_components(fragments):
+    ''' Make sure the fragment path, bundle.yaml, and README.md exist. '''
+    for frag in fragments:
+        paths = fragment_paths(frag)
+        if not os.path.isdir(paths['root']):
+            raise FragmentUnknown('Unknown fragment ' + frag)
+        if not os.path.exists(paths['bundle']):
+            err = 'Fragment %s does not contain bundle.yaml' % frag
+            raise FragmentMissingComponent(err)
+        if not os.path.exists(paths['readme']):
+            err = 'Fragment %s does not contain README.md' % frag
+            raise FragmentMissingComponent(err)
+
+
+def validate_channel(channel):
+    ''' Make sure the supplied channel is a valid one. '''
+    if channel not in ['unpublished', 'stable', 'edge', 'local']:
+        raise ChannelInvalid('Invalid channel ' + channel)
+
+
+def merge(src, dst):
+    ''' Merge a nested dictionary. '''
+    for k, v in src.items():
+        if isinstance(v, dict):
+            n = dst.setdefault(k, {})
+            merge(v, n)
+        elif isinstance(v, list):
+            dst.setdefault(k, [])
+            dst[k] += v
+        else:
+            dst[k] = v
+
+
+def local_bundle(bundle, root):
+    ''' Build bundle using local paths for charms. '''
+    copy = json.loads(json.dumps(bundle))
+    for service in bundle['services']:
+        charm = bundle['services'][service]['charm'].strip().split('/')[-1]
+        copy['services'][service]['charm'] = os.path.join(root, charm)
+    return copy
+
+
+def version_bundle(bundle, channel):
+    ''' Acquire and assign versions to charms according to their channel. '''
+    copy = json.loads(json.dumps(bundle))
+    for service in bundle['services']:
+        charm = bundle['services'][service]['charm']
+        resp = requests.get('https://api.jujucharms.com/charmstore/v5/meta/id',
+                            params={'id': charm, 'channel': channel})
+        if not resp.ok:
+            err = "Couldn't query %s %s, is it public?" % (charm, channel)
+            raise CharmstoreQueryError(err)
+        meta = json.loads(resp.text)
+        meta = [meta[k] for k in meta][0]
+        copy['services'][service]['charm'] = meta['Id']
+    return copy
+
+
+def yaml_lines(data):
+    ''' Returns the number of lines in data post yaml formatting. '''
+    return len(yaml.dump(data, default_flow_style=False).split('\n'))
+
+
+def serialize(bundle):
+    ''' Serialize a bundle in a conventional form. '''
+    relations = {}
+    services = {}
+    otherwise = []
+    for k, v in bundle.items():
+        if k == 'services':
+            services['services'] = v
+        elif k == 'relations':
+            relations['relations'] = v
+        else:
+            otherwise.append({k: v})
+    otherwise.sort(key=yaml_lines)
+    out = ''
+    for o in otherwise:
+        out += yaml.dump(o, default_flow_style=False)
+    out += yaml.dump(services, default_flow_style=False)
+    out += yaml.dump(relations, default_flow_style=False)
+    return out
+
+
+def main():
+    ''' Build a bundle. '''
+    args = get_args()
+    validate_required(args.fragments)
+    validate_components(args.fragments)
+    validate_channel(args.channel)
+    bundle = {}
+    readme = ""
+    for frag in args.fragments:
+        print('Processing fragment %s...' % frag)
+        paths = fragment_paths(frag)
+        with open(paths['bundle'], 'r') as f:
+            frag_bundle = yaml.load(f)
+        merge(frag_bundle, bundle)
+        with open(paths['readme'], 'r') as f:
+            frag_readme = f.read()
+        readme = '\n'.join([readme, frag_readme])
+    if args.channel == 'local':
+        bundle = local_bundle(bundle, args.localpath)
+    else:
+        bundle = version_bundle(bundle, args.channel)
+    out_bundle_name = os.path.abspath(args.outputdir)
+    out_bundle_filename = os.path.join(out_bundle_name, 'bundle.yaml')
+    out_readme_filename = os.path.join(out_bundle_name, 'README.md')
+    if os.path.isfile(out_bundle_filename):
+        err = '%s already exists. Aborting.' % out_bundle_filename
+        raise FileExistsError(err)
+    if os.path.isfile(out_readme_filename):
+        err = '%s already exists. Aborting.' % out_readme_filename
+        raise FileExistsError(err)
+    if not os.path.isdir(out_bundle_name):
+        os.makedirs(out_bundle_name)
+    with open(out_bundle_filename, 'w') as out_bundle_file:
+        out_bundle_file.write(serialize(bundle))
+    with open(out_readme_filename, 'w') as out_readme_file:
+        out_readme_file.write(readme)
+    print('Done. Your bundle can be found in %s' %
+          os.path.abspath(out_bundle_name))
+
+
+if __name__ == '__main__':
+    main()
+
+
+# TODO:
+# - Figure out annotations. Generate automatically? Just merge?
+# - Make the readme generation a little fancier with templates?
