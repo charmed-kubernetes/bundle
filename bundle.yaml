@@ -7,7 +7,7 @@ services:
     charm: cs:~containers/etcd-22
     num_units: 3
   flannel:
-    charm: cs:~containers/flannel-8
+    charm: cs:~containers/flannel-9
   kubeapi-load-balancer:
     charm: cs:~containers/kubeapi-load-balancer-5
     expose: true
