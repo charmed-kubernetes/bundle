@@ -21,9 +21,21 @@ This is a minimal Kubernetes cluster comprised of the following components and f
 
 # Usage
 
-This bundle is for small deployments for testing and development. For
-multi-node deployments, use the larger
-[canonical-kubernetes](http://jujucharms.com/canonical-kubernetes) bundle.
+# Usage
+
+Installation has been automated via [conjure-up](http://conjure-up.io/):
+
+    sudo apt-add-repository ppa:juju/stable
+    sudo apt-add-repository ppa:conjure-up/next
+    sudo apt update
+    sudo apt install conjure-up
+    conjure-up canonical-kubernetes
+
+Conjure will prompt you for deployment options (AWS, GCE, Azure, etc.) and credentials.
+
+This bundle is for multi-node deployments, for individual deployments for
+developers, use the smaller
+[kubernetes-core](http://jujucharms.com/kubernetes-core) bundle via `conjure-up kubernetes-core`.
 
 ## Proxy configuration
 
