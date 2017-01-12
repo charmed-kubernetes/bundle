@@ -23,6 +23,8 @@ knowledge. It is comprised of the following components and features:
 
 # Usage
 
+Installation has been automated via [conjure-up](http://conjure-up.io/):
+
     sudo apt-add-repository ppa:juju/stable
     sudo apt-add-repository ppa:conjure-up/next
     sudo apt update
