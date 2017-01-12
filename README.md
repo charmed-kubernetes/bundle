@@ -31,11 +31,11 @@ Installation has been automated via [conjure-up](http://conjure-up.io/):
     sudo apt install conjure-up
     conjure-up canonical-kubernetes
 
-Conjure will prompt you for deployment options (AWS, GCE, Azure, etc.) and credentials. 
+Conjure will prompt you for deployment options (AWS, GCE, Azure, etc.) and credentials.
 
 This bundle is for multi-node deployments, for individual deployments for
 developers, use the smaller
-[kubernetes-core](http://jujucharms.com/kubernetes-core) bundle via `conjure-up kubernetes-core`. 
+[kubernetes-core](http://jujucharms.com/kubernetes-core) bundle via `conjure-up kubernetes-core`.
 
 ## Proxy configuration
 

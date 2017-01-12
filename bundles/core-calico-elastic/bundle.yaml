@@ -6,8 +6,14 @@ machines:
     series: xenial
 services:
   calico:
+    annotations:
+      gui-x: '450'
+      gui-y: '750'
     charm: cs:~cynerva/calico-14
   easyrsa:
+    annotations:
+      gui-x: '450'
+      gui-y: '550'
     charm: cs:~containers/easyrsa-5
     num_units: 1
     to:
@@ -17,6 +23,9 @@ services:
     num_units: 2
     series: trusty
   etcd:
+    annotations:
+      gui-x: '800'
+      gui-y: '550'
     charm: cs:~containers/etcd-21
     num_units: 1
     to:
@@ -32,12 +41,18 @@ services:
       dashboards: beats
     series: trusty
   kubernetes-master:
+    annotations:
+      gui-x: '800'
+      gui-y: '850'
     charm: cs:~containers/kubernetes-master-10
     expose: true
     num_units: 1
     to:
     - '0'
   kubernetes-worker:
+    annotations:
+      gui-x: '100'
+      gui-y: '850'
     charm: cs:~containers/kubernetes-worker-12
     expose: true
     num_units: 1

@@ -2,6 +2,9 @@
 services:
   "calico":
     charm: "cs:~cynerva/calico"
+    annotations:
+      "gui-x": "450"
+      "gui-y": "750"
 relations:
   - - "calico:etcd"
     - "etcd:db"
