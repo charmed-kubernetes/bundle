@@ -1,8 +1,8 @@
 # Bundle Builder for CDK
 
-In the bundler directory you'll find the `bundle` script, which will allow you to build
-CDK bundles out of bundle fragments (found in the fragments subdirectory). Here's
-what building the default bundle looks like:
+The `bundle` script will allow you to build CDK bundles out of bundle fragments
+(found in the fragments subdirectory). Here's what building the default bundle
+looks like:
 
 ```sh
 ./bundle k8s/cdk cni/flannel
@@ -49,13 +49,11 @@ You can set the location for the resulting `bundle.yaml` and `README.md` with th
 
 ## Building all the bundles
 
-This directory includes a makefile that will produce all known bundles.
-The bundles will be placed in the `bundles` directory of the root of this 
-repo. If you update bundle fragments, be sure to run make so that the bundles
-and their readme's are updated:
+This repo includes a makefile that will produce all known bundles.
+The bundles will be placed in the `bundles` directory of the root of this
+repo.
 
 ```sh
-cd bundler
 make
 ```
 
