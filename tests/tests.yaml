@@ -1,0 +1,16 @@
+tests: "*"
+# Dont test the beats stack until they have passing CWR tests in their own
+# bundle
+excludes:
+  - filebeat
+  - topbeat
+  - elasticsearch
+  - kibana
+# Adding tims PPA so we get current dependencies
+sources:
+  - ppa:tvansteenburgh/ppa
+packages:
+  - amulet
+  - juju-deployer
+  - python-jujuclient
+reset: false
