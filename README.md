@@ -1,6 +1,6 @@
 # Bundle Builder for CDK
 
-In this directory you'll find the `bundle` script, which will allow you to build
+In the bundler directory you'll find the `bundle` script, which will allow you to build
 CDK bundles out of bundle fragments (found in the fragments subdirectory). Here's
 what building the default bundle looks like:
 
