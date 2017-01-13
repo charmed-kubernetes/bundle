@@ -5,7 +5,7 @@ The `bundle` script will allow you to build CDK bundles out of bundle fragments
 looks like:
 
 ```sh
-./bundle k8s/cdk cni/flannel
+./bundle -o core-flannel k8s/cdk cni/flannel
 ```
 
 This will compose the fragments into a single bundle and version them according
