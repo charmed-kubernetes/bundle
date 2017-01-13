@@ -128,20 +128,6 @@ your cloud.
 juju attach kubernetes-master kubernetes=~/path/to/kubernetes-master.tar.gz
 ```
 
-### Interactive deployment using Conjure-up
-
-`conjure-up` is an interactive, terminal UI deployment tool for Juju bundles.
-After installing conjure-up, you can deploy the canonical-kubernetes bundle and
-tweak config values with one command:
-
-```
-sudo apt install conjure-up
-conjure-up canonical-kubernetes
-```
-
-Refer to the
-[conjure-up documentation](http://conjure-up.io) to learn more.
-
 ## Interacting with the Kubernetes cluster
 
 After the cluster is deployed you may assume control over the Kubernetes
