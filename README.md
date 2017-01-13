@@ -50,7 +50,7 @@ You can set the location for the resulting `bundle.yaml` and `README.md` with th
 ## Building all the bundles
 
 This directory includes a makefile that will produce all known bundles.
-The other bundles will be placed in the `bundles` directory of the root of this
+The bundles will be placed in the `bundles` directory of the root of this 
 repo. If you update bundle fragments, be sure to run make so that the bundles
 and their readme's are updated:
 
