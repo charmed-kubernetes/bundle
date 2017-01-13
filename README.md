@@ -5,7 +5,7 @@ The `bundle` script will allow you to build CDK bundles out of bundle fragments
 looks like:
 
 ```sh
-./bundle -o core-flannel k8s/cdk cni/flannel
+./bundle -o ./bundles/cdk-flannel k8s/cdk cni/flannel
 ```
 
 This will compose the fragments into a single bundle and version them according
@@ -22,7 +22,7 @@ You can select a channel using the `--channel` or `-c` option. Valid options are
 
 #### Example
 ```sh
-./bundle -o core-flannel -c edge k8s/core cni/flannel
+./bundle -o ./bundles/core-flannel -c edge k8s/core cni/flannel
 ```
 
 > Note: for this to work, the fragment charms must be public for the given channel.
