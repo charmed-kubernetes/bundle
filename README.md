@@ -22,7 +22,7 @@ You can select a channel using the `--channel` or `-c` option. Valid options are
 
 #### Example
 ```sh
-./bundle -c edge k8s/core cni/flannel
+./bundle -o core-flannel -c edge k8s/core cni/flannel
 ```
 
 > Note: for this to work, the fragment charms must be public for the given channel.
