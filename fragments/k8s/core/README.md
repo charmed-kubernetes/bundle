@@ -404,11 +404,17 @@ to determine fault tolerance.
  The following are known issues and limitations with the bundle and charm code:
 
  - Destroying the the easyrsa charm will result in loss of public key
- infrastructure (PKI).
+   infrastructure (PKI).
 
  - Deployment locally on LXD will require the use of conjure-up to tune
    settings on the host's LXD installation to support Docker and other
-   componentry.
+   components.
+
+ - If resources fail to download during initial deployment for any reason, you
+   will need to download and install them manually. For example, if
+   kubernetes-master is missing its resources, download them
+   [here](https://jujucharms.com/u/containers/kubernetes-master/) and install
+   them by running `juju attach kubernetes-master kubernetes=/path/to/kubernetes-master.tar.gz`.
 
 ## Kubernetes details
 
