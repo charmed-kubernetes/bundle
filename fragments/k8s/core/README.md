@@ -20,8 +20,6 @@ This is a minimal Kubernetes cluster comprised of the following components and f
 
 # Usage
 
-# Usage
-
 Installation has been automated via [conjure-up](http://conjure-up.io/):
 
     sudo apt-add-repository ppa:juju/stable
