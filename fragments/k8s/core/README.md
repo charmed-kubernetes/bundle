@@ -422,6 +422,9 @@ to determine fault tolerance.
    - [easyrsa](https://jujucharms.com/u/containers/easyrsa/)
    - [etcd](https://jujucharms.com/u/containers/etcd/)
 
+   Also note that your SDN plugin of choice (e.g., Flannel) may have associated
+   resources that you'll need to install as well. See the section in this document
+   for your SDN to find the resources for it.
 
 ## Kubernetes details
 
