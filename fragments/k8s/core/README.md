@@ -402,11 +402,29 @@ to determine fault tolerance.
  The following are known issues and limitations with the bundle and charm code:
 
  - Destroying the the easyrsa charm will result in loss of public key
- infrastructure (PKI).
+   infrastructure (PKI).
 
  - Deployment locally on LXD will require the use of conjure-up to tune
    settings on the host's LXD installation to support Docker and other
-   componentry.
+   components.
+
+ - If resources fail to download during initial deployment for any reason, you
+   will need to download and install them manually. For example, if
+   kubernetes-master is missing its resources, download them from the resources
+   section of the sidebar [here](https://jujucharms.com/u/containers/kubernetes-master/)
+   and install them by running
+   `juju attach kubernetes-master kubernetes=/path/to/kubernetes-master.tar.gz`.
+
+   You can find the resources for CDK Core charms here:
+
+   - [kubernetes-master](https://jujucharms.com/u/containers/kubernetes-master/)
+   - [kubernetes-worker](https://jujucharms.com/u/containers/kubernetes-worker/)
+   - [easyrsa](https://jujucharms.com/u/containers/easyrsa/)
+   - [etcd](https://jujucharms.com/u/containers/etcd/)
+
+   Also note that your SDN plugin of choice (e.g., Flannel) may have associated
+   resources that you'll need to install as well. See the section in this document
+   for your SDN to find the resources for it.
 
 ## Kubernetes details
 
