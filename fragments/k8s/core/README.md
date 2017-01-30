@@ -20,8 +20,6 @@ This is a minimal Kubernetes cluster comprised of the following components and f
 
 # Usage
 
-# Usage
-
 Installation has been automated via [conjure-up](http://conjure-up.io/):
 
     sudo apt-add-repository ppa:juju/stable
@@ -412,9 +410,18 @@ to determine fault tolerance.
 
  - If resources fail to download during initial deployment for any reason, you
    will need to download and install them manually. For example, if
-   kubernetes-master is missing its resources, download them
-   [here](https://jujucharms.com/u/containers/kubernetes-master/) and install
-   them by running `juju attach kubernetes-master kubernetes=/path/to/kubernetes-master.tar.gz`.
+   kubernetes-master is missing its resources, download them from the resources
+   section of the sidebar [here](https://jujucharms.com/u/containers/kubernetes-master/)
+   and install them by running
+   `juju attach kubernetes-master kubernetes=/path/to/kubernetes-master.tar.gz`.
+
+   You can find the resources for CDK Core charms here:
+
+   - [kubernetes-master](https://jujucharms.com/u/containers/kubernetes-master/)
+   - [kubernetes-worker](https://jujucharms.com/u/containers/kubernetes-worker/)
+   - [easyrsa](https://jujucharms.com/u/containers/easyrsa/)
+   - [etcd](https://jujucharms.com/u/containers/etcd/)
+
 
 ## Kubernetes details
 
