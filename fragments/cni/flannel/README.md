@@ -28,4 +28,5 @@ on juju 2.0+ controllers.
 
 ## Further information
 
+- [Charm Resources](https://jujucharms.com/u/containers/flannel/)
 - [Flannel Homepage](https://coreos.com/flannel/docs/latest/flannel-config.html)
