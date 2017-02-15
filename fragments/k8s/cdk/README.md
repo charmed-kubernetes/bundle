@@ -24,10 +24,7 @@ knowledge. It is comprised of the following components and features:
 
 Installation has been automated via [conjure-up](http://conjure-up.io/):
 
-    sudo apt-add-repository ppa:juju/stable
-    sudo apt-add-repository ppa:conjure-up/next
-    sudo apt update
-    sudo apt install conjure-up
+    sudo snap install conjure-up --classic
     conjure-up canonical-kubernetes
 
 Conjure will prompt you for deployment options (AWS, GCE, Azure, etc.) and credentials.
