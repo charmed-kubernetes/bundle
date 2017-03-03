@@ -13,4 +13,5 @@ packages:
   - amulet
   - juju-deployer
   - python-jujuclient
+  - python3-yaml
 reset: false
