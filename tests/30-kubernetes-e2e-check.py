@@ -13,6 +13,10 @@ class E2eIntegrationTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        """
+        Load the bundle and augment it with the latest kubernetes-e2e.
+
+        """
         cls.deployment = amulet.Deployment()
         with open(cls.bundle_file) as f:
             bun = f.read()
@@ -38,26 +42,35 @@ class E2eIntegrationTest(unittest.TestCase):
                                 'kubernetes-e2e':
                                 'Ready to test.'}
         cls.deployment.sentry.wait_for_messages(application_messages,
-                                                timeout=1800)
+                                                timeout=SECONDS_TO_WAIT)
 
         cls.e2e = cls.deployment.sentry['kubernetes-e2e'][0]
 
     @classmethod
     def tearDownClass(cls):
+        """
+        Removing only the relations to kubernetes-e2e so
+        we can re-run the test with out having it complaining
+        that these relations already exist.
+        """
         cls.deployment.unrelate('kubernetes-e2e:certificates',
                                 'easyrsa:client')
         cls.deployment.unrelate('kubernetes-e2e:kubernetes-master',
                                 'kubernetes-master:kube-api-endpoint')
 
     def test_e2e(self):
-        '''Trigger e2e tests'''
+        """
+        Trigger e2e tests and assert the job completed,
+        implying successful testing.
+
+        """
         args = {'skip': '\[(Flaky|Slow|Feature:.*)\]'}
         action_id = self.e2e.run_action('test', args)
         outcome = self.deployment.action_fetch(action_id,
                                                timeout=7200,
                                                raise_on_timeout=True,
-                                               full_output=True )
-        self.assertIn('completed', outcome)
+                                               full_output=True)
+        assert "completed" in outcome['status']
 
 
 if __name__ == '__main__':
