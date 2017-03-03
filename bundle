@@ -6,7 +6,6 @@ import argparse
 import json
 import yaml
 import requests
-import shutil
 
 
 root_path = os.path.dirname(os.path.abspath(__file__))
@@ -186,8 +185,6 @@ def main():
         out_bundle_file.write(serialize(bundle))
     with open(out_readme_filename, 'w') as out_readme_file:
         out_readme_file.write(readme)
-    # Copy tests to every bundle
-    shutil.copytree('tests', os.path.join(out_bundle_name, 'tests'))
     print('Done. Your bundle can be found in %s' %
           os.path.abspath(out_bundle_name))
 
