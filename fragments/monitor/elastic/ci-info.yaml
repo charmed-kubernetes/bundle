@@ -1,0 +1,14 @@
+# This is an incomplete ci-info fragment. Do not use as is.
+charm-upgrade:
+  filebeat:
+    from-channel: stable
+    release: false
+  elasticsearch:
+    from-channel: stable
+    release: false
+  topbeat:
+    from-channel: stable
+    release: false
+  kibana:
+    from-channel: stable
+    release: false
