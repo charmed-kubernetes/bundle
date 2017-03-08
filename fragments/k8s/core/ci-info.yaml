@@ -1,6 +1,6 @@
 # This is an incomplete ci-info.yaml fragment.
 bundle:
-  namespace: kos.tsakalozos
+  namespace: containers
   release: true
   to-channel: edge
 charm-upgrade:
