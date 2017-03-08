@@ -1,0 +1,18 @@
+# This is an incomplete ci-info.yaml fragment.
+bundle:
+  namespace: containers
+  release: true
+  to-channel: edge
+charm-upgrade:
+  kubernetes-master:
+    from-channel: edge
+    release: false
+  easyrsa:
+    from-channel: edge
+    release: false
+  kubernetes-worker:
+    from-channel: edge
+    release: false
+  etcd:
+    from-channel: edge
+    release: false
