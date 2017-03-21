@@ -143,9 +143,7 @@ class IntegrationTest(unittest.TestCase):
     def test_etcd_binary_placement(self):
         ''' Ensure the etcd binary is placed on the host'''
         for etcd in self.etcds:
-            etcdstat = etcd.file_stat('/usr/bin/etcd')
-            assert etcdstat['size'] > 0
-            etcdctlstat = etcd.file_stat('/usr/bin/etcdctl')
+            etcdctlstat = etcd.file_stat('/snap/bin/etcd.etcdctl')
             assert etcdctlstat['size'] > 0
 
     def test_flannel_binary_placement(self):
