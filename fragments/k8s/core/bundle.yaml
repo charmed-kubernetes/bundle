@@ -38,8 +38,8 @@ services:
 relations:
   - - "kubernetes-master:kube-api-endpoint"
     - "kubernetes-worker:kube-api-endpoint"
-  - - "kubernetes-master:cluster-dns"
-    - "kubernetes-worker:kube-dns"
+  - - "kubernetes-master:kube-control"
+    - "kubernetes-worker:kube-control"
   - - "kubernetes-master:certificates"
     - "easyrsa:client"
   - - "kubernetes-master:etcd"
