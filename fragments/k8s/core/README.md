@@ -95,7 +95,7 @@ watch -c juju status --color
 
 ## Alternate deployment methods
 
-#### Usage with your own resources
+### Usage with your own resources
 
 In order to support restricted-network deployments, the charms in this bundle
 support
@@ -117,7 +117,7 @@ juju attach kubernetes-worker kube-proxy=/path/to/kube-proxy.snap
 juju attach kubernetes-worker cni=/path/to/cni.tgz
 ```
 
-#### Using a specific Kubernetes version
+### Using a specific Kubernetes version
 
 You can select a specific version or series of Kubernetes by configuring CDK
 to use a specific snap channel. For example, to use the 1.6 series:
