@@ -110,8 +110,7 @@ watch -c juju status --color
 
 ## Alternate deployment methods
 
-
-### Deploy with your own binaries
+### Usage with your own resources
 
 In order to support restricted-network deployments, the charms in this bundle
 support
@@ -121,8 +120,41 @@ This allows you to `juju attach` the resources built for the architecture of
 your cloud.
 
 ```
-juju attach kubernetes-master kubernetes=~/path/to/kubernetes-master.tar.gz
+juju attach kubernetes-master kubectl=/path/to/kubectl.snap
+juju attach kubernetes-master kube-apiserver=/path/to/kube-apiserver.snap
+juju attach kubernetes-master kube-controller-manager=/path/to/kube-controller-manager.snap
+juju attach kubernetes-master kube-scheduler=/path/to/kube-scheduler.snap
+juju attach kubernetes-master cdk-addons=/path/to/cdk-addons.snap
+
+juju attach kubernetes-worker kubectl=/path/to/kubectl.snap
+juju attach kubernetes-worker kubelet=/path/to/kubelet.snap
+juju attach kubernetes-worker kube-proxy=/path/to/kube-proxy.snap
+juju attach kubernetes-worker cni=/path/to/cni.tgz
 ```
+
+### Using a specific Kubernetes version
+
+You can select a specific version or series of Kubernetes by configuring CDK
+to use a specific snap channel. For example, to use the 1.6 series:
+
+```
+juju config kubernetes-master channel=1.6/stable
+juju config kubernetes-worker channel=1.6/stable
+```
+
+After changing the channel, you'll need to manually execute the upgrade action
+on each kubernetes-worker unit, e.g.:
+
+```
+juju run-action kubernetes-worker/0 upgrade
+juju run-action kubernetes-worker/1 upgrade
+juju run-action kubernetes-worker/2 upgrade
+...
+```
+
+By default, the channel will be set to `stable`, which means your cluster will
+always be upgraded to the latest stable version of Kubernetes available.
+
 
 ## Interacting with the Kubernetes cluster
 
@@ -143,18 +175,16 @@ Copy the kubeconfig file to the default location.
 juju scp kubernetes-master/0:config ~/.kube/config
 ```
 
-Fetch a binary for the architecture you have deployed. If your client is a
-different architecture you will need to get the appropriate `kubectl` binary
-through other means.
+Install `kubectl` locally.
 
 ```
-juju scp kubernetes-master/0:kubectl ./kubectl
+snap install kubectl --classic
 ```
 
 Query the cluster.
 
 ```
-./kubectl cluster-info
+kubectl cluster-info
 ```
 
 ### Accessing the Kubernetes dashboard
@@ -172,7 +202,7 @@ To access the dashboard, you may establish a secure tunnel to your cluster with
 the following command:
 
 ```
-./kubectl proxy
+kubectl proxy
 ```
 
 By default, this establishes a proxy running on your local machine and the
@@ -189,32 +219,32 @@ kubectl is the command line utility to interact with a Kubernetes cluster.
 To check the state of the cluster:
 
 ```
-./kubectl cluster-info
+kubectl cluster-info
 ```
 
 List all nodes in the cluster:
 
 ```
-./kubectl get nodes
+kubectl get nodes
 ```
 
 Now you can run pods inside the Kubernetes cluster:
 
 ```
-./kubectl create -f example.yaml
+kubectl create -f example.yaml
 ```
 
 List all pods in the cluster:
 
 
 ```
-./kubectl get pods
+kubectl get pods
 ```
 
 List all services in the cluster:
 
 ```
-./kubectl get services
+kubectl get services
 ```
 
 For expanded information on kubectl beyond what this README provides, please
