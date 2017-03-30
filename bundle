@@ -86,7 +86,7 @@ def validate_components(fragments):
 
 def validate_channel(channel):
     ''' Make sure the supplied channel is a valid one. '''
-    if channel not in ['unpublished', 'stable', 'edge', 'local']:
+    if channel not in ['unpublished', 'stable', 'edge', 'local', 'candidate', 'beta']:
         raise ChannelInvalid('Invalid channel ' + channel)
 
 
