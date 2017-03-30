@@ -108,7 +108,7 @@ this can be used with `watch`.
 watch -c juju status --color
 ```
 
-### Alternate deployment methods
+## Alternate deployment methods
 
 #### Usage with your own resources
 
