@@ -54,13 +54,14 @@ class IntegrationTest(unittest.TestCase):
         cls.masters = cls.deployment.sentry['kubernetes-master']
         cls.workers = cls.deployment.sentry['kubernetes-worker']
 
+
     def test_master_services(self):
         '''Test if the master services are running.'''
         for master in self.masters:
             services = [
-                'kube-apiserver',
-                'kube-controller-manager',
-                'kube-scheduler'
+                'snap.kube-apiserver.daemon',
+                'snap.kube-controller-manager.daemon',
+                'snap.kube-scheduler.daemon'
             ]
             for service in services:
                 self.assertTrue(check_systemd_service(master, service))
@@ -70,8 +71,8 @@ class IntegrationTest(unittest.TestCase):
         for worker in self.workers:
             services = [
                 'docker',
-                'kubelet',
-                'kube-proxy'
+                'snap.kubelet.daemon',
+                'snap.kube-proxy.daemon'
             ]
             for service in services:
                 self.assertTrue(check_systemd_service(worker, service))
@@ -81,23 +82,23 @@ class IntegrationTest(unittest.TestCase):
         for master in self.masters:
             # There should be three certificates on each master node.
             crts = [
-                '/srv/kubernetes/ca.crt',
-                '/srv/kubernetes/client.crt',
-                '/srv/kubernetes/server.crt'
+                '/root/cdk/ca.crt',
+                '/root/cdk/client.crt',
+                '/root/cdk/server.crt'
             ]
             for certificate in crts:
                 self.assertTrue(valid_certificate(master, certificate))
             # There should be two keys on each master node.
-            keys = ['/srv/kubernetes/client.key', '/srv/kubernetes/server.key']
+            keys = ['/root/cdk/client.key', '/root/cdk/server.key']
             for key in keys:
                 self.assertTrue(valid_key(master, key))
         for worker in self.workers:
             # There should be two certificates on each worker node.
-            crts = ['/srv/kubernetes/ca.crt', '/srv/kubernetes/client.crt']
+            crts = ['/root/cdk/ca.crt', '/root/cdk/client.crt']
             for certificate in crts:
                 self.assertTrue(valid_certificate(worker, certificate))
             # There is only one client key on the worker node.
-            client_key = '/srv/kubernetes/client.key'
+            client_key = '/root/cdk/client.key'
             self.assertTrue(valid_key(worker, client_key))
 
     def test_kubeconfig(self):
@@ -111,9 +112,7 @@ class IntegrationTest(unittest.TestCase):
             self.assertTrue(rc == 0)
             root, rc = worker.run('grep server: /root/.kube/config')
             self.assertTrue(rc == 0)
-            kubelet, rc = worker.run('grep server: /srv/kubernetes/config')
-            self.assertTrue(rc == 0)
-            self.assertTrue(ubuntu == root and root == kubelet)
+            self.assertTrue(ubuntu == root)
 
     def test_cluster_info(self):
         '''Test that kubectl is installed and the cluster appears healthy.'''
@@ -127,48 +126,59 @@ class IntegrationTest(unittest.TestCase):
             # Do not fail when the cluster is still converging on KubeDNS.
             # self.assertTrue('KubeDNS is running' in output)
 
-    def test_kube_pods(self):
-        '''Test that the kube-system listing contains the kube-dns pod.'''
-        # $ kubectl get pods --namespace=kube-system
-        # NAME                                    READY     STATUS    RESTARTS   AGE  # noqa
-        # kube-dns-v19-0gpcl                      3/3       Running   0          7m  # noqa
-        # kubernetes-dashboard-1655269645-gpfdf   1/1       Running   0          7m  # noqa
-        if len(self.masters) > 0:
-            unit = self.masters[0]
-            get_pods = kubectl('get pods', namespace='kube-system')
-            output, rc = run(unit, get_pods)
-            self.assertTrue(rc == 0)
-            # self.assertTrue('kube-dns' in output)
+    def test_etcd_scale_on_master(self):
+        ''' Scale the etcd units and verify that the apiserver configuration
+        has updated to reflect the current scale of etcd '''
 
-    def test_etcd_binary_placement(self):
-        ''' Ensure the etcd binary is placed on the host'''
-        for etcd in self.etcds:
-            etcdctlstat = etcd.file_stat('/snap/bin/etcd.etcdctl')
-            assert etcdctlstat['size'] > 0
+        # ensure we aren't running with only 1 etcd unit... k8s core...
+        if len(self.etcds) <= 1:
+            self.deployment.add_unit('etcd', timeout=1200)
+            self.deployment.sentry.wait()
 
-    def test_flannel_binary_placement(self):
-        ''' Ensure the flannel binary is placed on the host'''
-        for flannel in self.flannels:
-            stat = flannel.file_stat('/usr/local/bin/flanneld')
-            assert stat['size'] > 0
+        # Cache the contents of the file before we adjust the scale
+        args = '/var/snap/kube-apiserver/current/args'
+        api_conf = self.masters[0].file_contents(args)
 
-    def test_flannel_environment_file(self):
-        ''' Ensure the flannel environment file exists'''
-        # FLANNEL_NETWORK=10.1.0.0/16
-        # FLANNEL_SUBNET=10.1.90.1/24
-        # FLANNEL_MTU=1410
-        # FLANNEL_IPMASQ=false
+        # iterate through the file and copy out the apiserver line
+        orig_apiserver = ''
+        for line in api_conf.split('\n'):
+            if '--etcd-servers' in line:
+                orig_apiserver = line
 
-        for flannel in self.flannels:
-            cont = flannel.file_contents('/var/run/flannel/subnet.env')
-            print(cont)
-            assert 'FLANNEL_NETWORK' in cont
-            assert 'FLANNEL_SUBNET' in cont
-            assert 'FLANNEL_MTU' in cont
-            assert 'FLANNEL_IPMASQ' in cont
+        self.assertFalse(orig_apiserver == '')
+
+        # discover the leader
+        for unit in self.etcds:
+            leader_result = unit.run('is-leader')
+            if leader_result[0] == 'True':
+                leader = unit
+
+        # Now remove an etcd unit (in this case, the leader)
+        self.deployment.remove_unit(leader.info['unit_name'])
+        self.deployment.sentry.wait()
+
+        # Probe the arg file for all etcd members.
+        scaled_api_conf = self.masters[0].file_contents(args)
+
+        # iterate through the file and find the etcdservers
+        scaled_apiserver = ''
+        for line in scaled_api_conf.split('\n'):
+            if '--etcd-servers' in line:
+                scaled_apiserver = line
+
+        self.assertFalse(scaled_apiserver == '')
 
 
-# TODO Test creating a small container or pod and delete it.
+        # determine we have the same number of servers as defined in the
+        # topology
+        server_string = scaled_apiserver.split(" ")[-1]
+        split_servers = server_string.split(",")
+
+        self.assertTrue(len(split_servers) == len(self.etcds))
+        # determine that the actual etcd server string has changed to reflect
+        # the number of etcd units in the apiserver connection string.
+        self.assertFalse(scaled_apiserver == orig_apiserver)
+
 
 
 if __name__ == '__main__':

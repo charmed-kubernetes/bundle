@@ -41,7 +41,7 @@ def get_leader(units):
 
 def kubectl(command, kubeconfig='', namespace='', json=False):
     '''Run kubectl commands and return the output and return code.'''
-    kubectl = 'kubectl'
+    kubectl = '/snap/bin/kubectl'
     # Is there a kubeconfig to use?
     if kubeconfig:
         # Append the kubeconfig flag and path.
