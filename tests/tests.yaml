@@ -11,7 +11,6 @@ sources:
   - ppa:tvansteenburgh/ppa
 packages:
   - amulet
-  - juju-deployer
-  - python-jujuclient
+  - python3-juju-deployer
   - python3-yaml
 reset: false
