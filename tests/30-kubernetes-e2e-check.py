@@ -3,7 +3,6 @@ import os
 import amulet
 import unittest
 import yaml
-import time
 
 
 SECONDS_TO_WAIT = 1800
