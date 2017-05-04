@@ -3,6 +3,7 @@ import os
 import amulet
 import unittest
 import yaml
+import time
 
 
 SECONDS_TO_WAIT = 1800
@@ -36,6 +37,13 @@ class E2eIntegrationTest(unittest.TestCase):
                               'easyrsa:client')
         cls.deployment.relate('kubernetes-e2e:kubernetes-master',
                               'kubernetes-master:kube-api-endpoint')
+        # Allow privileged containers
+        cls.deployment.configure('kubernetes-master', {
+            'allow-privileged': 'true',
+        })
+        cls.deployment.configure('kubernetes-worker', {
+            'allow-privileged': 'true',
+        })
         # Wait for the system to settle down.
         application_messages = {'kubernetes-worker':
                                 'Kubernetes worker running.',
@@ -64,8 +72,7 @@ class E2eIntegrationTest(unittest.TestCase):
         implying successful testing.
 
         """
-        args = {'skip': '\[(Flaky|Slow|Feature:.*)\]'}
-        action_id = self.e2e.run_action('test', args)
+        action_id = self.e2e.run_action('test')
         outcome = self.deployment.action_fetch(action_id,
                                                timeout=7200,
                                                raise_on_timeout=True,

@@ -1,5 +1,0 @@
-# This is an incomplete bundle fragment. Do not attempt to deploy.
-charm-upgrade:
-  flannel:
-    from-channel: edge
-    release: false

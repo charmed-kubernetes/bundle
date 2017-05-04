@@ -54,7 +54,6 @@ def fragment_paths(fragment):
     return {
         'root': frag_path,
         'bundle': os.path.join(frag_path, 'bundle.yaml'),
-        'ci_info': os.path.join(frag_path, 'ci-info.yaml'),
         'readme': os.path.join(frag_path, 'README.md')
     }
 
@@ -75,9 +74,6 @@ def validate_components(fragments):
             raise FragmentUnknown('Unknown fragment ' + frag)
         if not os.path.exists(paths['bundle']):
             err = 'Fragment %s does not contain bundle.yaml' % frag
-            raise FragmentMissingComponent(err)
-        if not os.path.exists(paths['ci_info']):
-            err = 'Fragment %s does not contain ci-info.yaml' % frag
             raise FragmentMissingComponent(err)
         if not os.path.exists(paths['readme']):
             err = 'Fragment %s does not contain README.md' % frag
@@ -163,7 +159,6 @@ def main():
     validate_components(args.fragments)
     validate_channel(args.channel)
     bundle = {}
-    ci_info = {}
     readme = ""
     for frag in args.fragments:
         print('Processing fragment %s...' % frag)
@@ -171,26 +166,18 @@ def main():
         with open(paths['bundle'], 'r') as f:
             frag_bundle = yaml.load(f)
         merge(frag_bundle, bundle)
-        with open(paths['ci_info'], 'r') as f:
-            frag_ci_info = yaml.load(f)
-        merge(frag_ci_info, ci_info)
         with open(paths['readme'], 'r') as f:
             frag_readme = f.read()
         readme = '\n'.join([readme, frag_readme])
-    ci_info['bundle']['name'] = os.path.basename(args.outputdir)
     if args.channel == 'local':
         bundle = local_bundle(bundle, args.localpath)
     else:
         bundle = version_bundle(bundle, args.channel)
     out_bundle_name = os.path.abspath(args.outputdir)
     out_bundle_filename = os.path.join(out_bundle_name, 'bundle.yaml')
-    out_ci_info_filename = os.path.join(out_bundle_name, 'ci-info.yaml')
     out_readme_filename = os.path.join(out_bundle_name, 'README.md')
     if os.path.isfile(out_bundle_filename):
         err = '%s already exists. Aborting.' % out_bundle_filename
-        raise FileExistsError(err)
-    if os.path.isfile(out_ci_info_filename):
-        err = '%s already exists. Aborting.' % out_ci_info_filename
         raise FileExistsError(err)
     if os.path.isfile(out_readme_filename):
         err = '%s already exists. Aborting.' % out_readme_filename
@@ -199,14 +186,16 @@ def main():
         os.makedirs(out_bundle_name)
     with open(out_bundle_filename, 'w') as out_bundle_file:
         out_bundle_file.write(serialize(bundle))
-    with open(out_ci_info_filename, 'w') as out_ci_info_file:
-        out_ci_info_file.write(serialize(ci_info))
     with open(out_readme_filename, 'w') as out_readme_file:
         out_readme_file.write(readme)
-    # Copy tests to every bundle
-    tests_src = os.path.join(root_path, 'tests')
-    tests_dst = os.path.join(out_bundle_name, 'tests')
-    shutil.copytree(tests_src, tests_dst)
+
+    # Amulet test will not run on core bundle. Because of easyrsa
+    # hosted internaly on lxd amulet cannot upload scripts
+    if "k8s/core" not in args.fragments:
+        # Copy tests to every bundle
+        tests_src = os.path.join(root_path, 'tests')
+        tests_dst = os.path.join(out_bundle_name, 'tests')
+        shutil.copytree(tests_src, tests_dst)
     print('Done. Your bundle can be found in %s' %
           os.path.abspath(out_bundle_name))
 
