@@ -44,16 +44,29 @@ class IntegrationTest(unittest.TestCase):
         cls.deployment.sentry.wait_for_messages(application_messages,
                                                 timeout=900)
 
-        # Make every unit available through self reference
-        # eg: for worker in self.workers:
-        #         print(worker.info['public-address'])
-        cls.easyrsas = cls.deployment.sentry['easyrsa']
-        cls.etcds = cls.deployment.sentry['etcd']
-        cls.flannels = cls.deployment.sentry['flannel']
-        cls.loadbalancers = cls.deployment.sentry['kubeapi-load-balancer']
-        cls.masters = cls.deployment.sentry['kubernetes-master']
-        cls.workers = cls.deployment.sentry['kubernetes-worker']
+    @property
+    def easyrsas(self):
+        return self.deployment.sentry['easyrsa']
 
+    @property
+    def etcds(self):
+        return self.deployment.sentry['etcd']
+
+    @property
+    def flannels(self):
+        return self.deployment.sentry['flannel']
+
+    @property
+    def loadbalancers(self):
+        return self.deployment.sentry['kubeapi-load-balancer']
+
+    @property
+    def masters(self):
+        return self.deployment.sentry['kubernetes-master']
+
+    @property
+    def workers(self):
+        return self.deployment.sentry['kubernetes-worker']
 
     def test_master_services(self):
         '''Test if the master services are running.'''
@@ -168,7 +181,6 @@ class IntegrationTest(unittest.TestCase):
 
         self.assertNotEqual(scaled_apiserver, '')
 
-
         # determine we have the same number of servers as defined in the
         # topology
         server_string = scaled_apiserver.split(" ")[-1]
@@ -178,7 +190,6 @@ class IntegrationTest(unittest.TestCase):
         # determine that the actual etcd server string has changed to reflect
         # the number of etcd units in the apiserver connection string.
         self.assertNotEqual(scaled_apiserver, orig_apiserver)
-
 
 
 if __name__ == '__main__':
