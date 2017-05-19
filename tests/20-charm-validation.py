@@ -145,7 +145,7 @@ class IntegrationTest(unittest.TestCase):
             if '--etcd-servers' in line:
                 orig_apiserver = line
 
-        self.assertFalse(orig_apiserver == '')
+        self.assertNotEqual(orig_apiserver, '')
 
         # discover the leader
         for unit in self.etcds:
@@ -166,7 +166,7 @@ class IntegrationTest(unittest.TestCase):
             if '--etcd-servers' in line:
                 scaled_apiserver = line
 
-        self.assertFalse(scaled_apiserver == '')
+        self.assertNotEqual(scaled_apiserver, '')
 
 
         # determine we have the same number of servers as defined in the
@@ -174,10 +174,10 @@ class IntegrationTest(unittest.TestCase):
         server_string = scaled_apiserver.split(" ")[-1]
         split_servers = server_string.split(",")
 
-        self.assertTrue(len(split_servers) == len(self.etcds))
+        self.assertEqual(len(split_servers), len(self.etcds))
         # determine that the actual etcd server string has changed to reflect
         # the number of etcd units in the apiserver connection string.
-        self.assertFalse(scaled_apiserver == orig_apiserver)
+        self.assertNotEqual(scaled_apiserver, orig_apiserver)
 
 
 
