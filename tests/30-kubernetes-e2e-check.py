@@ -76,7 +76,10 @@ class E2eIntegrationTest(unittest.TestCase):
                                                timeout=7200,
                                                raise_on_timeout=True,
                                                full_output=True)
-        assert "completed" in outcome['status']
+        if outcome['status'] != 'completed':
+            output, _ = self.e2e.ssh('cat %s.log' % action_id)
+            print(output)
+            self.fail('action returned status: ' + outcome['status'])
 
 
 if __name__ == '__main__':
