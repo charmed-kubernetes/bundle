@@ -1,10 +1,8 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 description: |
-    This is a production ready cluster modelled to fit most business needs.
-    We start you out with an HA control plane, HA etcd data store, and a load balancer
-    to tie it all together.
-    Take out all the difficulty of setting up and managing Kubernetes with this bundle,
-    ready to deploy, scale, and control the lifecycle management of your containers.
+    This is a production ready cluster modelled to fit most business needs. We start you out with an HA control plane, HA etcd data store, and a load balancer to tie it all together.
+    Take out all the difficulty of setting up and managing Kubernetes with this bundle, ready to deploy, scale, and control the lifecycle management of your containers.
+    It will run 9 machines on your cloud.
 series: xenial
 services:
   "kubernetes-master":
