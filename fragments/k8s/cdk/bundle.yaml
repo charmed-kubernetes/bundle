@@ -1,9 +1,17 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
+description: |
+    This is a production ready cluster modelled to fit most business needs.
+    We start you out with an HA control plane, HA etcd data store, and a load balancer
+    to tie it all together.
+    Take out all the difficulty of setting up and managing Kubernetes with this bundle,
+    ready to deploy, scale, and control the lifecycle management of your containers.
 series: xenial
 services:
   "kubernetes-master":
     charm: "cs:~containers/kubernetes-master"
     num_units: 1
+    options:
+      channel: 1.6/stable
     annotations:
       "gui-x": "800"
       "gui-y": "850"
@@ -23,6 +31,8 @@ services:
   "kubernetes-worker":
     charm: "cs:~containers/kubernetes-worker"
     num_units: 3
+    options:
+      channel: 1.6/stable
     expose: true
     annotations:
       "gui-x": "100"
