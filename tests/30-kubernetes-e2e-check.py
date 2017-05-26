@@ -3,6 +3,7 @@ import os
 import amulet
 import unittest
 import yaml
+import subprocess
 
 
 SECONDS_TO_WAIT = 1800
@@ -76,10 +77,18 @@ class E2eIntegrationTest(unittest.TestCase):
                                                timeout=7200,
                                                raise_on_timeout=True,
                                                full_output=True)
-        if outcome['status'] != 'completed':
-            output, _ = self.e2e.ssh('cat %s.log' % action_id)
-            print(output)
-            self.fail('action returned status: ' + outcome['status'])
+        if 'TEST_RESULT_DIR' in os.environ:
+            unit = self.e2e.info['unit_name']
+            test_result_dir = os.environ['TEST_RESULT_DIR']
+            for suffix in ['.log.tar.gz', '-junit.tar.gz']:
+                src = '%s:%s%s' % (unit, action_id, suffix)
+                dest = os.path.join(test_result_dir, 'e2e' + suffix)
+                cmd = ['juju', 'scp', src, dest]
+                subprocess.check_call(cmd)
+        else:
+            print('TEST_RESULT_DIR is not set, nowhere to put e2e results')
+
+        self.assertEquals(outcome['status'], 'completed')
 
 
 if __name__ == '__main__':
