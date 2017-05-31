@@ -66,28 +66,6 @@ class IntegrationTest(unittest.TestCase):
     def workers(self):
         return self.deployment.sentry['kubernetes-worker']
 
-    def test_master_services(self):
-        '''Test if the master services are running.'''
-        for master in self.masters:
-            services = [
-                'snap.kube-apiserver.daemon',
-                'snap.kube-controller-manager.daemon',
-                'snap.kube-scheduler.daemon'
-            ]
-            for service in services:
-                self.assertTrue(check_systemd_service(master, service))
-
-    def test_worker_services(self):
-        '''Test if the worker services are running.'''
-        for worker in self.workers:
-            services = [
-                'docker',
-                'snap.kubelet.daemon',
-                'snap.kube-proxy.daemon'
-            ]
-            for service in services:
-                self.assertTrue(check_systemd_service(worker, service))
-
     def test_kubeconfig(self):
         '''Test that the kubeconfig exists so that kubectl commands can run.'''
         # typical client configs
@@ -110,18 +88,6 @@ class IntegrationTest(unittest.TestCase):
             proxy, rc = worker.run('grep token: /root/cdk/kubeproxyconfig')
             self.assertTrue(rc == 0)
             self.assertTrue(kubelet != proxy)
-
-    def test_cluster_info(self):
-        '''Test that kubectl is installed and the cluster appears healthy.'''
-        for master in self.masters:
-            cluster_info = kubectl('cluster-info')
-            output, rc = run(master, cluster_info)
-            self.assertTrue(rc == 0)
-            self.assertTrue('Kubernetes master' in output)
-            # TODO Figure out how to wait for KubeDNS before running this test.
-            # DNS turnup takes quite a while after the cluster settles.
-            # Do not fail when the cluster is still converging on KubeDNS.
-            # self.assertTrue('KubeDNS is running' in output)
 
     def test_kube_system_sa(self):
         ''' Validate the kube-system service accounts exist '''
