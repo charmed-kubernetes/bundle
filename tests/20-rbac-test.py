@@ -66,7 +66,7 @@ class IntegrationTest(unittest.TestCase):
     def workers(self):
         return self.deployment.sentry['kubernetes-worker']
 
-    def test_kubeconfig(self):
+    def test_kubeconfig_presence(self):
         '''Test that the kubeconfig exists so that kubectl commands can run.'''
         # typical client configs
         for master in self.masters:
@@ -88,6 +88,19 @@ class IntegrationTest(unittest.TestCase):
             proxy, rc = worker.run('grep token: /root/cdk/kubeproxyconfig')
             self.assertTrue(rc == 0)
             self.assertTrue(kubelet != proxy)
+
+
+    def test_kubeconfig_contents(self):
+        '''Validate the contents of the client config has no client keys.'''
+
+        for master in self.masters:
+            config = master.file_contents('/home/ubuntu/config')
+            cfg_dict = yaml.safe_load(config)
+            user_keys = cfg_dict['users'][0]['user'].keys()
+            self.assertTrue('token' in user_keys)
+            self.assertTrue('client_key' not in user_keys)
+            self.assertTrue('client_cert' not in user_keys)
+
 
     def test_kube_system_sa(self):
         ''' Validate the kube-system service accounts exist '''
