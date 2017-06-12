@@ -4,6 +4,7 @@ import amulet
 import os
 import unittest
 import yaml
+import uuid
 
 from amulet_utils import check_systemd_service
 from amulet_utils import kubectl
@@ -33,6 +34,14 @@ class IntegrationTest(unittest.TestCase):
         with open(cls.bundle_file) as stream:
             bundle_yaml = stream.read()
         bundle = yaml.safe_load(bundle_yaml)
+        if 'options' not in bundle['services']['kubernetes-worker']:
+            labels = {'labels': "mylabel=thebest"}
+            bundle['services']['kubernetes-worker']['options'] = labels
+        else:
+            if 'labels' not in bundle['services']['kubernetes-worker']['options']:
+                bundle['services']['kubernetes-worker']['options']['labels'] = "mylabel=thebest"
+            else:
+                bundle['services']['kubernetes-worker']['options']['labels'] += " mylabel=thebest"
         cls.deployment.load(bundle)
 
         # Allow some time for Juju to provision and deploy the bundle.
@@ -139,6 +148,23 @@ class IntegrationTest(unittest.TestCase):
             # Do not fail when the cluster is still converging on KubeDNS.
             # self.assertTrue('KubeDNS is running' in output)
 
+    def test_labels(self):
+        '''Test that kubectl is installed and the cluster appears healthy.'''
+        nodes_describe_cmd = kubectl('describe no')
+        output, rc = run(self.masters[0], nodes_describe_cmd)
+        print("Output {}".format(output))
+        self.assertTrue(rc == 0)
+        self.assertTrue('thebest' in output)
+        new_label = str(uuid.uuid4())
+        self.deployment.configure('kubernetes-worker', {
+            'labels': 'mylabel={}'.format(new_label),
+        })
+        self.deployment.sentry.wait()
+        output, rc = run(self.masters[0], nodes_describe_cmd)
+        print("Output {}".format(output))
+        self.assertTrue(rc == 0)
+        self.assertTrue(new_label in output)
+
     def test_etcd_scale_on_master(self):
         ''' Scale the etcd units and verify that the apiserver configuration
         has updated to reflect the current scale of etcd '''
@@ -190,6 +216,18 @@ class IntegrationTest(unittest.TestCase):
         # determine that the actual etcd server string has changed to reflect
         # the number of etcd units in the apiserver connection string.
         self.assertNotEqual(scaled_apiserver, orig_apiserver)
+
+    def test_service_restart(self):
+        """
+        Trigger service restart action on master
+
+        """
+        action_id = self.masters[0].run_action('restart')
+        outcome = self.deployment.action_fetch(action_id,
+                                               timeout=7200,
+                                               raise_on_timeout=True,
+                                               full_output=True)
+        self.assertEqual(outcome['status'], 'completed')
 
 
 if __name__ == '__main__':
