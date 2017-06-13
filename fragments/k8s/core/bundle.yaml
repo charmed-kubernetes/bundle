@@ -1,6 +1,6 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 description: |
-    This is a converged cluster modelled for development. We start you out with one control plane, one etcd data store, a certificate authority and one worker..
+    This is a converged cluster modelled for development. We start you out with one control plane, one etcd data store, a certificate authority and one worker.
     Take out all the difficulty of setting up and managing Kubernetes with this bundle, ready to deploy, scale, and control the lifecycle management of your containers.
     It will run 2 machines in your cloud.
 series: xenial
