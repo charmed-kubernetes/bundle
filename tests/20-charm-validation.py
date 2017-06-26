@@ -90,6 +90,19 @@ class IntegrationTest(unittest.TestCase):
             for service in services:
                 self.assertTrue(check_systemd_service(worker, service))
 
+    def test_scale_master_services(self):
+        '''Test we can scale kubernetes masters.'''
+        for master in self.masters:
+            self.deployment.remove_unit(master.info['unit_name'])
+        self.deployment.sentry.wait()
+        assert len(self.masters) is 0
+
+        self.deployment.add_unit('kubernetes-master', 2)
+        self.deployment.sentry.wait()
+        for master in self.masters:
+            output, rc = master.run('grep server: /home/ubuntu/config')
+            self.assertTrue(rc == 0)
+
     def test_tls(self):
         '''Test that the master and worker nodes have the right tls files.'''
         for master in self.masters:
