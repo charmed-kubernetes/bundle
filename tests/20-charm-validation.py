@@ -149,7 +149,7 @@ class IntegrationTest(unittest.TestCase):
             # self.assertTrue('KubeDNS is running' in output)
 
     def test_labels(self):
-        '''Test that kubectl is installed and the cluster appears healthy.'''
+        '''Test labels are set at deploy time and can be changed afterwards.'''
         nodes_describe_cmd = kubectl('describe no')
         output, rc = run(self.masters[0], nodes_describe_cmd)
         print("Output {}".format(output))
