@@ -1,17 +1,16 @@
 # The Canonical Distribution of Kubernetes
 
-![](https://img.shields.io/badge/release-beta-yellow.svg) ![](https://img.shields.io/badge/juju-2.0+-brightgreen.svg)
+![](https://img.shields.io/badge/kubernetes-1.6.2-brightgreen.svg) ![](https://img.shields.io/badge/juju-2.0+-brightgreen.svg)
 
 ## Overview
 
-This is a Kubernetes cluster that includes logging, monitoring, and operational
-knowledge. It is comprised of the following components and features:
+This is a scaled-out Kubernetes cluster composed of the following components and features:
 
 - Kubernetes (automated deployment, operations, and scaling)
      - Three node Kubernetes cluster with one master and two worker nodes.
      - TLS used for communication between nodes for security.
-     - A CNI plugin (e.g., Flannel)
-     - A load balancer for HA kubernetes-master (Experimental)
+     - A CNI plugin (Flannel)
+     - A load balancer for HA kubernetes-master
      - Optional Ingress Controller (on worker)
      - Optional Dashboard addon (on master) including Heapster for cluster monitoring
 - EasyRSA
@@ -20,18 +19,17 @@ knowledge. It is comprised of the following components and features:
 - Etcd (distributed key value store)
      - Three node cluster for reliability.
 
+For a more minimal cluster suitable for development and testing, deploy the smaller
+[kubernetes-core](https://jujucharms.com/kubernetes-core) bundle via `conjure-up kubernetes-core`.
+
 # Usage
 
-Installation has been automated via [conjure-up](http://conjure-up.io/):
+Installation has been automated via [conjure-up](https://conjure-up.io/):
 
     sudo snap install conjure-up --classic
     conjure-up canonical-kubernetes
 
-Conjure will prompt you for deployment options (AWS, GCE, Azure, etc.) and credentials.
-
-This bundle is for multi-node deployments, for individual deployments for
-developers, use the smaller
-[kubernetes-core](http://jujucharms.com/kubernetes-core) bundle via `conjure-up kubernetes-core`.
+Conjure-up will prompt you for deployment options (AWS, GCE, Azure, etc.) and credentials.
 
 ## Proxy configuration
 
@@ -63,25 +61,27 @@ to use your proxy:
 $ juju config kubernetes-worker http_proxy=http://squid.internal:3128 https_proxy=https://squid.internal:3128
 ```
 
-## Deploy the bundle
+## Alternate deployment methods
+
+### Deploying with Juju directly
 
 ```
 juju deploy canonical-kubernetes
 ```
 
-This will deploy the Canonical Distribution of Kubernetes offering with default
-constraints. This is useful for lab environments, however for real-world use
-you should provide higher CPU and memory instances to kubernetes-worker units.
+> Note: If you're deploying on lxd, use conjure-up instead, as described
+> above. It configures your lxd profile to support running Kubernetes on lxd.
 
-> Note: If you desire to deploy this bundle locally on your laptop, see the
-> segment about Conjure-Up under Alternate Deployment Methods. Default deployment
-> via juju will not properly adjust the apparmor profile to support running
-> kubernetes in LXD. At this time, it is a necessary intermediate deployment
-> mechanism.
+This will deploy the Canonical Distribution of Kubernetes with default
+machine constraints. This is useful for lab environments, but for real-world use
+you should provide more CPU and memory to kubernetes-worker units.
 
-You can increase the constraints by editing the
-[bundle.yaml](https://github.com/juju-solutions/bundle-canonical-kubernetes)
-to fit your needs by removing the `#` comment character.
+You can increase the constraints by downloading and editing the
+[bundle.yaml](https://api.jujucharms.com/charmstore/v5/canonical-kubernetes/archive/bundle.yaml)
+to fit your needs. Customize the bundle constraints by following [this
+guide](https://jujucharms.com/docs/stable/charms-bundles#setting-constraints-in-a-bundle).
+
+To deploy your customized bundle:
 
 ```
 juju deploy ./bundle.yaml
@@ -94,27 +94,25 @@ above.
 This bundle exposes the kubeapi-load-balancer and kubernetes-worker charms by
 default, so they are accessible through their public addresses.
 
-If you would like to remove external access, unexpose the applications:
+If you would like to remove external access, unexpose them:
 
 ```
 juju unexpose kubeapi-load-balancer
 juju unexpose kubernetes-worker
 ```
 
-To get the status of the deployment, run `juju status`. For a constant update,
-this can be used with `watch`.
+To get the status of the deployment, run `juju status`. For constant updates,
+combine it with the `watch` command:
 
 ```
 watch -c juju status --color
 ```
 
-## Alternate deployment methods
-
-### Usage with your own resources
+### Using with your own resources
 
 In order to support restricted-network deployments, the charms in this bundle
 support
-[juju resources](https://jujucharms.com/docs/2.0/developer-resources#managing-resources).
+[juju resources](https://jujucharms.com/docs/stable/developer-resources#managing-resources).
 
 This allows you to `juju attach` the resources built for the architecture of
 your cloud.
@@ -152,14 +150,13 @@ juju run-action kubernetes-worker/2 upgrade
 ...
 ```
 
-By default, the channel will be set to `stable`, which means your cluster will
-always be upgraded to the latest stable version of Kubernetes available.
+By default, the channel is set to `stable` on the current minor version of Kubernetes, for example, `1.6/stable`. This means your cluster will receive automatic upgrades for new patch releases (e.g. 1.6.2 -> 1.6.3), but not for new minor versions (e.g. 1.6.3 -> 1.7). To upgrade to a new minor version, configure the channel manually as described above.
 
 
 ## Interacting with the Kubernetes cluster
 
 After the cluster is deployed you may assume control over the Kubernetes
-cluster from any kubernetes-master, or kubernetes-worker node.
+cluster from any kubernetes-master or kubernetes-worker node.
 
 To download the credentials and client application to your local workstation:
 
@@ -249,19 +246,19 @@ kubectl get services
 
 For expanded information on kubectl beyond what this README provides, please
 see the
-[kubectl overview](http://kubernetes.io/docs/user-guide/kubectl-overview/)
+[kubectl overview](https://kubernetes.io/docs/user-guide/kubectl-overview/)
 which contains practical examples and an API reference.
 
 Additionally if you need to manage multiple clusters, there is more information
-about configuring kubectl with the
-[kubectl config guide](http://kubernetes.io/docs/user-guide/kubectl/kubectl_config/)
+about configuring kubectl in the
+[kubectl config guide](https://kubernetes.io/docs/user-guide/kubectl/kubectl_config/)
 
 
 ### Using Ingress
 
 The kubernetes-worker charm supports deploying an NGINX ingress controller.
-Ingress allows access from the Internet to containers inside the cluster
-running web services.
+Ingress allows access from the Internet to containers running web
+services inside the cluster.
 
 First allow the Internet access to the kubernetes-worker charm with with the
 following Juju command:
@@ -271,16 +268,16 @@ juju expose kubernetes-worker
 ```
 
 In Kubernetes, workloads are declared using pod, service, and ingress
-definitions. An ingress controller is provided to you by default, deployed into
-the [default namespace](http://kubernetes.io/docs/user-guide/namespaces/) of the
-cluster. If one is not available, you may deploy this with:
+definitions. An ingress controller is provided to you by default and deployed into
+the [default namespace](https://kubernetes.io/docs/user-guide/namespaces/) of the
+cluster. If one is not available, you may deploy it with:
 
 ```
 juju config kubernetes-worker ingress=true
 ```
 
 Ingress resources are DNS mappings to your containers, routed through
-[endpoints](http://kubernetes.io/docs/user-guide/services/)
+[endpoints](https://kubernetes.io/docs/user-guide/services/).
 
 As an example for users unfamiliar with Kubernetes, we packaged an action to
 both deploy an example and clean itself up.
@@ -304,7 +301,7 @@ which binds an 'endpoint', using all 5 of the 'microbots' pods.
 
 #### Running the packaged example
 
-You can run a Juju action to create an example microbot web application:
+Run a Juju action to create the example microbot web application:
 
     $ juju run-action kubernetes-worker/0 microbot replicas=3
     Action queued with id: db7cc72b-5f35-4a4d-877c-284c4b776eb8
@@ -357,15 +354,14 @@ online.
     microbot-ingress   microbot.52.38.62.235.xip.io   172.31.26.109   80        1h
 
 
-When all the pods are listed as Running, the endpoint has more than one host
-you are ready to visit the address in the hosts section of the ingress listing.
+When all the pods are listed as Running, you are ready to visit the address listed in the HOSTS column of the ingress listing.
 
-It is normal to see a 502/503 error during initial application turnup.
+> Note: It is normal to see a 502/503 error during initial application deployment.
 
 As you refresh the page, you will be greeted with a microbot web page, serving
 from one of the microbot replica pods. Refreshing will show you another
-microbot with a different hostname, as the requests are load balanced through
-out the replicas.
+microbot with a different hostname as the requests are load-balanced across
+the replicas.
 
 #### Clean up example
 
@@ -377,7 +373,7 @@ one Juju action:
 juju run-action kubernetes-worker/0 microbot delete=true
 ```
 
-If you no longer need Internet access to your workers remember to unexpose the
+If you no longer need Internet access to your workers, remember to unexpose the
 kubernetes-worker charm:
 
 ```
@@ -385,8 +381,8 @@ juju unexpose kubernetes-worker
 ```
 
 To learn more about
-[Kubernetes Ingress](http://kubernetes.io/docs/user-guide/ingress.html)
-and how to really tune the Ingress Controller beyond defaults (such as TLS and
+[Kubernetes Ingress](https://kubernetes.io/docs/user-guide/ingress.html)
+and how to configure the Ingress Controller beyond defaults (such as TLS and
 websocket support) view the
 [nginx-ingress-controller](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx)
 project on github.
@@ -394,18 +390,11 @@ project on github.
 
 # Scale out Usage
 
-Any of the applications can be scaled out post-deployment. The charms
-update the status messages with progress, so it is recommended to run.
-
-```
-watch -c juju status --color
-```
-
 ### Scaling kubernetes-worker
 
 The kubernetes-worker nodes are the load-bearing units of a Kubernetes cluster.
 
-By default pods are automatically spread throughout the kubernetes-worker units
+By default, pods are automatically spread acress the kubernetes-worker units
 that you have deployed.
 
 To add more kubernetes-worker units to the cluster:
@@ -417,19 +406,17 @@ juju add-unit kubernetes-worker
 or specify machine constraints to create larger nodes:
 
 ```
-juju set-constraints kubernetes-worker mem=32G cores=8
-juju add-unit kubernetes-worker
+juju add-unit kubernetes-worker --constraints "cpu-cores=8 mem=32G"
 ```
 
 Refer to the
 [machine constraints documentation](https://jujucharms.com/docs/stable/charms-constraints)
-for other machine constraints that might be useful for the kubernetes-worker
-units.
+for other machine constraints that might be useful for the kubernetes-worker units.
 
 
 ### Scaling Etcd
 
-Etcd is used as a key-value store for the Kubernetes cluster. For reliability
+Etcd is the key-value store for the Kubernetes cluster. For reliability
 the bundle defaults to three instances in this cluster.
 
 For more scalability, we recommend between 3 and 9 etcd nodes. If you want to
@@ -445,13 +432,11 @@ to determine fault tolerance.
 
 # Adding optional storage
 
-The Canonical Distribution of Kubernetes allows you to connect with durable
-storage devices such as [Ceph](http://ceph.com). When paired with the
-[Juju Storage](https://jujucharms.com/docs/2.0/charms-storage) feature you
-can add durable storage easily and across most public clouds.
+Using [Juju Storage](https://jujucharms.com/docs/2.0/charms-storage), the
+Canonical Distribution of Kubernetes allows you to connect with durable
+storage devices such as [Ceph](https://ceph.com).
 
-Deploy a minimum of three ceph-mon and three ceph-osd charms.
-
+Deploy a minimum of three ceph-mon and three ceph-osd charms:
 ```
 juju deploy cs:ceph-mon -n 3
 juju deploy cs:ceph-osd -n 3
@@ -467,14 +452,14 @@ List the storage pools available to Juju for your cloud:
 ```
 $ juju storage-pools
 Name     Provider  Attrs
-ebs      ebs       
+ebs      ebs
 ebs-ssd  ebs       volume-type=ssd
-loop     loop      
-rootfs   rootfs    
+loop     loop
+rootfs   rootfs
 tmpfs    tmpfs
 ```
 > **Note**: This listing is for the Amazon Web Services public cloud.
-> Different clouds may have different pool names.
+> Different clouds will have different pool names.
 
 Add a storage pool to the ceph-osd charm by NAME,SIZE,COUNT:
 
@@ -491,8 +476,8 @@ juju add-relation kubernetes-master ceph-mon
 ```
 
 We are now ready to enlist
-[Persistent Volumes](http://kubernetes.io/docs/user-guide/persistent-volumes/)
-in Kubernetes which our workloads can consume via Persistent Volume (PV) claims.
+[Persistent Volumes](https://kubernetes.io/docs/user-guide/persistent-volumes/)
+in Kubernetes, which our workloads can use via Persistent Volume Claims (PVC).
 
 ```
 juju run-action kubernetes-master/0 create-rbd-pv name=test size=50
@@ -500,9 +485,7 @@ juju run-action kubernetes-master/0 create-rbd-pv name=test size=50
 
 This example created a "test" Radios Block Device (rbd) in the size of 50 MB.
 
-Use watch on your Kubernetes cluster like the following, you should see the PV
-become enlisted and be marked as available:
-
+You should see the PV become enlisted and be marked as available:
 ```
 $ watch kubectl get pv
 
@@ -511,10 +494,10 @@ NAME CAPACITY   ACCESSMODES   STATUS    CLAIM              REASON    AGE
 test   50M          RWO       Available                              10s
 ```
 
-To consume these Persistent Volumes, your pods will need an associated
-Persistant Volume Claim with
-them, and is outside the scope of this README. See the
-[Persistant Volumes](http://kubernetes.io/docs/user-guide/persistent-volumes/)
+To consume these Persistent Volumes, your pods will need a
+Persistant Volume Claim associated with
+them, a task that is outside the scope of this README. See the
+[Persistant Volumes](https://kubernetes.io/docs/user-guide/persistent-volumes/)
 documentation for more information.
 
 ## Known Limitations and Issues
@@ -533,22 +516,19 @@ documentation for more information.
    kubernetes-master is missing its resources, download them from the resources
    section of the sidebar [here](https://jujucharms.com/u/containers/kubernetes-master/)
    and install them by running
-   `juju attach kubernetes-master kubernetes=/path/to/kubernetes-master.tar.gz`.
+   `juju attach kubernetes-master kubernetes=/path/to/resource`.
 
-   You can find the resources for CDK charms here:
+   You can find the resources for CDK Core charms here:
 
    - [kubernetes-master](https://jujucharms.com/u/containers/kubernetes-master/)
    - [kubernetes-worker](https://jujucharms.com/u/containers/kubernetes-worker/)
    - [easyrsa](https://jujucharms.com/u/containers/easyrsa/)
    - [etcd](https://jujucharms.com/u/containers/etcd/)
-
-   Also note that your SDN plugin of choice (e.g., Flannel) may have associated
-   resources that you'll need to install as well. See the section in this document
-   for your SDN to find the resources for it.
+   - [flannel](https://jujucharms.com/u/containers/flannel/)
 
 ## Kubernetes details
 
-- [Kubernetes User Guide](http://kubernetes.io/docs/user-guide/)
+- [Kubernetes User Guide](https://kubernetes.io/docs/user-guide/)
 - [The Canonical Distribution of Kubernetes ](https://jujucharms.com/canonical-kubernetes/bundle/)
-- [Bundle Source](https://github.com/juju-solutions/bundle-canonical-kubernetes)
+- [Bundle Source](https://github.com/juju-solutions/bundle-kubernetes-core)
 - [Bug tracker](https://github.com/juju-solutions/bundle-canonical-kubernetes/issues)
