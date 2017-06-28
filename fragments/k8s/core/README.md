@@ -1,15 +1,15 @@
 # Kubernetes Core Bundle
 
-![](https://img.shields.io/badge/release-beta-yellow.svg) ![](https://img.shields.io/badge/juju-2.0+-brightgreen.svg)
+![](https://img.shields.io/badge/kubernetes-1.6.2-brightgreen.svg) ![](https://img.shields.io/badge/juju-2.0+-brightgreen.svg)
 
 ## Overview
 
-This is a minimal Kubernetes cluster comprised of the following components and features:
+This is a minimal Kubernetes cluster composed of the following components and features:
 
 - Kubernetes (automated deployment, operations, and scaling)
-     - Two node Kubernetes cluster with one master node and one worker node.
+     - Two-node Kubernetes cluster with one master node and one worker node.
      - TLS used for communication between nodes for security.
-     - A CNI plugin (e.g., Flannel)
+     - A CNI plugin (Flannel)
      - Optional Ingress Controller (on worker)
      - Optional Dashboard addon (on master) including Heapster for cluster monitoring
 - EasyRSA
@@ -18,18 +18,17 @@ This is a minimal Kubernetes cluster comprised of the following components and f
 - Etcd (distributed key value store)
      - One node for basic functionality.
 
+This bundle is suitable for development and testing purposes. For a more robust, scaled-out cluster, deploy the
+[canonical-kubernetes](https://jujucharms.com/canonical-kubernetes) bundle via `conjure-up canonical-kubernetes`.
+
 # Usage
 
-Installation has been automated via [conjure-up](http://conjure-up.io/):
+Installation has been automated via [conjure-up](https://conjure-up.io/):
 
     sudo snap install conjure-up --classic
-    conjure-up canonical-kubernetes
+    conjure-up kubernetes-core
 
-Conjure will prompt you for deployment options (AWS, GCE, Azure, etc.) and credentials.
-
-This bundle is for multi-node deployments, for individual deployments for
-developers, use the smaller
-[kubernetes-core](http://jujucharms.com/kubernetes-core) bundle via `conjure-up kubernetes-core`.
+Conjure-up will prompt you for deployment options (AWS, GCE, Azure, etc.) and credentials.
 
 ## Proxy configuration
 
@@ -61,17 +60,16 @@ to use your proxy:
 $ juju config kubernetes-worker http_proxy=http://squid.internal:3128 https_proxy=https://squid.internal:3128
 ```
 
-## Deploy the bundle
+## Alternate deployment methods
+
+### Deploying with Juju directly
 
 ```
 juju deploy kubernetes-core
 ```
 
-> Note: If you desire to deploy this bundle locally on your laptop, see the
-> segment about Conjure-Up under Alternate Deployment Methods. Default deployment
-> via juju will not properly adjust the apparmor profile to support running
-> kubernetes in LXD. At this time, it is a necessary intermediate deployment
-> mechanism.
+> Note: If you're deploying on lxd, use conjure-up instead, as described
+> above. It configures your lxd profile to support running Kubernetes on lxd.
 
 > Note: If you're operating behind a proxy, remember to set the `kubernetes-worker`
 proxy configuration options as described in the Proxy configuration section
@@ -80,26 +78,24 @@ above.
 This bundle exposes the kubernetes-worker charm by default. This means that
 it is accessible through its public address.
 
-If you would like to remove external access, unexpose the application:
+If you would like to remove external access to the worker node, unexpose it:
 
 ```
 juju unexpose kubernetes-worker
 ```
 
-To get the status of the deployment, run `juju status`. For a constant update,
-this can be used with `watch`.
+To get the status of the deployment, run `juju status`. For constant updates,
+combine it with the `watch` command:
 
 ```
 watch -c juju status --color
 ```
 
-## Alternate deployment methods
-
-### Usage with your own resources
+### Using with your own resources
 
 In order to support restricted-network deployments, the charms in this bundle
 support
-[juju resources](https://jujucharms.com/docs/2.0/developer-resources#managing-resources).
+[juju resources](https://jujucharms.com/docs/stable/developer-resources#managing-resources).
 
 This allows you to `juju attach` the resources built for the architecture of
 your cloud.
@@ -119,7 +115,7 @@ juju attach kubernetes-worker cni=/path/to/cni.tgz
 
 ### Using a specific Kubernetes version
 
-You can select a specific version or series of Kubernetes by configuring CDK
+You can select a specific version or series of Kubernetes by configuring the charms
 to use a specific snap channel. For example, to use the 1.6 series:
 
 ```
@@ -137,14 +133,13 @@ juju run-action kubernetes-worker/2 upgrade
 ...
 ```
 
-By default, the channel will be set to `stable`, which means your cluster will
-always be upgraded to the latest stable version of Kubernetes available.
+By default, the channel is set to `stable` on the current minor version of Kubernetes, for example, `1.6/stable`. This means your cluster will receive automatic upgrades for new patch releases (e.g. 1.6.2 -> 1.6.3), but not for new minor versions (e.g. 1.6.3 -> 1.7). To upgrade to a new minor version, configure the channel manually as described above.
 
 
 ## Interacting with the Kubernetes cluster
 
 After the cluster is deployed you may assume control over the Kubernetes cluster
-from any kubernetes-master, or kubernetes-worker node.
+from any kubernetes-master or kubernetes-worker node.
 
 To download the credentials and client application to your local workstation:
 
@@ -234,21 +229,21 @@ kubectl get services
 
 For expanded information on kubectl beyond what this README provides, please
 see the
-[kubectl overview](http://kubernetes.io/docs/user-guide/kubectl-overview/)
+[kubectl overview](https://kubernetes.io/docs/user-guide/kubectl-overview/)
 which contains practical examples and an API reference.
 
 Additionally if you need to manage multiple clusters, there is more information
-about configuring kubectl with the
-[kubectl config guide](http://kubernetes.io/docs/user-guide/kubectl/kubectl_config/)
+about configuring kubectl in the
+[kubectl config guide](https://kubernetes.io/docs/user-guide/kubectl/kubectl_config/)
 
 
 ### Using Ingress
 
 The kubernetes-worker charm supports deploying an NGINX ingress controller.
-Ingress allows access from the Internet to containers inside the cluster
-running web services.
+Ingress allows access from the Internet to containers running web
+services inside the cluster.
 
-First allow the Internet access to the kubernetes-worker charm with with the
+First allow the Internet access to the kubernetes-worker charm with the
 following Juju command:
 
 ```
@@ -256,17 +251,17 @@ juju expose kubernetes-worker
 ```
 
 In Kubernetes, workloads are declared using pod, service, and ingress
-definitions. An ingress controller is provided to you by default, deployed into
+definitions. An ingress controller is provided to you by default and deployed into
 the
-[default namespace](http://kubernetes.io/docs/user-guide/namespaces/) of the
-cluster. If one is not available, you may deploy this with:
+[default namespace](https://kubernetes.io/docs/user-guide/namespaces/) of the
+cluster. If one is not available, you may deploy it with:
 
 ```
 juju config kubernetes-worker ingress=true
 ```
 
 Ingress resources are DNS mappings to your containers, routed through
-[endpoints](http://kubernetes.io/docs/user-guide/services/)
+[endpoints](https://kubernetes.io/docs/user-guide/services/).
 
 As an example for users unfamiliar with Kubernetes, we packaged an action to
 both deploy an example and clean itself up.
@@ -280,7 +275,7 @@ juju run-action kubernetes-worker/0 microbot replicas=5
 
 This action performs the following steps:
 
-- It creates a deployment titled 'microbots' comprised of 5 replicas defined
+- It creates a deployment titled 'microbots' composed of 5 replicas defined
 during the run of the action. It also creates a service named 'microbots'
 which binds an 'endpoint', using all 5 of the 'microbots' pods.
 
@@ -290,6 +285,7 @@ which binds an 'endpoint', using all 5 of the 'microbots' pods.
 
 #### Running the packaged simulation
 
+Run a Juju action to create the example microbot web application:
 
     $ juju run-action kubernetes-worker/0 microbot replicas=3
     Action queued with id: db7cc72b-5f35-4a4d-877c-284c4b776eb8
@@ -303,6 +299,8 @@ which binds an 'endpoint', using all 5 of the 'microbots' pods.
       enqueued: 2016-09-26 20:42:39 +0000 UTC
       started: 2016-09-26 20:42:41 +0000 UTC
 
+> **Note**: Your FQDN will be different and contain the address of the cloud
+> instance.
 
 At this point, you can inspect the cluster to observe the workload coming online.
 
@@ -339,27 +337,26 @@ At this point, you can inspect the cluster to observe the workload coming online
     microbot-ingress   microbot.52.38.62.235.xip.io   172.31.26.109   80        1h
 
 
-When all the pods are listed as Running, the endpoint has more than one host
-you are ready to visit the address in the hosts section of the ingress listing.
+When all the pods are listed as Running, you are ready to visit the address listed in the HOSTS column of the ingress listing.
 
-It is normal to see a 502/503 error during initial application turnup.
+> Note: It is normal to see a 502/503 error during initial application deployment.
 
 As you refresh the page, you will be greeted with a microbot web page, serving
 from one of the microbot replica pods. Refreshing will show you another
-microbot with a different hostname, as the requests are load balanced through
-out the replicas.
+microbot with a different hostname as the requests are load-balanced across
+the replicas.
 
 #### Clean up microbot
 
 There is also an action to clean up the microbot applications. When you are
-done using the microbot application you can delete them from the pods with
+done using the microbot application you can delete the pods with
 one Juju action:
 
 ```
 juju run-action kubernetes-worker/0 microbot delete=true
 ```
 
-If you no longer need Internet access to your workers remember to unexpose the
+If you no longer need Internet access to your workers, remember to unexpose the
 kubernetes-worker charm:
 
 ```
@@ -367,27 +364,20 @@ juju unexpose kubernetes-worker
 ```
 
 To learn more about
-[Kubernetes Ingress](http://kubernetes.io/docs/user-guide/ingress.html)
-and how to really tune the Ingress Controller beyond defaults (such as TLS and
+[Kubernetes Ingress](https://kubernetes.io/docs/user-guide/ingress.html)
+and how to configure the Ingress Controller beyond defaults (such as TLS and
 websocket support) view the
 [nginx-ingress-controller](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx)
 project on github.
 
 
-# Scale out Usage
-
-Any of the applications can be scaled out post-deployment. The charms
-update the status messages with progress, so it is recommended to run.
-
-```
-watch -c juju status --color
-```
+# Scale-out Usage
 
 ### Scaling kubernetes-worker
 
 The kubernetes-worker nodes are the load-bearing units of a Kubernetes cluster.
 
-By default pods are automatically spread throughout the kubernetes-worker units
+By default, pods are automatically spread across the kubernetes-worker units
 that you have deployed.
 
 To add more kubernetes-worker units to the cluster:
@@ -409,14 +399,14 @@ for other machine constraints that might be useful for the kubernetes-worker uni
 
 ### Scaling Etcd
 
-Etcd is used as a key-value store for the Kubernetes cluster. The bundle
-defaults to one instance in this cluster.
+Etcd is the key-value store for the Kubernetes cluster. The bundle
+defaults to one instance of etcd in this cluster.
 
-For reliability and more scalability, we recommend between 3 and 9 etcd nodes.
-If you want to add more nodes:
+For reliability and scalability, use at least 3 etcd nodes.
+To add two more nodes:
 
 ```
-juju add-unit etcd
+juju add-unit etcd -n 2
 ```
 
 The CoreOS etcd documentation has a chart for the
@@ -438,23 +428,21 @@ to determine fault tolerance.
    will need to download and install them manually. For example, if
    kubernetes-master is missing its resources, download them from the resources
    section of the sidebar [here](https://jujucharms.com/u/containers/kubernetes-master/)
-   and install them by running
-   `juju attach kubernetes-master kubernetes=/path/to/kubernetes-master.tar.gz`.
+   and install them by running, for example:
 
-   You can find the resources for CDK Core charms here:
+   `juju attach kubernetes-master kube-apiserver=/path/to/snap`.
+
+   You can find resources for the kubernetes-core charms here:
 
    - [kubernetes-master](https://jujucharms.com/u/containers/kubernetes-master/)
    - [kubernetes-worker](https://jujucharms.com/u/containers/kubernetes-worker/)
    - [easyrsa](https://jujucharms.com/u/containers/easyrsa/)
    - [etcd](https://jujucharms.com/u/containers/etcd/)
-
-   Also note that your SDN plugin of choice (e.g., Flannel) may have associated
-   resources that you'll need to install as well. See the section in this document
-   for your SDN to find the resources for it.
+   - [flannel](https://jujucharms.com/u/containers/flannel/)
 
 ## Kubernetes details
 
-- [Kubernetes User Guide](http://kubernetes.io/docs/user-guide/)
+- [Kubernetes User Guide](https://kubernetes.io/docs/user-guide/)
 - [The Canonical Distribution of Kubernetes ](https://jujucharms.com/canonical-kubernetes/bundle/)
 - [Bundle Source](https://github.com/juju-solutions/bundle-kubernetes-core)
 - [Bug tracker](https://github.com/juju-solutions/bundle-canonical-kubernetes/issues)
