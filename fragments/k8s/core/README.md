@@ -377,7 +377,7 @@ project on github.
 
 The kubernetes-worker nodes are the load-bearing units of a Kubernetes cluster.
 
-By default, pods are automatically spread acress the kubernetes-worker units
+By default, pods are automatically spread across the kubernetes-worker units
 that you have deployed.
 
 To add more kubernetes-worker units to the cluster:
@@ -428,10 +428,11 @@ to determine fault tolerance.
    will need to download and install them manually. For example, if
    kubernetes-master is missing its resources, download them from the resources
    section of the sidebar [here](https://jujucharms.com/u/containers/kubernetes-master/)
-   and install them by running
-   `juju attach kubernetes-master kubernetes=/path/to/resource`.
+   and install them by running, for example:
 
-   You can find the resources for CDK Core charms here:
+   `juju attach kubernetes-master kube-apiserver=/path/to/snap`.
+
+   You can find resources for the kubernetes-core charms here:
 
    - [kubernetes-master](https://jujucharms.com/u/containers/kubernetes-master/)
    - [kubernetes-worker](https://jujucharms.com/u/containers/kubernetes-worker/)
