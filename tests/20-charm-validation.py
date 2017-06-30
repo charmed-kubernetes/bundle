@@ -105,12 +105,12 @@ class IntegrationTest(unittest.TestCase):
         # Ensure we can drop masters
         for master in self.masters:
             self.deployment.remove_unit(master.info['unit_name'])
-        self.deployment.sentry.wait()
+        self.deployment.sentry.wait(timeout=SECONDS_TO_WAIT)
         assert len(self.masters) is 0
 
         # Ensure we can have more that one masters
         self.deployment.add_unit('kubernetes-master', 2)
-        self.deployment.sentry.wait()
+        self.deployment.sentry.wait(timeout=SECONDS_TO_WAIT)
         lb_ip = self.loadbalancers[0].info['public-address']
         for master in self.masters:
             output, rc = master.run('grep server: /home/ubuntu/config')
@@ -120,7 +120,10 @@ class IntegrationTest(unittest.TestCase):
         # Check that the LB can still reach the masters
         url = 'https://{}:443/ui/'.format(lb_ip)
         r = requests.get(url, verify=False)
-        self.assertTrue(r.status_code == 200)
+        # UI is protected via basic auth so we should get a 401
+        # In case the LB was not pointing to the masters we were to get
+        # a connection timeout.
+        self.assertTrue(r.status_code == 401)
 
     def test_tls(self):
         '''Test that the master and worker nodes have the right tls files.'''
