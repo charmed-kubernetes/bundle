@@ -100,13 +100,18 @@ class IntegrationTest(unittest.TestCase):
             for service in services:
                 self.assertTrue(check_systemd_service(worker, service))
 
-    def test_scale_master_services(self):
-        '''Test we can scale kubernetes masters.'''
+    def test_scale_master_and_worker_termination(self):
+        '''Test we can scale kubernetes masters, and terminate
+        workers without errors.'''
         # Ensure we can drop masters
         for master in self.masters:
             self.deployment.remove_unit(master.info['unit_name'])
         self.deployment.sentry.wait(timeout=SECONDS_TO_WAIT)
         assert len(self.masters) is 0
+
+        # Ensure we can stop workers without errors
+        self.deployment.remove_unit(self.workers[0].info['unit_name'])
+        self.deployment.sentry.wait()
 
         # Ensure we can have more that one masters
         self.deployment.add_unit('kubernetes-master', 2)
