@@ -58,19 +58,19 @@ class IntegrationTest(unittest.TestCase):
         '''Test if the master services are accessible without credentials.'''
         url = 'https://{}:443/ui/'.format(self.loadbalancers[0].info['public-address'])
         r = requests.get(url, verify=False)
-        self.assertTrue(r.status_code == 401)
+        self.assertEqual(r.status_code, 401)
 
     def test_basic(self):
         '''Test the effect of changing the admin password'''
         ip = self.loadbalancers[0].info['public-address']
         # Try wrong password
         status = self.get_ui(ip, 'wrongpassword')
-        self.assertTrue(status == 401)
+        self.assertEqual(status, 401)
         # Get current password
         password = self.get_password()
-        self.assertTrue(password != 'admin')
+        self.assertNotEqual(password, 'admin')
         status = self.get_ui(ip, password)
-        self.assertTrue(status == 200)
+        self.assertEqual(status, 200)
         # Change password
         alpha = string.ascii_letters + string.digits
         new_password = ''.join(random.SystemRandom().choice(alpha) for _ in range(8))
@@ -81,9 +81,9 @@ class IntegrationTest(unittest.TestCase):
         time.sleep(20) # give a chance for reactive to run
         self.deployment.sentry.wait()
         status = self.get_ui(ip, password)
-        self.assertTrue(status == 401)
+        self.assertEqual(status, 401)
         status = self.get_ui(ip, new_password)
-        self.assertTrue(status == 200)
+        self.assertEqual(status, 200)
 
     def get_ui(self, ip_addr, password, user='admin'):
         url = "https://{}:443/ui/".format(ip_addr)
