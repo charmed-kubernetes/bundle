@@ -255,6 +255,40 @@ class IntegrationTest(unittest.TestCase):
                                                full_output=True)
         self.assertEqual(outcome['status'], 'completed')
 
+    def test_namespace_actions(self):
+        """
+        Test namespace CRUD operations
+
+        """
+        action_id = self.masters[0].run_action('namespace-create',
+                                               {'name': 'testns'})
+        outcome = self.deployment.action_fetch(action_id,
+                                               timeout=7200,
+                                               raise_on_timeout=True,
+                                               full_output=True)
+        self.assertEqual(outcome['status'], 'completed')
+        action_id = self.masters[0].run_action('namespace-list')
+        outcome = self.deployment.action_fetch(action_id,
+                                               timeout=7200,
+                                               raise_on_timeout=True,
+                                               full_output=True)
+        self.assertTrue('testns' in outcome['results']['namespaces'])
+        action_id = self.masters[0].run_action('namespace-delete',
+                                               {'name': 'testns'})
+        outcome = self.deployment.action_fetch(action_id,
+                                               timeout=7200,
+                                               raise_on_timeout=True,
+                                               full_output=True)
+        self.assertEqual(outcome['status'], 'completed')
+        # Allow for kubernetes to remove the namespace
+        time.sleep(10)
+        action_id = self.masters[0].run_action('namespace-list')
+        outcome = self.deployment.action_fetch(action_id,
+                                               timeout=7200,
+                                               raise_on_timeout=True,
+                                               full_output=True)
+        self.assertTrue('testns' not in outcome['results']['namespaces'])
+
 
 if __name__ == '__main__':
     unittest.main()
