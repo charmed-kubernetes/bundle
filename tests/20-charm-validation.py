@@ -6,6 +6,7 @@ import unittest
 import yaml
 import requests
 import uuid
+import time
 
 from amulet_utils import check_systemd_service
 from amulet_utils import kubectl
