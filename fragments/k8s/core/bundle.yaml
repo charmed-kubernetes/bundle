@@ -8,6 +8,8 @@ services:
     num_units: 1
     to:
       - "0"
+    options:
+      channel: 1.7/stable
     expose: true
     annotations:
       "gui-x": "800"
@@ -25,6 +27,8 @@ services:
     num_units: 1
     to:
       - "1"
+    options:
+      channel: 1.7/stable
     expose: true
     annotations:
       "gui-x": "100"
