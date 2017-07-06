@@ -4,7 +4,6 @@ import amulet
 import os
 import unittest
 import yaml
-import requests
 import uuid
 import time
 
@@ -100,36 +99,6 @@ class IntegrationTest(unittest.TestCase):
             ]
             for service in services:
                 self.assertTrue(check_systemd_service(worker, service))
-
-    def test_scale_master_and_worker_termination(self):
-        '''Test we can scale kubernetes masters, and terminate
-        workers without errors.'''
-        # Ensure we can drop masters
-        for master in self.masters:
-            self.deployment.remove_unit(master.info['unit_name'])
-        self.deployment.sentry.wait(timeout=SECONDS_TO_WAIT)
-        assert len(self.masters) is 0
-
-        # Ensure we can stop workers without errors
-        self.deployment.remove_unit(self.workers[0].info['unit_name'])
-        self.deployment.sentry.wait()
-
-        # Ensure we can have more that one masters
-        self.deployment.add_unit('kubernetes-master', 2)
-        self.deployment.sentry.wait(timeout=SECONDS_TO_WAIT)
-        lb_ip = self.loadbalancers[0].info['public-address']
-        for master in self.masters:
-            output, rc = master.run('grep server: /home/ubuntu/config')
-            self.assertTrue(lb_ip in output)
-            self.assertTrue(rc == 0)
-
-        # Check that the LB can still reach the masters
-        url = 'https://{}:443/ui/'.format(lb_ip)
-        r = requests.get(url, verify=False)
-        # UI is protected via basic auth so we should get a 401
-        # In case the LB was not pointing to the masters we were to get
-        # a connection timeout.
-        self.assertTrue(r.status_code == 401)
 
     def test_tls(self):
         '''Test that the master and worker nodes have the right tls files.'''
