@@ -30,7 +30,7 @@ services:
     options:
       channel: 1.7/stable
     expose: true
-    constraints: "cores=4 mem=4G"
+    constraints: "cpu-cores=4 mem=4G"
     annotations:
       "gui-x": "100"
       "gui-y": "850"
@@ -60,4 +60,4 @@ machines:
     series: xenial
   "1":
     series: xenial
-    constraints: "cores=4 mem=4G"
+    constraints: "cpu-cores=4 mem=4G"
