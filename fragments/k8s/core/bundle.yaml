@@ -1,5 +1,5 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
-description: |
+description: |-
     A minimal two-machine Kubernetes cluster, appropriate for development.
 series: xenial
 services:

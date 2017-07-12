@@ -144,11 +144,11 @@ def serialize(bundle):
     otherwise.sort(key=yaml_lines)
     out = ''
     for o in otherwise:
-        out += yaml.dump(o, default_flow_style=False)
+        out += yaml.dump(o, default_flow_style=False, width=1000)
     if bool(services):
-        out += yaml.dump(services, default_flow_style=False)
+        out += yaml.dump(services, default_flow_style=False, width=1000)
     if bool(relations):
-        out += yaml.dump(relations, default_flow_style=False)
+        out += yaml.dump(relations, default_flow_style=False, width=1000)
     return out
 
 
