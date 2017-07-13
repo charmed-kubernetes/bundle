@@ -30,7 +30,7 @@ services:
     options:
       channel: 1.7/stable
     expose: true
-    constraints: "cpu-cores=4 mem=4G"
+    constraints: "cores=4 mem=4G"
     annotations:
       "gui-x": "100"
       "gui-y": "850"
