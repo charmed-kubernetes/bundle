@@ -1,7 +1,7 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 services:
   "calico":
-    charm: "cs:~cynerva/calico"
+    charm: "cs:~containers/calico"
     annotations:
       "gui-x": "450"
       "gui-y": "750"
