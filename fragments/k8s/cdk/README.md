@@ -7,7 +7,7 @@
 This is a scaled-out Kubernetes cluster composed of the following components and features:
 
 - Kubernetes (automated deployment, operations, and scaling)
-     - Three node Kubernetes cluster with one master and two worker nodes.
+     - Kubernetes cluster with one master and three worker nodes.
      - TLS used for communication between nodes for security.
      - A CNI plugin (Flannel)
      - A load balancer for HA kubernetes-master
