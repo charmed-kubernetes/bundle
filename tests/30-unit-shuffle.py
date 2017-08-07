@@ -35,10 +35,7 @@ class ShuffleTest(unittest.TestCase):
         cls.deployment.setup(timeout=SECONDS_TO_WAIT)
 
         # Wait for the system to settle down.
-        application_messages = {'kubernetes-worker':
-                                'Kubernetes worker running.'}
-        cls.deployment.sentry.wait_for_messages(application_messages,
-                                                timeout=900)
+        cls.deployment.sentry.wait()
 
     @property
     def easyrsas(self):
