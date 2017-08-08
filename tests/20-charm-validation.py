@@ -12,6 +12,7 @@ from amulet_utils import kubectl
 from amulet_utils import run
 from amulet_utils import valid_certificate
 from amulet_utils import valid_key
+from amulet_utils import wait
 
 SECONDS_TO_WAIT = 1800
 
@@ -49,7 +50,7 @@ class IntegrationTest(unittest.TestCase):
         cls.deployment.setup(timeout=SECONDS_TO_WAIT)
 
         # Wait for the system to settle down.
-        cls.deployment.sentry.wait()
+        wait(cls.deployment.sentry)
 
     @property
     def easyrsas(self):

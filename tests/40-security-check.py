@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+from amulet_utils import wait
+
 import amulet
 import os
 import unittest
@@ -38,7 +40,7 @@ class IntegrationTest(unittest.TestCase):
         cls.deployment.setup(timeout=SECONDS_TO_WAIT)
 
         # Wait for the system to settle down.
-        cls.deployment.sentry.wait()
+        wait(cls.deployment.sentry)
 
         # Make every unit available through self reference
         # eg: for worker in self.workers:

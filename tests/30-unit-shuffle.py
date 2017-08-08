@@ -6,6 +6,7 @@ import unittest
 import yaml
 import requests
 
+from amulet_utils import wait
 
 SECONDS_TO_WAIT = 1800
 
@@ -35,7 +36,8 @@ class ShuffleTest(unittest.TestCase):
         cls.deployment.setup(timeout=SECONDS_TO_WAIT)
 
         # Wait for the system to settle down.
-        cls.deployment.sentry.wait()
+        wait(cls.deployment.sentry)
+
 
     @property
     def easyrsas(self):
