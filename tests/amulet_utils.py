@@ -4,7 +4,7 @@ import yaml
 
 from amulet.helpers import TimeoutError
 
-def wait(sentry, timeout=300):
+def wait(sentry, timeout=900):
     """Waits for all units to be active/idle."""
     def check_status():
         status = sentry.get_status()
