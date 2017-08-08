@@ -1,6 +1,31 @@
 import subprocess
+import time
 import yaml
 
+from amulet.helpers import TimeoutError
+
+def wait(sentry, timeout=900):
+    """Waits for all units to be active/idle."""
+    def check_status():
+        status = sentry.get_status()
+        for service_name in sentry.service_names:
+            service = status.get(service_name, {})
+            for unit_name, unit in service.items():
+                if not unit['agent-status']:
+                    return False
+                if not unit['workload-status']:
+                    return False
+                if unit['agent-status'].get('current') != 'idle':
+                    return False
+                if unit['workload-status'].get('current') != 'active':
+                    return False
+        return True
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        if check_status():
+            return
+        time.sleep(1)
+    raise TimeoutError()
 
 def attach_resource(charm, resource, resource_path):
     ''' Upload a resource to a deployed model.

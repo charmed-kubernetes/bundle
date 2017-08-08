@@ -6,6 +6,7 @@ import unittest
 import yaml
 import requests
 
+from amulet_utils import wait
 
 SECONDS_TO_WAIT = 1800
 
@@ -35,10 +36,8 @@ class ShuffleTest(unittest.TestCase):
         cls.deployment.setup(timeout=SECONDS_TO_WAIT)
 
         # Wait for the system to settle down.
-        application_messages = {'kubernetes-worker':
-                                'Kubernetes worker running.'}
-        cls.deployment.sentry.wait_for_messages(application_messages,
-                                                timeout=900)
+        wait(cls.deployment.sentry)
+
 
     @property
     def easyrsas(self):
