@@ -88,7 +88,6 @@ def run(unit, command):
     print(command)
     # Run the command on the unit.
     output, rc = unit.run(command)
-    print(output)
     # Return the output and return code.
     return output, rc
 
