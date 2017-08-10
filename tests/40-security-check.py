@@ -68,7 +68,12 @@ class IntegrationTest(unittest.TestCase):
         # Get current password
         password = self.get_password()
         self.assertNotEqual(password, 'admin')
-        status = self.get_ui(ip, password)
+        t0 = time.time()
+        while time.time() - t0 < 300:
+            status = self.get_ui(ip, password)
+            if status == 200:
+                break
+            time.sleep(1)
         self.assertEqual(status, 200)
         # Change password
         alpha = string.ascii_letters + string.digits
