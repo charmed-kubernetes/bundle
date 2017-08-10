@@ -6,7 +6,6 @@ excludes:
 sources:
   - ppa:tvansteenburgh/ppa
 packages:
-  - amulet
   - python3-juju-deployer
   - python3-yaml
 reset: false
