@@ -69,7 +69,7 @@ class IntegrationTest(unittest.TestCase):
         password = self.get_password()
         self.assertNotEqual(password, 'admin')
         t0 = time.time()
-        while time.time() - t0 < 300:
+        while time.time() - t0 < 600:
             status = self.get_ui(ip, password)
             if status == 200:
                 break
