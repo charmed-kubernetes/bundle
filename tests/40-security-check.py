@@ -35,11 +35,6 @@ class IntegrationTest(unittest.TestCase):
             bundle_yaml = stream.read()
         bundle = yaml.safe_load(bundle_yaml)
         cls.deployment.load(bundle)
-        # RBAC will block any interaction we have with the UI
-        cls.deployment.configure('kubernetes-master',
-                                 {
-                                     'authorization-mode': 'None',
-                                 })
 
         # Allow some time for Juju to provision and deploy the bundle.
         cls.deployment.setup(timeout=SECONDS_TO_WAIT)
@@ -60,12 +55,14 @@ class IntegrationTest(unittest.TestCase):
 
     def test_unauthenticated(self):
         '''Test if the master services are accessible without credentials.'''
+        self.disable_rbac()
         url = 'https://{}:443/ui/'.format(self.loadbalancers[0].info['public-address'])
         r = requests.get(url, verify=False)
         self.assertEqual(r.status_code, 401)
 
     def test_basic(self):
         '''Test the effect of changing the admin password'''
+        self.disable_rbac()
         ip = self.loadbalancers[0].info['public-address']
         # Try wrong password
         status = self.get_ui(ip, 'wrongpassword')
@@ -104,6 +101,14 @@ class IntegrationTest(unittest.TestCase):
         content = self.masters[0].file_contents('/home/ubuntu/config')
         config = yaml.safe_load(content)
         return config['users'][0]['user']['password']
+
+    def disable_rbac(self):
+        ''' Disable RBAC since it may block tests against UI. '''
+        self.deployment.configure('kubernetes-master',
+                                 {
+                                     'authorization-mode': 'None',
+                                 })
+        self.deployment.setup(timeout=SECONDS_TO_WAIT)
 
 
 if __name__ == '__main__':

@@ -31,11 +31,6 @@ class ShuffleTest(unittest.TestCase):
             bundle_yaml = stream.read()
         bundle = yaml.safe_load(bundle_yaml)
         cls.deployment.load(bundle)
-        # RBAC will block any interaction we want with the UI.
-        cls.deployment.configure('kubernetes-master',
-                                 {
-                                     'authorization-mode': 'None',
-                                 })
 
         # Allow some time for Juju to provision and deploy the bundle.
         cls.deployment.setup(timeout=SECONDS_TO_WAIT)
@@ -71,6 +66,12 @@ class ShuffleTest(unittest.TestCase):
     def test_scale_master_and_worker_termination(self):
         '''Test we can scale kubernetes masters, and terminate
         workers without errors.'''
+        # RBAC will block any interaction we want with the UI.
+        self.deployment.configure('kubernetes-master',
+                                 {
+                                     'authorization-mode': 'None',
+                                 })
+        self.deployment.setup(timeout=SECONDS_TO_WAIT)
         # Ensure we can drop masters
         for master in self.masters:
             self.deployment.remove_unit(master.info['unit_name'])
