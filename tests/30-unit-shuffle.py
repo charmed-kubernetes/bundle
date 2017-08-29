@@ -31,6 +31,11 @@ class ShuffleTest(unittest.TestCase):
             bundle_yaml = stream.read()
         bundle = yaml.safe_load(bundle_yaml)
         cls.deployment.load(bundle)
+        # RBAC will block any interaction we want with the UI.
+        cls.deployment.configure('kubernetes-master',
+                                 {
+                                     'authorization-mode': 'None',
+                                 })
 
         # Allow some time for Juju to provision and deploy the bundle.
         cls.deployment.setup(timeout=SECONDS_TO_WAIT)
