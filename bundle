@@ -119,7 +119,7 @@ def version_bundle(bundle, channel):
             err = "Couldn't query %s %s, is it public?" % (charm, channel)
             raise CharmstoreQueryError(err)
         if resp.text == "{}":
-            print("Service {} not avilable in channel {}. Using default channel (stable)."
+            print("Service {} not available in channel {}. Using default channel (stable)."
                   .format(service, channel))
             resp = requests.get('https://api.jujucharms.com/charmstore/v5/meta/id',
                                 params={'id': charm, 'channel': "stable"})
