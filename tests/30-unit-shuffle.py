@@ -72,11 +72,7 @@ class ShuffleTest(unittest.TestCase):
         self.deployment.sentry.wait(timeout=SECONDS_TO_WAIT)
         assert len(self.masters) is 0
 
-        # Ensure we can stop workers without errors
-        self.deployment.remove_unit(self.workers[0].info['unit_name'])
-        self.deployment.sentry.wait(timeout=SECONDS_TO_WAIT)
-
-        # Ensure we can have more that one masters
+        # Ensure we can have more than one master
         self.deployment.add_unit('kubernetes-master', 2)
         self.deployment.sentry.wait(timeout=SECONDS_TO_WAIT)
         lb_ip = self.loadbalancers[0].info['public-address']
