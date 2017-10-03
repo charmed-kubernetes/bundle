@@ -41,7 +41,7 @@ You can set the location for the resulting `bundle.yaml` and `README.md` with th
 #### Example
 
 ```sh
-./bundle -o foo k8s/core cni/flannel
+./bundle -o ~/foo_dir k8s/core cni/flannel
 ```
 
 > Note: `bundle` will not overwrite existing bundle.yaml and README.md files. If
