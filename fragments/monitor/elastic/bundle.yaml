@@ -5,7 +5,7 @@ services:
     options:
       logpath: "/var/lib/docker/containers/*/*.log /var/log/*.log /var/log/*/*.log"
   elasticsearch:
-    charm: "cs:trusty/elasticsearch"
+    charm: "cs:trusty/elasticsearch-19"
     series: trusty
     num_units: 2
   topbeat:
