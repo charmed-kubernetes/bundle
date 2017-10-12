@@ -42,6 +42,8 @@ def get_args():
                         help='output directory')
     parser.add_argument('-l', '--localpath', default='/home/ubuntu/builds',
                         help='charm root path for local bundle')
+    parser.add_argument('-r', '--override', default=[], action='append', dest='overrides',
+                        help='override charm revision, format: charm,revision')
     parser.add_argument('fragments', metavar='frags', type=str, nargs='+',
                         help='the bundle fragments to include in this bundle')
     return parser.parse_args()
@@ -112,19 +114,25 @@ def local_bundle(bundle, root):
     return copy
 
 
-def version_bundle(bundle, channel):
+def version_bundle(bundle, channel, overrides):
     ''' Acquire and assign versions to charms according to their channel. '''
     copy = json.loads(json.dumps(bundle))
     for service in bundle['services']:
         charm = bundle['services'][service]['charm']
-        resp = requests.get('https://api.jujucharms.com/charmstore/v5/meta/id',
-                            params={'id': charm, 'channel': channel})
-        if not resp.ok:
-            err = "Couldn't query %s %s, is it public?" % (charm, channel)
-            raise CharmstoreQueryError(err)
-        meta = json.loads(resp.text)
-        meta = [meta[k] for k in meta][0]
-        copy['services'][service]['charm'] = meta['Id']
+        for override in overrides:
+            name, revision = override.split(',')
+            if name == charm:
+                copy['services'][service]['charm'] = name + '-' + revision
+                break
+        else:
+            resp = requests.get('https://api.jujucharms.com/charmstore/v5/meta/id',
+                                params={'id': charm, 'channel': channel})
+            if not resp.ok:
+                err = "Couldn't query %s %s, is it public?" % (charm, channel)
+                raise CharmstoreQueryError(err)
+            meta = json.loads(resp.text)
+            meta = [meta[k] for k in meta][0]
+            copy['services'][service]['charm'] = meta['Id']
     return copy
 
 
@@ -180,7 +188,7 @@ def main():
     if args.channel == 'local':
         bundle = local_bundle(bundle, args.localpath)
     else:
-        bundle = version_bundle(bundle, args.channel)
+        bundle = version_bundle(bundle, args.channel, args.overrides)
     out_bundle_name = os.path.abspath(args.outputdir)
     out_bundle_filename = os.path.join(out_bundle_name, 'bundle.yaml')
     out_readme_filename = os.path.join(out_bundle_name, 'README.md')
