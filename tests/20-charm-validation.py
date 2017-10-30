@@ -193,7 +193,7 @@ class IntegrationTest(unittest.TestCase):
 
         # Now remove an etcd unit (in this case, the leader)
         self.deployment.remove_unit(leader.info['unit_name'])
-        self.deployment.sentry.wait()
+        self.deployment.sentry.wait(timeout=900)
 
         # Probe the arg file for all etcd members.
         scaled_api_conf = self.masters[0].file_contents(args)
