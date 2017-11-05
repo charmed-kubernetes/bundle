@@ -189,6 +189,9 @@ By default, this establishes a proxy running on your local machine and the
 kubernetes-master unit. To reach the Kubernetes dashboard, visit
 `http://localhost:8001/ui`
 
+Alternatively, use the link in the output of `kubectl cluster-info` for 
+Kubernetes Dashboard and login with credentials from `$HOME/.kube/config`.
+
 ### Control the cluster
 
 kubectl is the command line utility to interact with a Kubernetes cluster.
@@ -208,14 +211,14 @@ List all nodes in the cluster:
 kubectl get nodes
 ```
 
-Now you can run pods inside the Kubernetes cluster:
+Now you can run pods and services inside the Kubernetes cluster, for example
 
-```
-kubectl create -f example.yaml
+```sh
+kubectl run --image=nginx pod-example --port=80
+kubectl expose deployment microbot --port=80 --target-port=80 --type=ClusterIP --selector=run=pod-example --name svc-example
 ```
 
 List all pods in the cluster:
-
 
 ```
 kubectl get pods
@@ -225,6 +228,13 @@ List all services in the cluster:
 
 ```
 kubectl get services
+```
+
+And delete these resources:
+
+```
+kubectl delete pod pod-example
+kubectl delete svc svc-example
 ```
 
 For expanded information on kubectl beyond what this README provides, please
