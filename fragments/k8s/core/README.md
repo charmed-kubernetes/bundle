@@ -1,6 +1,6 @@
 # Kubernetes Core Bundle
 
-![](https://img.shields.io/badge/kubernetes-1.8-brightgreen.svg) ![](https://img.shields.io/badge/juju-2.0+-brightgreen.svg)
+![](https://img.shields.io/badge/kubernetes-1.9-brightgreen.svg) ![](https://img.shields.io/badge/juju-2.0+-brightgreen.svg)
 
 ## Overview
 
@@ -124,9 +124,11 @@ juju config kubernetes-worker channel=1.6/stable
 ```
 
 After changing the channel, you'll need to manually execute the upgrade action
-on each kubernetes-worker unit, e.g.:
+on each kubernetes-worker and kubernetes-master unit, e.g.:
 
 ```
+juju run-action kubernetes-master/0 upgrade
+...
 juju run-action kubernetes-worker/0 upgrade
 juju run-action kubernetes-worker/1 upgrade
 juju run-action kubernetes-worker/2 upgrade
