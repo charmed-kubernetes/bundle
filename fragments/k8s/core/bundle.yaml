@@ -58,7 +58,7 @@ relations:
 machines:
   "0":
     series: xenial
-    constraints: "mem=4G"
+    constraints: "mem=4G root-disk=16G"
   "1":
     series: xenial
-    constraints: "cores=4 mem=4G"
+    constraints: "cores=4 mem=4G root-disk=16G"
