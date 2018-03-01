@@ -48,6 +48,7 @@ class IntegrationTest(unittest.TestCase):
         cls.easyrsas = cls.deployment.sentry['easyrsa']
         cls.etcds = cls.deployment.sentry['etcd']
         cls.flannels = cls.deployment.sentry['flannel']
+        cls.keepaliveds = cls.deployment.sentry['keepalived']
         cls.loadbalancers = cls.deployment.sentry['kubeapi-load-balancer']
         cls.masters = cls.deployment.sentry['kubernetes-master']
         cls.workers = cls.deployment.sentry['kubernetes-worker']

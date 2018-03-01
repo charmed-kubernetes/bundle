@@ -65,6 +65,10 @@ class IntegrationTest(unittest.TestCase):
         return self.deployment.sentry['flannel']
 
     @property
+    def keepaliveds(self):
+        return self.deployment.sentry['keepalived']
+
+    @property
     def loadbalancers(self):
         return self.deployment.sentry['kubeapi-load-balancer']
 

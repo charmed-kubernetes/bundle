@@ -44,11 +44,18 @@ services:
     annotations:
       "gui-x": "800"
       "gui-y": "550"
+  "keepalived":
+    charm: "cs:~boucherv29/keepalived"
+    annotations:
+      "gui-x": "475"
+      "gui-y": "150"
 relations:
   - - "kubernetes-master:kube-api-endpoint"
     - "kubeapi-load-balancer:apiserver"
   - - "kubernetes-master:loadbalancer"
-    - "kubeapi-load-balancer:loadbalancer"
+    - "keepalived:loadbalancer"
+  - - "keepalived:juju_info"
+    - "kubeapi-load-balancer:juju-info"
   - - "kubernetes-master:kube-control"
     - "kubernetes-worker:kube-control"
   - - "kubernetes-master:certificates"
@@ -60,6 +67,6 @@ relations:
   - - "kubernetes-worker:certificates"
     - "easyrsa:client"
   - - "kubernetes-worker:kube-api-endpoint"
-    - "kubeapi-load-balancer:website"
+    - "keepalived:website"
   - - "kubeapi-load-balancer:certificates"
     - "easyrsa:client"
