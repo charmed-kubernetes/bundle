@@ -59,7 +59,7 @@ services:
     num_units: 1
     options:
       channel: 1.9/stable
-      docker-opts: "--default-runtime=auto"
+      docker_runtime: "auto"
       kubelet-extra-args: "feature-gates=DevicePlugins=true"
     to:
       - "6"
