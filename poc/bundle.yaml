@@ -1,5 +1,5 @@
 series: xenial
-description: PREVIEW: A seven-machine Kubernetes cluster. Includes a three-machine etcd cluster and one GPU-enabled Kubernetes worker node.
+description: 'PREVIEW: A seven-machine Kubernetes cluster. Includes a three-machine etcd cluster and one GPU-enabled Kubernetes worker node.'
 services:
   easyrsa:
     annotations:
