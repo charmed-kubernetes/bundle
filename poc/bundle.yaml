@@ -42,7 +42,7 @@ services:
       gui-x: '100'
       gui-y: '850'
     charm: cs:~containers/kubernetes-worker-108
-    constraints: "instance-type=p2.xlarge root-disk=16G"
+    constraints: instance-type=p2.xlarge root-disk=16G
     expose: true
     num_units: 3
     options:

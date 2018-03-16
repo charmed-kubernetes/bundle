@@ -2,6 +2,11 @@
 
 ![](https://img.shields.io/badge/kubernetes-1.9-brightgreen.svg) ![](https://img.shields.io/badge/juju-2.0+-brightgreen.svg)
 
+# WARNING
+
+This bundle is a Proof of Concept for deploying CDK on GPU-enabled
+workers. This bundle is currently only usable in AWS.
+
 ## Overview
 
 This is a scaled-out Kubernetes cluster composed of the following components and features:
