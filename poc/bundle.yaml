@@ -43,7 +43,7 @@ services:
       gui-x: '800'
       gui-y: '850'
     charm: cs:~containers/kubernetes-master-97
-    constraints: root-disk=16G
+    constraints: mem=4G root-disk=16G
     num_units: 1
     options:
       channel: 1.9/stable
@@ -104,7 +104,7 @@ machines:
     constraints: "root-disk=8G"
   "5":
     series: "xenial"
-    constraints: "root-disk=16G"
+    constraints: "mem=4G root-disk=16G"
   "6":
     series: "xenial"
     constraints: "instance-type=p2.xlarge root-disk=16G"
