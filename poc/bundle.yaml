@@ -1,5 +1,7 @@
 series: xenial
-description: 'PREVIEW: A seven-machine Kubernetes cluster. Includes a three-machine etcd cluster and one GPU-enabled Kubernetes worker node.'
+description: >
+  PREVIEW (AWS only): A seven-machine Kubernetes cluster. Includes a
+  three-machine etcd cluster and one GPU-enabled Kubernetes worker node.
 services:
   easyrsa:
     annotations:
@@ -8,6 +10,8 @@ services:
     charm: cs:~containers/easyrsa-33
     constraints: root-disk=8G
     num_units: 1
+    to:
+      - "0"
   etcd:
     annotations:
       gui-x: '800'
@@ -15,6 +19,10 @@ services:
     charm: cs:~containers/etcd-74
     constraints: root-disk=8G
     num_units: 3
+    to:
+      - "1"
+      - "2"
+      - "3"
   flannel:
     annotations:
       gui-x: '450'
@@ -28,6 +36,8 @@ services:
     constraints: root-disk=8G
     expose: true
     num_units: 1
+    to:
+      - "4"
   kubernetes-master:
     annotations:
       gui-x: '800'
@@ -37,6 +47,8 @@ services:
     num_units: 1
     options:
       channel: 1.9/stable
+    to:
+      - "5"
   kubernetes-worker:
     annotations:
       gui-x: '100'
@@ -47,6 +59,8 @@ services:
     num_units: 1
     options:
       channel: 1.9/stable
+    to:
+      - "6"
 relations:
 - - kubernetes-master:kube-api-endpoint
   - kubeapi-load-balancer:apiserver
@@ -72,3 +86,25 @@ relations:
   - kubernetes-master:cni
 - - flannel:cni
   - kubernetes-worker:cni
+machines:
+  "0":
+    series: "xenial"
+    constraints: "root-disk=8G"
+  "1":
+    series: "xenial"
+    constraints: "root-disk=8G"
+  "2":
+    series: "xenial"
+    constraints: "root-disk=8G"
+  "3":
+    series: "xenial"
+    constraints: "root-disk=8G"
+  "4":
+    series: "xenial"
+    constraints: "root-disk=8G"
+  "5":
+    series: "xenial"
+    constraints: "root-disk=16G"
+  "6":
+    series: "xenial"
+    constraints: "instance-type=p2.xlarge root-disk=16G"
