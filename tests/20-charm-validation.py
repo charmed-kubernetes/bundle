@@ -36,14 +36,6 @@ class IntegrationTest(unittest.TestCase):
         with open(cls.bundle_file) as stream:
             bundle_yaml = stream.read()
         bundle = yaml.safe_load(bundle_yaml)
-        if 'options' not in bundle['services']['kubernetes-worker']:
-            labels = {'labels': "mylabel=thebest"}
-            bundle['services']['kubernetes-worker']['options'] = labels
-        else:
-            if 'labels' not in bundle['services']['kubernetes-worker']['options']:
-                bundle['services']['kubernetes-worker']['options']['labels'] = "mylabel=thebest"
-            else:
-                bundle['services']['kubernetes-worker']['options']['labels'] += " mylabel=thebest"
         cls.deployment.load(bundle)
 
         # Allow some time for Juju to provision and deploy the bundle.
@@ -148,12 +140,8 @@ class IntegrationTest(unittest.TestCase):
             # self.assertTrue('KubeDNS is running' in output)
 
     def test_labels(self):
-        '''Test labels are set at deploy time and can be changed afterwards.'''
+        '''Test labels can be set.'''
         nodes_describe_cmd = kubectl('describe no')
-        output, rc = run(self.masters[0], nodes_describe_cmd)
-        print("Output {}".format(output))
-        self.assertTrue(rc == 0)
-        self.assertTrue('thebest' in output)
         new_label = str(uuid.uuid4())
         self.deployment.configure('kubernetes-worker', {
             'labels': 'mylabel={}'.format(new_label),
