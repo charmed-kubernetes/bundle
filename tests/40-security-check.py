@@ -105,7 +105,8 @@ class IntegrationTest(unittest.TestCase):
         else:
             url_path = "/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/"
 
-        url = "https://{}:443/{}".format(ip_addr, url_path)
+        url = "https://{}:443{}".format(ip_addr, url_path)
+        print("Requesting dashboard from: {}".format(url))
         r = requests.get(url, auth=requests.auth.HTTPBasicAuth(user, password),
                          verify=False)
         return r.status_code
