@@ -55,7 +55,7 @@ class IntegrationTest(unittest.TestCase):
 
     def test_unauthenticated(self):
         '''Test if the master services are accessible without credentials.'''
-        url = 'https://{}:443/ui/'.format(self.loadbalancers[0].info['public-address'])
+        url = 'https://{}:443/'.format(self.loadbalancers[0].info['public-address'])
         r = requests.get(url, verify=False)
         self.assertEqual(r.status_code, 401)
 
@@ -90,7 +90,23 @@ class IntegrationTest(unittest.TestCase):
         self.assertEqual(status, 200)
 
     def get_ui(self, ip_addr, password, user='admin'):
-        url = "https://{}:443/ui/".format(ip_addr)
+        """Access the dashboard URL.
+
+        The URL changes based on the k8s version. Check snap info on the
+        sentried k8s-master to use the appropriate url.
+        """
+        # snap info for kube-apiserver looks like this:
+        #   tracking:                1.10/edge
+        cmd = "snap info kube-apiserver | grep tracking"
+        output, rc = self.masters[0].run(cmd)
+        version = output.split()[1]
+        if version.startswith('1.7'):
+            url_path = "/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy/"
+        else:
+            url_path = "/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/"
+
+        url = "https://{}:443{}".format(ip_addr, url_path)
+        print("Requesting dashboard from: {}".format(url))
         r = requests.get(url, auth=requests.auth.HTTPBasicAuth(user, password),
                          verify=False)
         return r.status_code
