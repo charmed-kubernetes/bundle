@@ -242,7 +242,7 @@ class IntegrationTest(unittest.TestCase):
                                                full_output=True)
         self.assertEqual(outcome['status'], 'completed')
         # Allow for kubernetes to remove the namespace
-        time.sleep(10)
+        time.sleep(30)
         action_id = self.masters[0].run_action('namespace-list')
         outcome = self.deployment.action_fetch(action_id,
                                                timeout=7200,
