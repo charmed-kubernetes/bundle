@@ -11,6 +11,7 @@ services:
     options:
       channel: 1.10/stable
     expose: true
+    constraints: "cores=2 mem=4G root-disk=16G"
     annotations:
       "gui-x": "800"
       "gui-y": "850"
@@ -30,7 +31,7 @@ services:
     options:
       channel: 1.10/stable
     expose: true
-    constraints: "cores=4 mem=4G"
+    constraints: "cores=4 mem=4G root-disk=16G"
     annotations:
       "gui-x": "100"
       "gui-y": "850"
@@ -58,7 +59,7 @@ relations:
 machines:
   "0":
     series: xenial
-    constraints: "mem=4G root-disk=16G"
+    constraints: "cores=2 mem=4G root-disk=16G"
   "1":
     series: xenial
     constraints: "cores=4 mem=4G root-disk=16G"
