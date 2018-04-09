@@ -8,7 +8,7 @@ services:
     num_units: 1
     options:
       channel: 1.10/stable
-    constraints: "root-disk=16G"
+    constraints: "cores=2 mem=4G root-disk=16G"
     annotations:
       "gui-x": "800"
       "gui-y": "850"
