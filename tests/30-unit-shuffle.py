@@ -38,7 +38,6 @@ class ShuffleTest(unittest.TestCase):
         # Wait for the system to settle down.
         wait(cls.deployment.sentry)
 
-
     @property
     def easyrsas(self):
         return self.deployment.sentry['easyrsa']
