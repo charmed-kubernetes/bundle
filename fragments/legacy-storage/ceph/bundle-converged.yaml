@@ -1,0 +1,26 @@
+# This is an incomplete bundle fragment. Do not attempt to deploy.
+services:   
+  ceph-osd:
+    charm: 'cs:ceph-osd'
+    options:
+      osd-devices: /dev/sdb
+    num_units: 4
+    annotations:
+      gui-x: '300'
+      gui-y: '300'
+    to:
+     - kubernetes-worker
+  ceph-mon:
+    charm: 'cs:ceph-mon'
+    num_units: 4
+    annotations:
+      gui-x: '600'
+      gui-y: '300'
+    to:
+     - kubernetes-worker
+relations:
+- - kubernetes-master:ceph-storage
+  - ceph-mon:admin
+- - ceph-mon:osd
+  - ceph-osd:mon
+

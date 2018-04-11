@@ -1,0 +1,15 @@
+# This is an incomplete bundle fragment. Do not attempt to deploy.
+# the Ceph-csi charm is not completed, it is a WIP.
+services:
+  "ceph-csi":
+    charm: "cs:~containers/ceph-csi"
+    annotations:
+      "gui-x": "450"
+      "gui-y": "750"
+relations:
+  - - "ceph-csi:etcd"
+    - "etcd:db"
+  - - "ceph-csi:csi"
+    - "kubernetes-master:csi"
+  - - "ceph-csi:csi"
+    - "kubernetes-worker:csi"

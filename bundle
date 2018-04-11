@@ -38,6 +38,8 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--channel', default='stable',
                         help='the channel to use')
+    parser.add_argument('-cnv', '--converged', default=False,
+                        help='converges services to use less machines')
     parser.add_argument('-o', '--outputdir', default='.',
                         help='output directory')
     parser.add_argument('-l', '--localpath', default='/home/ubuntu/builds',
@@ -53,9 +55,17 @@ def fragment_paths(fragment):
     ''' Get the root, bundle, and readme paths for a fragment. '''
     frag_path = os.path.join(root_path, 'fragments',
                              os.path.join(*fragment.split('/')))
+
+    bundle_path = os.path.join(frag_path, 'bundle.yaml')
+
+    # If a converged file exists, include it otherwise use default 
+    if(args.converged):
+       if(os.path.isfile(frag_path + 'bundle-converged.yaml')):
+         os.path.join(frag_path, 'bundle-converged.yaml')
+ 
     return {
         'root': frag_path,
-        'bundle': os.path.join(frag_path, 'bundle.yaml'),
+        'bundle': bundle_path,
         'readme': os.path.join(frag_path, 'README.md'),
         'getstarted': os.path.join(frag_path, 'getstarted.md'),
     }
@@ -125,6 +135,7 @@ def version_bundle(bundle, channel, overrides):
                 copy['services'][service]['charm'] = name + '-' + revision
                 break
         else:
+            # note the api version, can this be 'latest' instead? 
             resp = requests.get('https://api.jujucharms.com/charmstore/v5/meta/id',
                                 params={'id': charm, 'channel': channel})
             if not resp.ok:
