@@ -4,6 +4,7 @@ import yaml
 
 from amulet.helpers import TimeoutError
 
+
 def wait(sentry, timeout=900):
     """Waits for all units to be active/idle."""
     def check_status():
@@ -26,6 +27,7 @@ def wait(sentry, timeout=900):
             return
         time.sleep(1)
     raise TimeoutError()
+
 
 def attach_resource(charm, resource, resource_path):
     ''' Upload a resource to a deployed model.
