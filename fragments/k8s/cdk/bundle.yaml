@@ -5,7 +5,7 @@ series: xenial
 services:
   "kubernetes-master":
     charm: "cs:~containers/kubernetes-master"
-    num_units: 1
+    num_units: 2
     options:
       channel: 1.10/stable
     constraints: "cores=2 mem=4G root-disk=16G"
@@ -27,6 +27,8 @@ services:
     annotations:
       "gui-x": "450"
       "gui-y": "550"
+    to:
+      - lxd:kubernetes-master
   "kubernetes-worker":
     charm: "cs:~containers/kubernetes-worker"
     num_units: 3

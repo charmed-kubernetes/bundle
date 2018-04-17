@@ -32,13 +32,13 @@ class ChannelInvalid(Exception):
 class CharmstoreQueryError(Exception):
     pass
 
-
 def get_args():
     ''' Parse cli arguments. '''
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--channel', default='stable',
                         help='the channel to use')
-    parser.add_argument('-cnv', '--converged', default=False, action='store_true',help='converges services to use less machines')
+    parser.add_argument('-cnv', '--converged', default=False, action='store_true',
+                        help='converges services to use less machines')
     parser.add_argument('-o', '--outputdir', default='.',
                         help='output directory')
     parser.add_argument('-l', '--localpath', default='/home/ubuntu/builds',
@@ -49,19 +49,18 @@ def get_args():
                         help='the bundle fragments to include in this bundle')
     return parser.parse_args()
 
-
-def fragment_paths(fragment,converged=False):
+def fragment_paths(fragment, converged=False):
     ''' Get the root, bundle, and readme paths for a fragment. '''
     frag_path = os.path.join(root_path, 'fragments',
                              os.path.join(*fragment.split('/')))
 
     bundle_path = os.path.join(frag_path, 'bundle.yaml')
 
-    # If a converged file exists, include it otherwise use default 
-    if(converged):
-       if(os.path.isfile(os.path.join(frag_path,'bundle-converged.yaml'))):
+    # If a converged file exists, include it otherwise use default
+    if converged:
+       if os.path.isfile(os.path.join(frag_path,'bundle-converged.yaml')):
          bundle_path = os.path.join(frag_path, 'bundle-converged.yaml')
- 
+
     return {
         'root': frag_path,
         'bundle': bundle_path,
@@ -134,7 +133,7 @@ def version_bundle(bundle, channel, overrides):
                 copy['services'][service]['charm'] = name + '-' + revision
                 break
         else:
-            # note the api version, can this be 'latest' instead? 
+            # note the api version, can this be 'latest' instead?
             resp = requests.get('https://api.jujucharms.com/charmstore/v5/meta/id',
                                 params={'id': charm, 'channel': channel})
             if not resp.ok:
@@ -149,7 +148,6 @@ def version_bundle(bundle, channel, overrides):
 def yaml_lines(data):
     ''' Returns the number of lines in data post yaml formatting. '''
     return len(yaml.dump(data, default_flow_style=False).split('\n'))
-
 
 def serialize(bundle):
     ''' Serialize a bundle in a conventional form. '''
@@ -185,7 +183,7 @@ def main():
     getstarted = ""
     for frag in args.fragments:
         print('Processing fragment %s...' % frag)
-        paths = fragment_paths(frag,args.converged)
+        paths = fragment_paths(frag, args.converged)
         with open(paths['bundle'], 'r') as f:
             frag_bundle = yaml.load(f)
         merge(frag_bundle, bundle)
