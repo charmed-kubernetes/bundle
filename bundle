@@ -58,8 +58,8 @@ def fragment_paths(fragment, converged=False):
 
     # If a converged file exists, include it otherwise use default
     if converged:
-       if os.path.isfile(os.path.join(frag_path,'bundle-converged.yaml')):
-         bundle_path = os.path.join(frag_path, 'bundle-converged.yaml')
+      if os.path.isfile(os.path.join(frag_path,'bundle-converged.yaml')):
+        bundle_path = os.path.join(frag_path, 'bundle-converged.yaml')
 
     return {
         'root': frag_path,
