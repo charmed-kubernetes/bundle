@@ -42,6 +42,8 @@ services:
   "etcd":
     charm: "cs:~containers/etcd"
     num_units: 3
+    options:
+      channel: 3.2/stable
     constraints: "root-disk=8G"
     annotations:
       "gui-x": "800"

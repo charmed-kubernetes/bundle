@@ -206,7 +206,7 @@ kubectl proxy
 
 By default, this establishes a proxy running on your local machine and the
 kubernetes-master unit. To reach the Kubernetes dashboard, visit
-`http://localhost:8001/ui`
+`http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/`
 
 ### Control the cluster
 

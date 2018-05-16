@@ -52,7 +52,6 @@ class IntegrationTest(unittest.TestCase):
         cls.masters = cls.deployment.sentry['kubernetes-master']
         cls.workers = cls.deployment.sentry['kubernetes-worker']
 
-
     def test_unauthenticated(self):
         '''Test if the master services are accessible without credentials.'''
         url = 'https://{}:443/'.format(self.loadbalancers[0].info['public-address'])
@@ -82,7 +81,7 @@ class IntegrationTest(unittest.TestCase):
                                   {
                                       'client_password': new_password,
                                   })
-        time.sleep(20) # give a chance for reactive to run
+        time.sleep(20)  # give a chance for reactive to run
         self.deployment.sentry.wait()
         status = self.get_ui(ip, password)
         self.assertEqual(status, 401)
