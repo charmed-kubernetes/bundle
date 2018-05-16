@@ -6,12 +6,16 @@ services:
     annotations:
       gui-x: '300'
       gui-y: '300'
+    to:
+     - kubernetes-worker
   ceph-mon:
     charm: 'cs:ceph-mon'
     num_units: 3
     annotations:
       gui-x: '600'
       gui-y: '300'
+    to:
+     - lxd:kubernetes-worker
 relations:
 - - kubernetes-master:ceph-storage
   - ceph-mon:admin
