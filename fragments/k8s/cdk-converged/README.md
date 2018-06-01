@@ -1,4 +1,4 @@
-# The Canonical Distribution of Kubernetes
+# The Canonical Distribution of Kubernetes (converged)
 
 ![](https://img.shields.io/badge/kubernetes-1.10-brightgreen.svg) ![](https://img.shields.io/badge/juju-2.0+-brightgreen.svg)
 
