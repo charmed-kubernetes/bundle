@@ -27,8 +27,6 @@ services:
     annotations:
       "gui-x": "450"
       "gui-y": "550"
-    to:
-      - lxd:kubernetes-master
   "kubernetes-worker":
     charm: "cs:~containers/kubernetes-worker"
     num_units: 3
