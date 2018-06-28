@@ -18,10 +18,12 @@ order given.
 In order to run this script, python is required, with make and the python-yaml
 and python-requests librares. You may already have these installed:
 
-```sudo apt-get install python python-yaml python-requests make -y```
+```sudo apt-get install python python-yaml python-requests python-pip make -y```
 
 If any of these are missing, you may receive an error. You can also install
-the python libraries using the pip python package manager. 
+the python libraries using the pip python package manager:
+
+```sudo pip install pyyaml pyaml```
 
 ## Options
 
