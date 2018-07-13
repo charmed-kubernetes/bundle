@@ -1,11 +1,11 @@
-# Canonical Distribution of Kubernetes 
+# Canonical Distribution of Kubernetes
 
-This is a highly available (HA) production-ready Kubernetes cluster that includes 
-the operational tools to automate deployment, scaling, and lifecycle management 
+This is a highly-available production-grade Kubernetes cluster that includes
+the operational tools to automate deployment, scaling, and lifecycle management
 of your cluster. {details_link}
 
-## Operating Kubernetes 
+## Operating Kubernetes
 
-Follow our [tutorial](https://tutorials.ubuntu.com/tutorial/get-started-canonical-kubernetes#2) 
+Follow our [tutorial](https://tutorials.ubuntu.com/tutorial/get-started-canonical-kubernetes#2)
 on how to operate this cluster.
 
