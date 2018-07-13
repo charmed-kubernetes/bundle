@@ -1,6 +1,6 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 description: |-
-    A nine-machine Kubernetes cluster, appropriate for production. Includes a three-machine etcd cluster and three Kubernetes worker nodes.
+    A highly-available, production-grade Kubernetes cluster.
 series: xenial
 services:
   "kubernetes-master":

@@ -6,18 +6,13 @@
 
 This is a scaled-out Kubernetes cluster composed of the following components and features:
 
-- Kubernetes (automated deployment, operations, and scaling)
-     - Kubernetes cluster with one master and three worker nodes.
-     - TLS used for communication between nodes for security.
-     - A CNI plugin (Flannel)
-     - A load balancer for HA kubernetes-master
-     - Optional Ingress Controller (on worker)
-     - Optional Dashboard addon (on master) including Heapster for cluster monitoring
-- EasyRSA
-     - Performs the role of a certificate authority serving self signed certificates
-       to the requesting units of the cluster.
-- Etcd (distributed key value store)
-     - Three node cluster for reliability.
+- Multiple Kubernetes master and worker nodes
+- Load balancer for master nodes
+- Multi-node etcd cluster
+- Intra-node TLS by default
+- Flannel CNI plugin
+- Ingress controller
+- Dashboard addon with Heapster for metrics
 
 For a more minimal cluster suitable for development and testing, deploy the smaller
 [kubernetes-core](https://jujucharms.com/kubernetes-core) bundle via `conjure-up kubernetes-core`.
