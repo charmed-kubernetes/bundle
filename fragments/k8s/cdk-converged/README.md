@@ -33,33 +33,11 @@ Conjure-up will prompt you for deployment options (AWS, GCE, Azure, etc.) and cr
 
 ## Proxy configuration
 
-If you are operating behind a proxy (i.e., your charms are running in a
-limited-egress environment and can not reach IP addresses external to their
-network), you will need to configure your model appropriately before deploying
-the Kubernetes bundle.
-
-First, configure your model's `http-proxy` and `https-proxy` settings with your
-proxy (here we use `squid.internal:3128` as an example):
-
-```sh
-$ juju model-config http-proxy=http://squid.internal:3128 https-proxy=https://squid.internal:3128
-```
-
-Because services often need to reach machines on their own network (including
-themselves), you will also need to add `localhost` to the `no-proxy` model
-configuration setting, along with any internal subnets you're using. The
-following example includes two subnets:
-
-```sh
-$ juju model-config no-proxy=localhost,10.5.5.0/24,10.246.64.0/21
-```
-
-After deploying the bundle, you need to configure the `kubernetes-worker` charm
-to use your proxy:
-
-```sh
-$ juju config kubernetes-worker http_proxy=http://squid.internal:3128 https_proxy=https://squid.internal:3128
-```
+If you are deploying the Canonical Distribution of Kubernetes behind a proxy
+(i.e., your charms are running in a limited-egress environment and can not
+reach IP addresses external to their network), please refer to the
+documentation for
+[Proxy configuration](https://github.com/juju-solutions/bundle-canonical-kubernetes/wiki/Proxy-configuration).
 
 ## Alternate deployment methods
 
