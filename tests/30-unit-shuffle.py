@@ -26,7 +26,7 @@ class ShuffleTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.deployment = amulet.Deployment(series='xenial')
+        cls.deployment = amulet.Deployment(series='bionic')
         with open(cls.bundle_file) as stream:
             bundle_yaml = stream.read()
         bundle = yaml.safe_load(bundle_yaml)
