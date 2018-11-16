@@ -1,0 +1,21 @@
+services:
+  grafana:
+    charm: cs:bionic/grafana
+    constraints: mem=3G
+    num_units: 1
+    expose: true
+  prometheus:
+    charm: cs:bionic/prometheus2
+    constraints: mem=3G root-disk=16G
+    num_units: 1
+  telegraf:
+    charm: cs:bionic/telegraf
+relations:   
+  - - "prometheus:grafana-source"
+    - "grafana:grafana-source"
+  - - "telegraf:prometheus-client"
+    - "prometheus:target"
+  - - "kubernetes-master:juju-info"
+    - "telegraf:juju-info"
+  - - "kubernetes-worker:juju-info"
+    - "telegraf:juju-info" 

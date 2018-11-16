@@ -1,0 +1,38 @@
+services:
+  apache2:
+    charm: cs:bionic/apache2
+    num_units: 1
+    expose: true
+    options:
+      enable_modules: "headers proxy_html proxy_http"
+  elasticsearch:
+    charm: cs:bionic/elasticsearch
+    constraints: mem=4G root-disk=16G
+    num_units: 1
+  filebeat:
+    charm: cs:bionic/filebeat
+    options:
+      logpath: '/var/log/*.log'
+      kube_logs: True
+  graylog:
+    charm: cs:xenial/graylog
+    constraints: mem=4G
+    num_units: 1
+  mongodb:
+    charm: cs:bionic/mongodb
+    num_units: 1
+    options:
+      extra_daemon_options: "--bind_ip_all"
+relations:
+  - - "apache2:reverseproxy"
+    - "graylog:website"
+  - - "graylog:elasticsearch"
+    - "elasticsearch:client"
+  - - "graylog:mongodb"
+    - "mongodb:database"
+  - - "filebeat:beats-host"
+    - "kubernetes-master:juju-info"
+  - - "filebeat:beats-host"
+    - "kubernetes-worker:juju-info"
+  - - "filebeat:logstash"
+    - "graylog:beats"

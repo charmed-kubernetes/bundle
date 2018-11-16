@@ -1,0 +1,76 @@
+# This is an incomplete bundle fragment. Do not attempt to deploy.
+description: |-
+    A highly-available, production-grade Kubernetes cluster designed to run on GCP. 
+series: bionic
+services:
+  "kubernetes-master":
+    charm: "cs:~containers/kubernetes-master"
+    num_units: 2
+    options:
+      channel: 1.12/stable
+    constraints: "cores=2 mem=4G root-disk=16G"
+    annotations:
+      "gui-x": "800"
+      "gui-y": "850"
+  "kubeapi-load-balancer":
+    charm: "cs:~containers/kubeapi-load-balancer"
+    num_units: 1
+    expose: true
+    constraints: "root-disk=8G"
+    annotations:
+      "gui-x": "450"
+      "gui-y": "250"
+  "easyrsa":
+    charm: "cs:~containers/easyrsa"
+    num_units: 1
+    constraints: "root-disk=8G"
+    annotations:
+      "gui-x": "450"
+      "gui-y": "550"
+    to: 
+    - lxd: kubernetes-master/0
+  "kubernetes-worker":
+    charm: "cs:~containers/kubernetes-worker"
+    num_units: 3
+    options:
+      channel: 1.12/stable
+    expose: true
+    constraints: "cores=4 mem=4G root-disk=16G"
+    annotations:
+      "gui-x": "100"
+      "gui-y": "850"
+  "etcd":
+    charm: "cs:~containers/etcd"
+    num_units: 3
+    options:
+      channel: 3.2/stable
+    constraints: "root-disk=8G"
+    annotations:
+      "gui-x": "800"
+      "gui-y": "550"
+  "gcp-integrator":
+     charm: "cs:~containers/gcp-integrator"
+     num_units: 1
+     to:
+     - lxd: kubernetes-master/0
+relations:
+  - - "kubernetes-master:kube-api-endpoint"
+    - "kubeapi-load-balancer:apiserver"
+  - - "kubernetes-master:loadbalancer"
+    - "kubeapi-load-balancer:loadbalancer"
+  - - "kubernetes-master:kube-control"
+    - "kubernetes-worker:kube-control"
+  - - "kubernetes-master:certificates"
+    - "easyrsa:client"
+  - - "etcd:certificates"
+    - "easyrsa:client"
+  - - "kubernetes-master:etcd"
+    - "etcd:db"
+  - - "kubernetes-worker:certificates"
+    - "easyrsa:client"
+  - - "kubernetes-worker:kube-api-endpoint"
+    - "kubeapi-load-balancer:website"
+  - - "kubeapi-load-balancer:certificates"
+    - "easyrsa:client"
+  - ['gcp-integrator', 'kubernetes-master']
+  - ['gcp-integrator', 'kubernetes-worker']
