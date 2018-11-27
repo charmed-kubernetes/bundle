@@ -58,6 +58,7 @@ def fragment_paths(fragment):
         'bundle': os.path.join(frag_path, 'bundle.yaml'),
         'readme': os.path.join(frag_path, 'README.md'),
         'getstarted': os.path.join(frag_path, 'getstarted.md'),
+        'postdeployment': os.path.join(frag_path, 'post-deployment.sh'),
     }
 
 
@@ -83,6 +84,9 @@ def validate_components(fragments):
             raise FragmentMissingComponent(err)
         if not os.path.exists(paths['getstarted']):
             err = 'Fragment %s does not contain getstarted.md' % frag
+            raise FragmentMissingComponent(err)
+        if not os.path.exists(paths['postdeployment']):
+            err = 'Fragment %s does not contain post-deployment.sh' % frag
             raise FragmentMissingComponent(err)
 
 
@@ -173,6 +177,7 @@ def main():
     bundle = {}
     readme = ""
     getstarted = ""
+    postdeployment = ""
     for frag in args.fragments:
         print('Processing fragment %s...' % frag)
         paths = fragment_paths(frag)
@@ -185,6 +190,9 @@ def main():
         with open(paths['getstarted'], 'r') as f:
             frag_getstarted = f.read()
         getstarted = '\n'.join([getstarted, frag_getstarted])
+        with open(paths['postdeployment'], 'r') as f:
+            frag_postdeployment = f.read()
+        postdeployment = '\n'.join([postdeployment, frag_postdeployment])
     if args.channel == 'local':
         bundle = local_bundle(bundle, args.localpath)
     else:
@@ -193,6 +201,7 @@ def main():
     out_bundle_filename = os.path.join(out_bundle_name, 'bundle.yaml')
     out_readme_filename = os.path.join(out_bundle_name, 'README.md')
     out_getstarted_filename = os.path.join(out_bundle_name, 'getstarted.md')
+    out_postdeployment_filename = os.path.join(out_bundle_name, 'post-deployment.sh')
     if os.path.isfile(out_bundle_filename):
         err = '%s already exists. Aborting.' % out_bundle_filename
         raise FileExistsError(err)
@@ -202,6 +211,9 @@ def main():
     if os.path.isfile(out_getstarted_filename):
         err = '%s already exists. Aborting.' % out_getstarted_filename
         raise FileExistsError(err)
+    if os.path.isfile(out_postdeployment_filename):
+        err = '%s already exists. Aborting.' % out_postdeployment_filename
+        raise FileExistsError(err)
     if not os.path.isdir(out_bundle_name):
         os.makedirs(out_bundle_name)
     with open(out_bundle_filename, 'w') as out_bundle_file:
@@ -210,6 +222,8 @@ def main():
         out_readme_file.write(readme)
     with open(out_getstarted_filename, 'w') as out_getstarted_file:
         out_getstarted_file.write(getstarted)
+    with open(out_postdeployment_filename, 'w') as out_postdeployment_file:
+        out_postdeployment_file.write(postdeployment)
 
     # Amulet test will not run on core bundle. Because of easyrsa
     # hosted internaly on lxd amulet cannot upload scripts
