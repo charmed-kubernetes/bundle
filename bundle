@@ -50,7 +50,7 @@ def get_args():
 
 
 def fragment_paths(fragment):
-    ''' Get the root, bundle, and readme paths for a fragment. '''
+    ''' Get the root and bundle-related paths for a fragment. '''
     frag_path = os.path.join(root_path, 'fragments',
                              os.path.join(*fragment.split('/')))
     return {
@@ -84,9 +84,6 @@ def validate_components(fragments):
             raise FragmentMissingComponent(err)
         if not os.path.exists(paths['getstarted']):
             err = 'Fragment %s does not contain getstarted.md' % frag
-            raise FragmentMissingComponent(err)
-        if not os.path.exists(paths['postdeployment']):
-            err = 'Fragment %s does not contain post-deployment.sh' % frag
             raise FragmentMissingComponent(err)
 
 
@@ -178,6 +175,7 @@ def main():
     readme = ""
     getstarted = ""
     postdeployment = ""
+
     for frag in args.fragments:
         print('Processing fragment %s...' % frag)
         paths = fragment_paths(frag)
@@ -190,9 +188,10 @@ def main():
         with open(paths['getstarted'], 'r') as f:
             frag_getstarted = f.read()
         getstarted = '\n'.join([getstarted, frag_getstarted])
-        with open(paths['postdeployment'], 'r') as f:
-            frag_postdeployment = f.read()
-        postdeployment = '\n'.join([postdeployment, frag_postdeployment])
+        if os.path.exists(paths['postdeployment']):
+            with open(paths['postdeployment'], 'r') as f:
+                frag_postdeployment = f.read()
+            postdeployment = '\n'.join([postdeployment, frag_postdeployment])
     if args.channel == 'local':
         bundle = local_bundle(bundle, args.localpath)
     else:
@@ -222,8 +221,11 @@ def main():
         out_readme_file.write(readme)
     with open(out_getstarted_filename, 'w') as out_getstarted_file:
         out_getstarted_file.write(getstarted)
-    with open(out_postdeployment_filename, 'w') as out_postdeployment_file:
-        out_postdeployment_file.write(postdeployment)
+
+    # write optional bundle-related files if we have content
+    if postdeployment:
+        with open(out_postdeployment_filename, 'w') as out_postdeployment_file:
+            out_postdeployment_file.write(postdeployment)
 
     # Amulet test will not run on core bundle. Because of easyrsa
     # hosted internaly on lxd amulet cannot upload scripts
