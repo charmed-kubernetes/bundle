@@ -118,6 +118,8 @@ def local_bundle(bundle, root):
 def version_bundle(bundle, channel, overrides):
     ''' Acquire and assign versions to charms according to their channel. '''
     copy = json.loads(json.dumps(bundle))
+
+    # pin charm revisions
     for service in bundle['services']:
         charm = bundle['services'][service]['charm']
         for override in overrides:
@@ -131,9 +133,25 @@ def version_bundle(bundle, channel, overrides):
             if not resp.ok:
                 err = "Couldn't query %s %s, is it public?" % (charm, channel)
                 raise CharmstoreQueryError(err)
-            meta = json.loads(resp.text)
+            meta = resp.json()
             meta = [meta[k] for k in meta][0]
             copy['services'][service]['charm'] = meta['Id']
+
+    # pin resource revisions
+    for service in bundle['services']:
+        charm = bundle['services'][service]['charm']
+        resp = requests.get('https://api.jujucharms.com/charmstore/v5/meta/resources',
+                            params={'id': charm, 'channel': channel})
+        if not resp.ok:
+            err = "Couldn't query resources for %s %s, is it public?" % (charm, channel)
+            raise CharmstoreQueryError(err)
+        response_data = resp.json()
+        copy['services'][service].setdefault('resources', {})
+        for resource in response_data[charm]:
+            name = resource['Name']
+            revision = resource['Revision']
+            copy['services'][service]['resources'][name] = revision
+
     return copy
 
 
