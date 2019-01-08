@@ -166,8 +166,8 @@ kubectl cluster-info
 
 ### Accessing the Kubernetes dashboard
 
-The Kubernetes dashboard addon is installed by default, along with Heapster,
-Grafana and InfluxDB for cluster monitoring. The dashboard addons can be
+The Kubernetes dashboard addon is installed by default, along with Metrics Server,
+Heapster, Grafana and InfluxDB for cluster monitoring. The dashboard addons can be
 enabled or disabled by setting the `enable-dashboard-addons` config on the
 `kubernetes-master` application:
 
@@ -185,6 +185,9 @@ kubectl proxy
 By default, this establishes a proxy running on your local machine and the
 kubernetes-master unit. To reach the Kubernetes dashboard, visit
 `http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/`
+
+Logging in to the dashboard will require either a valid kubeconfig or a basic auth
+username and password.
 
 ### Control the cluster
 
