@@ -248,7 +248,7 @@ juju expose kubernetes-worker
 In Kubernetes, workloads are declared using pod, service, and ingress
 definitions. An ingress controller is provided to you by default and deployed into
 the `ingress-nginx-kubernetes-worker` [namespace](https://kubernetes.io/docs/user-guide/namespaces/)
-of the cluster. If one is not available, you may deploy it with:
+of the cluster (this is derived from the Juju charm's name). If one is not available, you may deploy it with:
 
 ```
 juju config kubernetes-worker ingress=true
