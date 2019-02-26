@@ -247,8 +247,8 @@ juju expose kubernetes-worker
 
 In Kubernetes, workloads are declared using pod, service, and ingress
 definitions. An ingress controller is provided to you by default and deployed into
-the [default namespace](https://kubernetes.io/docs/user-guide/namespaces/) of the
-cluster. If one is not available, you may deploy it with:
+the `ingress-nginx-kubernetes-worker` [namespace](https://kubernetes.io/docs/user-guide/namespaces/)
+of the cluster (this is derived from the Juju charm's name). If one is not available, you may deploy it with:
 
 ```
 juju config kubernetes-worker ingress=true
@@ -304,11 +304,11 @@ online.
 
     $ kubectl get pods
     NAME                             READY     STATUS    RESTARTS   AGE
-    default-http-backend-kh1dt       1/1       Running   0          1h
     microbot-1855935831-58shp        1/1       Running   0          1h
     microbot-1855935831-9d16f        1/1       Running   0          1h
     microbot-1855935831-l5rt8        1/1       Running   0          1h
-    nginx-ingress-controller-hv5c2   1/1       Running   0          1h
+    microbot-1855935831-s6x49        1/1       Running   0          1h
+    microbot-1855935831-wzp7x        1/1       Running   0          1h
 
 
 
@@ -329,7 +329,7 @@ online.
 
     $ kubectl get ingress
     NAME               HOSTS                          ADDRESS         PORTS     AGE
-    microbot-ingress   microbot.52.38.62.235.xip.io   172.31.26.109   80        1h
+    microbot-ingress   microbot.52.38.62.235.xip.io                   80        1h
 
 
 When all the pods are listed as Running, you are ready to visit the address listed in the HOSTS column of the ingress listing.
