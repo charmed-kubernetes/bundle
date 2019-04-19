@@ -1,0 +1,1 @@
+v1.14-static: k8s.gcr.io/pause-amd64:3.1 quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.16.1 quay.io/calico/node:v2.6.10 quay.io/calico/kube-controllers:v1.0.4 sonatype/nexus3:latest rancher/rancher:latest
