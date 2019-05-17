@@ -11,5 +11,5 @@ This is the fragment for using Ceph without CSI plugins (legacy storage mechanis
 ## Operating Kubernetes
 
 A guide to configuring Ceph has been provided on Github here:
-(Deploying Ceph with Canonical Kubernetes to Provide Persistant Storage)
+(Deploying Ceph with Charmed Kubernetes to Provide Persistent Storage)
 [https://github.com/CanonicalLtd/canonical-kubernetes-demos/tree/master/cdk-ceph].

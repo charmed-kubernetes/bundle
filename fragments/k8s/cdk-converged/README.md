@@ -1,4 +1,4 @@
-# The Canonical Distribution of Kubernetes (converged)
+# The Charmed Distribution of Kubernetes (converged)
 
 ![](https://img.shields.io/badge/kubernetes-1.14-brightgreen.svg) ![](https://img.shields.io/badge/juju-2.0+-brightgreen.svg)
 
@@ -27,35 +27,35 @@ For a more minimal cluster suitable for development and testing, deploy the smal
 Installation has been automated via [conjure-up](https://conjure-up.io/):
 
     sudo snap install conjure-up --classic
-    conjure-up canonical-kubernetes
+    conjure-up charmed-kubernetes
 
 Conjure-up will prompt you for deployment options (AWS, GCE, Azure, etc.) and credentials.
 
 ## Proxy configuration
 
-If you are deploying the Canonical Distribution of Kubernetes behind a proxy
+If you are deploying the Charmed Distribution of Kubernetes behind a proxy
 (i.e., your charms are running in a limited-egress environment and can not
 reach IP addresses external to their network), please refer to the
 documentation for
-[Proxy configuration](https://github.com/juju-solutions/bundle-canonical-kubernetes/wiki/Proxy-configuration).
+[Proxy configuration](https://github.com/charmed-kubernetes/bundle/wiki/Proxy-configuration).
 
 ## Alternate deployment methods
 
 ### Deploying with Juju directly
 
 ```
-juju deploy canonical-kubernetes
+juju deploy charmed-kubernetes
 ```
 
 > Note: If you're deploying on lxd, use conjure-up instead, as described
 > above. It configures your lxd profile to support running Kubernetes on lxd.
 
-This will deploy the Canonical Distribution of Kubernetes with default
+This will deploy the Charmed Distribution of Kubernetes with default
 machine constraints. This is useful for lab environments, but for real-world use
 you should provide more CPU and memory to kubernetes-worker units.
 
 You can increase the constraints by downloading and editing the
-[bundle.yaml](https://api.jujucharms.com/charmstore/v5/canonical-kubernetes/archive/bundle.yaml)
+[bundle.yaml](https://api.jujucharms.com/charmstore/v5/charmed-kubernetes/archive/bundle.yaml)
 to fit your needs. Customize the bundle constraints by following [this
 guide](https://jujucharms.com/docs/stable/charms-bundles#setting-constraints-in-a-bundle).
 
@@ -417,7 +417,7 @@ to determine fault tolerance.
 # Adding optional storage
 
 Using [Juju Storage](https://jujucharms.com/docs/2.0/charms-storage), the
-Canonical Distribution of Kubernetes allows you to connect with durable
+Charmed Distribution of Kubernetes allows you to connect with durable
 storage devices such as [Ceph](https://ceph.com).
 
 Deploy a minimum of three ceph-mon and three ceph-osd charms:
@@ -503,7 +503,7 @@ documentation for more information.
 
    `juju attach kubernetes-master kube-apiserver=/path/to/snap`.
 
-   You can find resources for the canonical-kubernetes charms here:
+   You can find resources for the charmed-kubernetes charms here:
 
    - [kubernetes-master](https://jujucharms.com/u/containers/kubernetes-master/)
    - [kubernetes-worker](https://jujucharms.com/u/containers/kubernetes-worker/)
@@ -511,11 +511,10 @@ documentation for more information.
    - [etcd](https://jujucharms.com/u/containers/etcd/)
    - [flannel](https://jujucharms.com/u/containers/flannel/)
 
-## Kubernetes details
+## Charmed Kubernetes Reference
 
-- [Kubernetes User Guide](https://kubernetes.io/docs/user-guide/)
-- [The Canonical Distribution of Kubernetes](https://jujucharms.com/canonical-kubernetes/bundle/)
-- [Canonical Kubernetes Demos](https://github.com/CanonicalLtd/canonical-kubernetes-demos)
-- [Canonical Kubernetes Third-party Integrations](https://github.com/CanonicalLtd/canonical-kubernetes-third-party-integrations)
-- [Bundle Source](https://github.com/juju-solutions/bundle-kubernetes-core)
-- [Bug tracker](https://github.com/juju-solutions/bundle-canonical-kubernetes/issues)
+- [Docs](https://www.ubuntu.com/kubernetes/docs)
+- [Source Code](https://github.com/charmed-kubernetes)
+- [Bug tracker](https://bugs.launchpad.net/charmed-kubernetes)
+- [Demos](https://github.com/CanonicalLtd/canonical-kubernetes-demos)
+- [Third-party Integrations](https://github.com/CanonicalLtd/canonical-kubernetes-third-party-integrations)

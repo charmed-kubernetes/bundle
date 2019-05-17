@@ -1,4 +1,4 @@
-# Canonical Distribution of Kubernetes
+# Charmed Distribution of Kubernetes
 
 This is a highly-available production-grade Kubernetes cluster that includes
 the operational tools to automate deployment, scaling, and lifecycle management
