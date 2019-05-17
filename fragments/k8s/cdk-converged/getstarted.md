@@ -1,4 +1,4 @@
-# Canonical Distribution of Kubernetes (converged)
+# Charmed Distribution of Kubernetes (converged)
 
 This is a highly available (HA) production-ready Kubernetes cluster that includes
 the operational tools to automate deployment, scaling, and lifecycle management

@@ -19,7 +19,7 @@ This is a minimal Kubernetes cluster composed of the following components and fe
      - One node for basic functionality.
 
 This bundle is suitable for development and testing purposes. For a more robust, scaled-out cluster, deploy the
-[canonical-kubernetes](https://jujucharms.com/canonical-kubernetes) bundle via `conjure-up canonical-kubernetes`.
+[charmed-kubernetes](https://jujucharms.com/charmed-kubernetes) bundle via `conjure-up charmed-kubernetes`.
 
 # Usage
 
@@ -32,11 +32,11 @@ Conjure-up will prompt you for deployment options (AWS, GCE, Azure, etc.) and cr
 
 ## Proxy configuration
 
-If you are deploying the Canonical Distribution of Kubernetes behind a proxy
+If you are deploying the Charmed Distribution of Kubernetes behind a proxy
 (i.e., your charms are running in a limited-egress environment and can not
 reach IP addresses external to their network), please refer to the
 documentation for
-[Proxy configuration](https://github.com/juju-solutions/bundle-canonical-kubernetes/wiki/Proxy-configuration).
+[Proxy configuration](https://github.com/charmed-kubernetes/bundle/wiki/Proxy-configuration).
 
 ## Alternate deployment methods
 
@@ -424,11 +424,10 @@ to determine fault tolerance.
    - [etcd](https://jujucharms.com/u/containers/etcd/)
    - [flannel](https://jujucharms.com/u/containers/flannel/)
 
-## Kubernetes details
+## Charmed Kubernetes Reference
 
-- [Kubernetes User Guide](https://kubernetes.io/docs/user-guide/)
-- [The Canonical Distribution of Kubernetes](https://jujucharms.com/canonical-kubernetes/bundle/)
-- [Canonical Kubernetes Demos](https://github.com/CanonicalLtd/canonical-kubernetes-demos)
-- [Canonical Kubernetes Third-party Integrations](https://github.com/CanonicalLtd/canonical-kubernetes-third-party-integrations)
-- [Bundle Source](https://github.com/juju-solutions/bundle-kubernetes-core)
-- [Bug tracker](https://github.com/juju-solutions/bundle-canonical-kubernetes/issues)
+- [Docs](https://www.ubuntu.com/kubernetes/docs)
+- [Source Code](https://github.com/charmed-kubernetes)
+- [Bug tracker](https://bugs.launchpad.net/charmed-kubernetes)
+- [Demos](https://github.com/CanonicalLtd/canonical-kubernetes-demos)
+- [Third-party Integrations](https://github.com/CanonicalLtd/canonical-kubernetes-third-party-integrations)
