@@ -46,7 +46,13 @@ services:
     annotations:
       "gui-x": "800"
       "gui-y": "550"
+  "containerd":
+    charm: cs:~containers/containerd
 relations:
+  - - containerd:containerd
+    - kubernetes-worker:container-runtime
+  - - containerd:containerd
+    - kubernetes-master:container-runtime
   - - "kubernetes-master:kube-api-endpoint"
     - "kubeapi-load-balancer:apiserver"
   - - "kubernetes-master:loadbalancer"
