@@ -1,0 +1,9 @@
+# This is an incomplete bundle fragment. Do not attempt to deploy.
+services:
+  "docker":
+    charm: cs:~containers/docker
+relations:
+- - docker:docker
+  - kubernetes-worker:container-runtime
+- - docker:docker
+  - kubernetes-master:container-runtime
