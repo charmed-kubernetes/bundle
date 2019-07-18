@@ -3,8 +3,8 @@ services:
   "canal":
     charm: "cs:~containers/canal"
     annotations:
-      "gui-x": "450"
-      "gui-y": "750"
+      "gui-x": "475"
+      "gui-y": "605"
 relations:
   - - "canal:etcd"
     - "etcd:db"

@@ -2,6 +2,9 @@
 services:
   "containerd":
     charm: cs:~containers/containerd
+    annotations:
+      "gui-x": "475"
+      "gui-y": "800"
 relations:
 - - containerd:containerd
   - kubernetes-worker:container-runtime

@@ -43,8 +43,8 @@ services:
     charm: "cs:~containers/easyrsa"
     num_units: 1
     annotations:
-      "gui-x": "450"
-      "gui-y": "550"
+      "gui-x": "90"
+      "gui-y": "420"
     to:
      - lxd:kubernetes-master
   "kubernetes-worker":
@@ -55,7 +55,7 @@ services:
       channel: 1.15/stable
     expose: true
     annotations:
-      "gui-x": "100"
+      "gui-x": "90"
       "gui-y": "850"
     to: ["kvm:kubernetes-worker-host/0",
         "kvm:kubernetes-worker-host/1",
@@ -74,7 +74,7 @@ services:
     num_units: 3
     annotations:
       "gui-x": "800"
-      "gui-y": "550"
+      "gui-y": "420"
     to:
         - 0
         - 1
@@ -83,8 +83,8 @@ services:
     charm: "cs:ubuntu"
     num_units: 4
     annotations:
-      "gui-x": "200"
-      "gui-y": "250"
+      "gui-x": "90"
+      "gui-y": "850"
     to:
         - 3
         - 4
