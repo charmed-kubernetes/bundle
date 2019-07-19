@@ -21,8 +21,8 @@ services:
     to:
       - lxd:0
     annotations:
-      "gui-x": "450"
-      "gui-y": "550"
+      "gui-x": "90"
+      "gui-y": "420"
   "kubernetes-worker":
     charm: "cs:~containers/kubernetes-worker"
     num_units: 1
@@ -33,7 +33,7 @@ services:
     expose: true
     constraints: "cores=4 mem=4G root-disk=16G"
     annotations:
-      "gui-x": "100"
+      "gui-x": "90"
       "gui-y": "850"
   "etcd":
     charm: "cs:~containers/etcd"
@@ -44,7 +44,7 @@ services:
       - "0"
     annotations:
       "gui-x": "800"
-      "gui-y": "550"
+      "gui-y": "420"
 relations:
   - - "kubernetes-master:kube-api-endpoint"
     - "kubernetes-worker:kube-api-endpoint"

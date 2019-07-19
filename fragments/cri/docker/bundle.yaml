@@ -2,6 +2,9 @@
 services:
   "docker":
     charm: cs:~containers/docker
+    annotations:
+      "gui-x": "475"
+      "gui-y": "800"
 relations:
 - - docker:docker
   - kubernetes-worker:container-runtime

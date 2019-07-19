@@ -3,8 +3,8 @@ services:
   "calico":
     charm: "cs:~containers/calico"
     annotations:
-      "gui-x": "450"
-      "gui-y": "750"
+      "gui-x": "475"
+      "gui-y": "605"
 relations:
   - - "calico:etcd"
     - "etcd:db"
