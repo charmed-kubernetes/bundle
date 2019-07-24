@@ -1,0 +1,8 @@
+applications:
+  gcp-integrator:
+    charm: cs:~containers/gcp-integrator
+    num_units: 1
+    trust: true
+relations:
+  - ['gcp-integrator', 'kubernetes-master']
+  - ['gcp-integrator', 'kubernetes-worker']

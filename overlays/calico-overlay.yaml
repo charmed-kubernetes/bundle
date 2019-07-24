@@ -1,0 +1,17 @@
+description: A production-grade Kubernetes cluster with Calico CNI.
+series: bionic
+applications:
+  calico:
+    annotations:
+      gui-x: '450'
+      gui-y: '750'
+    charm: cs:~containers/calico
+  flannel:
+
+relations:
+- - calico:etcd
+  - etcd:db
+- - calico:cni
+  - kubernetes-master:cni
+- - calico:cni
+  - kubernetes-worker:cni

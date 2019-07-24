@@ -1,0 +1,19 @@
+description: Production-grade Kubernetes cluster with Tigera Secure EE CNI.
+series: bionic
+applications:
+  tigera-secure-ee:
+    annotations:
+      gui-x: '450'
+      gui-y: '750'
+    charm: cs:~containers/tigera-secure-ee
+  flannel:
+
+relations:
+- - tigera-secure-ee:etcd
+  - etcd:db
+- - tigera-secure-ee:cni
+  - kubernetes-master:cni
+- - tigera-secure-ee:cni
+  - kubernetes-worker:cni
+- - tigera-secure-ee:kube-api-endpoint
+  - kubernetes-master:kube-api-endpoint

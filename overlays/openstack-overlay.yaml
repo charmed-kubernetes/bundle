@@ -1,0 +1,8 @@
+applications:
+  openstack-integrator:
+    charm: cs:~containers/openstack-integrator
+    num_units: 1
+    trust: true
+relations:
+  - ['openstack-integrator', 'kubernetes-master']
+  - ['openstack-integrator', 'kubernetes-worker']
