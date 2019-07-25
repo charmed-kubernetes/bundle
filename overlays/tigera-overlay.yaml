@@ -1,5 +1,4 @@
-description: Production-grade Kubernetes cluster with Tigera Secure EE CNI.
-series: bionic
+description: Charmed Kubernetes overlay to add Tigera Secure EE CNI.
 applications:
   tigera-secure-ee:
     annotations:
@@ -7,7 +6,6 @@ applications:
       gui-y: '750'
     charm: cs:~containers/tigera-secure-ee
   flannel:
-
 relations:
 - - tigera-secure-ee:etcd
   - etcd:db

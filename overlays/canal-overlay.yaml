@@ -1,5 +1,4 @@
-description: Production-grade Kubernetes cluster with Canal CNI.
-series: bionic
+description: Charmed Kubernetes overlay to add Canal CNI.
 applications:
   canal:
     annotations:
@@ -7,7 +6,6 @@ applications:
       gui-y: '750'
     charm: cs:~containers/canal
   flannel:
-
 relations:
 - - canal:etcd
   - etcd:db

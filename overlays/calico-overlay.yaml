@@ -1,13 +1,11 @@
-description: A production-grade Kubernetes cluster with Calico CNI.
-series: bionic
+description: Charmed Kubernetes overlay to add Calico CNI.
 applications:
   calico:
     annotations:
-      gui-x: '450'
+      gui-x: '480'
       gui-y: '750'
     charm: cs:~containers/calico
   flannel:
-
 relations:
 - - calico:etcd
   - etcd:db
