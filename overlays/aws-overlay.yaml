@@ -1,4 +1,4 @@
-description: Charmed Kubernetes overlay to add native AWS support
+description: Charmed Kubernetes overlay to add native AWS support.
 applications:
   aws-integrator:
     annotations:
