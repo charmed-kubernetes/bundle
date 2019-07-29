@@ -1,6 +1,6 @@
 description: Charmed Kubernetes overlay to add native Azure support.
 applications:
-  aws-integrator:
+  azure-integrator:
     annotations:
       gui-x: "600"
       gui-y: "300"
