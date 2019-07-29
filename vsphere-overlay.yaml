@@ -1,0 +1,12 @@
+description: Charmed Kubernetes overlay to add native vSphere support.
+applications:
+  aws-integrator:
+    annotations:
+      gui-x: "600"
+      gui-y: "300"
+    charm: cs:~containers/vsphere-integrator
+    num_units: 1
+    trust: true
+relations:
+  - ['vsphere-integrator', 'kubernetes-master']
+  - ['vsphere-integrator', 'kubernetes-worker']
