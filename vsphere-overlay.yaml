@@ -1,6 +1,6 @@
 description: Charmed Kubernetes overlay to add native vSphere support.
 applications:
-  aws-integrator:
+  vsphere-integrator:
     annotations:
       gui-x: "600"
       gui-y: "300"
