@@ -1,5 +1,5 @@
-description: Charmed Kubernetes overlay to add native OpenStack support.
 applications:
+  kubeapi-load-balancer: null
   openstack-integrator:
     annotations:
       gui-x: "600"
@@ -8,5 +8,6 @@ applications:
     num_units: 1
     trust: true
 relations:
+  - ['openstack-integrator', 'kubernetes-master:loadbalancer']
   - ['openstack-integrator', 'kubernetes-master:openstack']
   - ['openstack-integrator', 'kubernetes-worker:openstack']
