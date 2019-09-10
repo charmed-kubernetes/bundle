@@ -8,5 +8,5 @@ applications:
     num_units: 1
     trust: true
 relations:
-  - ['openstack-integrator', 'kubernetes-master']
-  - ['openstack-integrator', 'kubernetes-worker']
+  - ['openstack-integrator', 'kubernetes-master:openstack']
+  - ['openstack-integrator', 'kubernetes-worker:openstack']
