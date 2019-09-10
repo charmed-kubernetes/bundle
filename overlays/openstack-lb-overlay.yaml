@@ -1,0 +1,13 @@
+applications:
+  kubeapi-load-balancer: null
+  openstack-integrator:
+    annotations:
+      gui-x: "600"
+      gui-y: "300"
+    charm: cs:~containers/openstack-integrator
+    num_units: 1
+    trust: true
+relations:
+  - ['openstack-integrator', 'kubernetes-master:loadbalancer']
+  - ['openstack-integrator', 'kubernetes-master:openstack']
+  - ['openstack-integrator', 'kubernetes-worker:openstack']
