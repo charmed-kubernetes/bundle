@@ -39,7 +39,7 @@ services:
     charm: "cs:~containers/etcd"
     num_units: 1
     options:
-      channel: 3.2/stable
+      channel: 3.3/stable
     to:
       - "0"
     annotations:
