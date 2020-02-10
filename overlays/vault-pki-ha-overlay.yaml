@@ -1,0 +1,21 @@
+applications:
+  easyrsa: null
+  vault:
+    charm: cs:~openstack-charmers-next/vault
+    num_units: 2
+    options:
+      auto-generate-root-ca-cert: true
+  percona-cluster:
+    charm: cs:percona-cluster
+    num_units: 1
+relations:
+- - kubernetes-master:certificates
+  - vault:certificates
+- - etcd:certificates
+  - vault:certificates
+- - kubernetes-worker:certificates
+  - vault:certificates
+- - vault:shared-db
+  - percona-cluster:shared-db
+- - vault:etcd
+  - etcd:db
