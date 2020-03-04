@@ -1,4 +1,4 @@
-description: Charmed Kubernetes ovelray to add Ceph RBD support.
+description: Charmed Kubernetes overlay to add Ceph RBD support.
 applications:
   ceph-osd:
     charm: ceph-osd
