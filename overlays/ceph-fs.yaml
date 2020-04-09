@@ -11,9 +11,9 @@ applications:
     num_units: 3
     series: bionic
     storage:
-      osd-devices: '10G'
+      osd-devices: '32G,2'
+      osd-journals: '8G,1'
     options:
-      osd-devices: '/dev/test-non-existent'
       source: cloud:bionic-train
   ceph-mon:
     charm: cs:ceph-mon
