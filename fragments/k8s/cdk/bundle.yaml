@@ -7,7 +7,7 @@ services:
     charm: "cs:~containers/kubernetes-master"
     num_units: 2
     options:
-      channel: 1.18/stable
+      channel: 1.19/edge
     constraints: "cores=2 mem=4G root-disk=16G"
     annotations:
       "gui-x": "800"
@@ -31,7 +31,7 @@ services:
     charm: "cs:~containers/kubernetes-worker"
     num_units: 3
     options:
-      channel: 1.18/stable
+      channel: 1.19/edge
     expose: true
     constraints: "cores=4 mem=4G root-disk=16G"
     annotations:
@@ -41,7 +41,7 @@ services:
     charm: "cs:~containers/etcd"
     num_units: 3
     options:
-      channel: 3.3/stable
+      channel: 3.4/stable
     constraints: "root-disk=8G"
     annotations:
       "gui-x": "800"
