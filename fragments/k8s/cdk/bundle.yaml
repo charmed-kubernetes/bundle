@@ -16,7 +16,7 @@ services:
     charm: "cs:~containers/kubeapi-load-balancer"
     num_units: 1
     expose: true
-    constraints: "root-disk=8G"
+    constraints: "mem=4G root-disk=8G"
     annotations:
       "gui-x": "450"
       "gui-y": "250"
