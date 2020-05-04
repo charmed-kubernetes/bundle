@@ -12,7 +12,7 @@ This is a scaled-out Kubernetes cluster composed of the following components and
 -   Extensive CNI options
 -   Intra-node TLS by default
 -   GPGPU support for high performance AI/ML
--   Managed option availaible
+-   Managed option available
 
 For a more minimal cluster suitable for testing, deploy the smaller
 [kubernetes-core](https://jujucharms.com/kubernetes-core) bundle.
