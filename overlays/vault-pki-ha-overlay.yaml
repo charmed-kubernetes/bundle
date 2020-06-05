@@ -1,7 +1,7 @@
 applications:
   easyrsa: null
   vault:
-    charm: cs:~openstack-charmers-next/vault
+    charm: cs:vault
     num_units: 2
     options:
       auto-generate-root-ca-cert: true
