@@ -1,3 +1,4 @@
+description: Overlay for kubernetes-core deployments to support SQL BDC.
 machines:
   '0':
     constraints: cores=2 mem=4G root-disk=16G
