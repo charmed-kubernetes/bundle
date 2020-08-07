@@ -1,7 +1,7 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 description: |-
     A minimal two-machine Kubernetes cluster, appropriate for development.
-series: bionic
+series: focal
 services:
   "kubernetes-master":
     charm: "cs:~containers/kubernetes-master"
@@ -60,8 +60,8 @@ relations:
     - "easyrsa:client"
 machines:
   "0":
-    series: bionic
+    series: focal
     constraints: "cores=2 mem=4G root-disk=16G"
   "1":
-    series: bionic
+    series: focal
     constraints: "cores=4 mem=4G root-disk=16G"

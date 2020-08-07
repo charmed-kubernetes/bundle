@@ -93,7 +93,6 @@ Each fragment is simply a bundle with two constraints:
 Here's a simple example from the `flannel` fragment:
 
 ```yaml
-series: bionic
 services:
   "flannel":
     charm: "cs:~containers/flannel"

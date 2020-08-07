@@ -1,23 +1,23 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 services:
   elasticsearch:
-    charm: "cs:bionic/elasticsearch"
+    charm: "cs:elasticsearch"
     constraints: mem=4G root-disk=16G
     num_units: 1
   filebeat:
-    charm: "cs:bionic/filebeat"
+    charm: "cs:filebeat"
     options:
       logpath: '/var/log/*.log'
       kube_logs: True
   kibana:
-    charm: "cs:bionic/kibana"
+    charm: "cs:kibana"
     num_units: 1
     options:
       dashboards: beats
       port: 8080
     expose: true
   topbeat:
-    charm: "cs:bionic/topbeat"
+    charm: "cs:topbeat"
 relations:
   - - "elasticsearch:client"
     - "filebeat:elasticsearch"

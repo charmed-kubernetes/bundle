@@ -1,7 +1,7 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 description: |-
     A highly-available, production-grade Kubernetes cluster.
-series: bionic
+series: focal
 services:
   "kubernetes-master":
     charm: "cs:~containers/kubernetes-master"
