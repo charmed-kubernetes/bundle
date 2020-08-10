@@ -3,7 +3,6 @@ applications:
   ceph-osd:
     charm: cs:ceph-osd
     num_units: 3
-    series: bionic
     storage:
       osd-devices: '32G,2'
       osd-journals: '8G,1'
