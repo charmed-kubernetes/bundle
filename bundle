@@ -245,13 +245,6 @@ def main():
         with open(out_postdeployment_filename, 'w') as out_postdeployment_file:
             out_postdeployment_file.write(postdeployment)
 
-    # Amulet test will not run on core bundle. Because of easyrsa
-    # hosted internaly on lxd amulet cannot upload scripts
-    if "k8s/core" not in args.fragments:
-        # Copy tests to every bundle
-        tests_src = os.path.join(root_path, 'tests')
-        tests_dst = os.path.join(out_bundle_name, 'tests')
-        shutil.copytree(tests_src, tests_dst)
     print('Done. Your bundle can be found in %s' %
           os.path.abspath(out_bundle_name))
 
