@@ -10,10 +10,10 @@ files for the current Charmed Kubernetes and derived bundles.
 
 ## Licensing
 
-This charm has been created under the [Apache License 2.0](./LICENSE), which will cover any contributions you may
+This bundle has been created under the [Apache License 2.0](./LICENSE), which will cover any contributions you may
 make to this project. Please familiarise yourself with the terms of the license.
 
-Additionally, this charm uses the Harmony CLA agreement.  It’s the easiest way for you to give us permission to
+Additionally, this bundle uses the Harmony CLA agreement.  It’s the easiest way for you to give us permission to
 use your contributions.
 In effect, you’re giving us a license, but you still own the copyright — so you retain the right to modify your
 code and use it in other projects. Please [sign the CLA here](https://ubuntu.com/legal/contributors/agreement) before
