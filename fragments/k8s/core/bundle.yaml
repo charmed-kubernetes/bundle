@@ -9,7 +9,7 @@ services:
     to:
       - "0"
     options:
-      channel: 1.20/stable
+      channel: 1.21/stable
     expose: true
     constraints: "cores=2 mem=4G root-disk=16G"
     annotations:
@@ -29,7 +29,7 @@ services:
     to:
       - "1"
     options:
-      channel: 1.20/stable
+      channel: 1.21/stable
     expose: true
     constraints: "cores=4 mem=4G root-disk=16G"
     annotations:

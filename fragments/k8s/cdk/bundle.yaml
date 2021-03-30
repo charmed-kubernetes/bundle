@@ -7,7 +7,7 @@ services:
     charm: "cs:~containers/kubernetes-master"
     num_units: 2
     options:
-      channel: 1.20/stable
+      channel: 1.21/stable
     constraints: "cores=2 mem=4G root-disk=16G"
     annotations:
       "gui-x": "800"
@@ -31,7 +31,7 @@ services:
     charm: "cs:~containers/kubernetes-worker"
     num_units: 3
     options:
-      channel: 1.20/stable
+      channel: 1.21/stable
     expose: true
     constraints: "cores=4 mem=4G root-disk=16G"
     annotations:
