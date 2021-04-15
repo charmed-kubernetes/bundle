@@ -47,7 +47,9 @@ services:
       "gui-x": "800"
       "gui-y": "420"
 relations:
-  - - "kubernetes-master:lb-provider"
+  - - "kubernetes-master:loadbalancer-external"
+    - "kubeapi-load-balancer:lb-consumers"
+  - - "kubernetes-master:loadbalancer-internal"
     - "kubeapi-load-balancer:lb-consumers"
   - - "kubernetes-master:kube-control"
     - "kubernetes-worker:kube-control"
