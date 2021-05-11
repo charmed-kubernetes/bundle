@@ -2,7 +2,7 @@
 description: |-
     A minimal two-machine Kubernetes cluster, appropriate for development.
 series: focal
-services:
+applications:
   "kubernetes-master":
     charm: "cs:~containers/kubernetes-master"
     num_units: 1

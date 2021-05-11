@@ -17,7 +17,7 @@ machines:
     constraints: cores=12 mem=32G root-disk=200G
   6:
     constraints: cores=12 mem=32G root-disk=200G
-services:
+applications:
   "kubernetes-master":
     charm: "cs:~containers/kubernetes-master"
     num_units: 3

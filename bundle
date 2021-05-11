@@ -109,9 +109,9 @@ def merge(src, dst):
 def local_bundle(bundle, root):
     ''' Build bundle using local paths for charms. '''
     copy = json.loads(json.dumps(bundle))
-    for service in bundle['services']:
-        charm = bundle['services'][service]['charm'].strip().split('/')[-1]
-        copy['services'][service]['charm'] = os.path.join(root, charm)
+    for application in bundle['applications']:
+        charm = bundle['applications'][application]['charm'].strip().split('/')[-1]
+        copy['applications'][application]['charm'] = os.path.join(root, charm)
     return copy
 
 
@@ -120,12 +120,12 @@ def version_bundle(bundle, channel, overrides):
     copy = json.loads(json.dumps(bundle))
 
     # pin charm revisions
-    for service in bundle['services']:
-        charm = bundle['services'][service]['charm']
+    for application in bundle['applications']:
+        charm = bundle['applications'][application]['charm']
         for override in overrides:
             name, revision = override.split(',')
             if name == charm:
-                copy['services'][service]['charm'] = name + '-' + revision
+                copy['applications'][application]['charm'] = name + '-' + revision
                 break
         else:
             resp = requests.get('https://api.jujucharms.com/charmstore/v5/meta/id',
@@ -135,22 +135,22 @@ def version_bundle(bundle, channel, overrides):
                 raise CharmstoreQueryError(err)
             meta = resp.json()
             meta = [meta[k] for k in meta][0]
-            copy['services'][service]['charm'] = meta['Id']
+            copy['applications'][application]['charm'] = meta['Id']
 
     # pin resource revisions
-    for service in bundle['services']:
-        charm = bundle['services'][service]['charm']
+    for application in bundle['applications']:
+        charm = bundle['applications'][application]['charm']
         resp = requests.get('https://api.jujucharms.com/charmstore/v5/meta/resources',
                             params={'id': charm, 'channel': channel})
         if not resp.ok:
             err = "Couldn't query resources for %s %s, is it public?" % (charm, channel)
             raise CharmstoreQueryError(err)
         response_data = resp.json()
-        copy['services'][service].setdefault('resources', {})
+        copy['applications'][application].setdefault('resources', {})
         for resource in response_data[charm]:
             name = resource['Name']
             revision = resource['Revision']
-            copy['services'][service]['resources'][name] = revision
+            copy['applications'][application]['resources'][name] = revision
 
     return copy
 
@@ -163,11 +163,11 @@ def yaml_lines(data):
 def serialize(bundle):
     ''' Serialize a bundle in a conventional form. '''
     relations = {}
-    services = {}
+    applications = {}
     otherwise = []
     for k, v in bundle.items():
-        if k == 'services':
-            services['services'] = v
+        if k == 'applications':
+            applications['applications'] = v
         elif k == 'relations':
             relations['relations'] = v
         else:
@@ -176,8 +176,8 @@ def serialize(bundle):
     out = ''
     for o in otherwise:
         out += yaml.dump(o, default_flow_style=False, width=1000)
-    if bool(services):
-        out += yaml.dump(services, default_flow_style=False, width=1000)
+    if bool(applications):
+        out += yaml.dump(applications, default_flow_style=False, width=1000)
     if bool(relations):
         out += yaml.dump(relations, default_flow_style=False, width=1000)
     return out
