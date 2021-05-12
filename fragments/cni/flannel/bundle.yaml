@@ -1,5 +1,5 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
-services:
+applications:
   "flannel":
     charm: "cs:~containers/flannel"
     annotations:

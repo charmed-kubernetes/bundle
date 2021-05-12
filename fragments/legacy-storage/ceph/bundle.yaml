@@ -1,5 +1,5 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
-services:
+applications:
   ceph-osd:
     charm: 'cs:ceph-osd'
     num_units: 3

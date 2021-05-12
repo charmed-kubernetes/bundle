@@ -2,7 +2,7 @@
 description: |-
     A highly-available, production-grade Kubernetes cluster.
 series: focal
-services:
+applications:
   "kubernetes-master":
     charm: "cs:~containers/kubernetes-master"
     num_units: 2

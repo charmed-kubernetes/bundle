@@ -1,5 +1,5 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
-services:
+applications:
   tigera-secure-ee:
     charm: "cs:~containers/tigera-secure-ee"
     annotations:

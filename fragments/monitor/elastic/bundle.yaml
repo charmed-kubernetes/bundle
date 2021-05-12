@@ -1,5 +1,5 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
-services:
+applications:
   elasticsearch:
     charm: "cs:elasticsearch"
     constraints: mem=4G root-disk=16G
