@@ -46,8 +46,6 @@ services:
       "gui-x": "800"
       "gui-y": "420"
 relations:
-  - - "kubernetes-master:kube-api-endpoint"
-    - "kubernetes-worker:kube-api-endpoint"
   - - "kubernetes-master:kube-control"
     - "kubernetes-worker:kube-control"
   - - "kubernetes-master:certificates"
