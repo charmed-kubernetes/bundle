@@ -91,10 +91,10 @@ applications:
         - 5
         - 6
 relations:
-  - - "kubernetes-master:kube-api-endpoint"
-    - "kubeapi-load-balancer:apiserver"
-  - - "kubernetes-master:loadbalancer"
-    - "kubeapi-load-balancer:loadbalancer"
+  - - "kubernetes-master:loadbalancer-external"
+    - "kubeapi-load-balancer:lb-consumers"
+  - - "kubernetes-master:loadbalancer-internal"
+    - "kubeapi-load-balancer:lb-consumers"
   - - "kubernetes-master:kube-control"
     - "kubernetes-worker:kube-control"
   - - "kubernetes-master:certificates"
@@ -105,7 +105,5 @@ relations:
     - "etcd:db"
   - - "kubernetes-worker:certificates"
     - "easyrsa:client"
-  - - "kubernetes-worker:kube-api-endpoint"
-    - "kubeapi-load-balancer:website"
   - - "kubeapi-load-balancer:certificates"
     - "easyrsa:client"
