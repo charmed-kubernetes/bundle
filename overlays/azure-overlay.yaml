@@ -8,5 +8,5 @@ applications:
     num_units: 1
     trust: true
 relations:
-  - ['azure-integrator', 'kubernetes-master']
-  - ['azure-integrator', 'kubernetes-worker']
+  - ['azure-integrator', 'kubernetes-master:azure']
+  - ['azure-integrator', 'kubernetes-worker:azure']
