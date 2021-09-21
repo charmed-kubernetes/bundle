@@ -1,0 +1,8 @@
+description: Charmed Kubernetes overlay to enable IPv4-IPv6 dual-stack.
+applications:
+  calico:
+    options:
+      cidr: "192.168.0.0/16,fd00:c00b:1::/112"
+  kubernetes-master:
+    options:
+      service-cidr: "10.152.183.0/24,fd00:c00b:2::/112"
