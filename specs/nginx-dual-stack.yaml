@@ -26,7 +26,7 @@ metadata:
     run: nginxdualstack
 spec:
   type: NodePort
-  ipFamily: IPv6
+  ipFamilies: [IPv6]
   ports:
   - port: 80
     protocol: TCP
