@@ -1,0 +1,207 @@
+series: focal
+machines:
+  '0':
+    constraints: mem=32G
+  '1':
+    constraints: mem=32G
+  '2':
+    constraints: mem=32G
+applications:
+  calico:
+    charm: cs:~containers/calico-826
+    annotations:
+      gui-x: '450'
+      gui-y: '750'
+    options:
+      ignore-loose-rpf: true
+    resources:
+      calico: 922
+      calico-arm64: 921
+      calico-node-image: 604
+      calico-upgrade: 749
+      calico-upgrade-arm64: 749
+  easyrsa:
+    charm: cs:~containers/easyrsa-408
+    num_units: 1
+    annotations:
+      gui-x: '450'
+      gui-y: '550'
+    to:
+    - lxd:2
+    bindings:
+      "": alpha
+    resources:
+      easyrsa: 5
+  ceph-fs:
+    charm: cs:ceph-fs
+    num_units: 1
+    bindings:
+      "": alpha
+    annotations:
+      gui-x: '300'
+      gui-y: '300'
+    to:
+    - lxd:0
+  ceph-osd:
+    charm: cs:ceph-osd
+    num_units: 3
+    options:
+      osd-devices: /dev/sda /dev/sdb
+    bindings:
+      "": alpha
+    annotations:
+      gui-x: '300'
+      gui-y: '300'
+    to:
+    - 0
+    - 1
+    - 2
+  ceph-radosgw:
+    annotations:
+      gui-x: '1000'
+      gui-y: '250'
+    charm: cs:ceph-radosgw
+    num_units: 1
+    bindings:
+      "": alpha
+    to:
+    - lxd:1
+  kubernetes-worker:
+    charm: cs:~containers/kubernetes-worker-801
+    num_units: 3
+    expose: true
+    annotations:
+      gui-x: '100'
+      gui-y: '850'
+    bindings:
+      "": alpha
+    options:
+      kubelet-extra-config: "{failSwapOn: false}"
+      kubelet-extra-args: "cloud-provider=external"
+      channel: 1.22/stable
+    to:
+    - 0
+    - 1
+    - 2
+    resources:
+      cni-amd64: 880
+      cni-arm64: 871
+      cni-s390x: 883
+      core: 0
+      kube-proxy: 0
+      kubectl: 0
+      kubelet: 0
+  kubernetes-master:
+    charm: cs:~containers/kubernetes-master-1051
+    num_units: 2
+    annotations:
+      gui-x: '800'
+      gui-y: '850'
+    options:
+      authorization-mode: "RBAC,Node"
+      channel: 1.22/stable
+    resources:
+      cdk-addons: 0
+      core: 0
+      kube-apiserver: 0
+      kube-controller-manager: 0
+      kube-proxy: 0
+      kube-scheduler: 0
+      kubectl: 0
+    bindings:
+      "": alpha
+    to:
+    - lxd:0
+    - lxd:1
+  ceph-mon:
+    charm: 'cs:ceph-mon'
+    num_units: 3
+    options:
+      expected-osd-count: 3
+    annotations:
+      gui-x: '600'
+      gui-y: '300'
+    bindings:
+      "": alpha
+    to:
+     - lxd:0
+     - lxd:1
+     - lxd:2
+  etcd:
+    charm: cs:~containers/etcd-620
+    num_units: 3
+    annotations:
+      gui-x: '800'
+      gui-y: '550'
+    bindings:
+      "": alpha
+    options:
+      channel: 3.4/stable
+    resources:
+      core: 0
+      etcd: 3
+      snapshot: 0
+    to:
+    - lxd:0
+    - lxd:1
+    - lxd:2
+  kubeapi-load-balancer:
+    charm: cs:~containers/kubeapi-load-balancer-827
+    num_units: 3
+    expose: true
+    options:
+      port: 6443
+    annotations:
+      gui-x: '450'
+      gui-y: '250'
+    bindings:
+      "": alpha
+    to:
+    - 0
+    - 1
+    - 2
+  containerd:
+    charm: cs:~containers/containerd-160
+    resources: {}
+    annotations:
+      gui-x: '450'
+      gui-y: '250'
+relations:
+- - 'ceph-mon:osd'
+  - 'ceph-osd:mon'
+- - 'kubernetes-master:kube-control'
+  - 'kubernetes-worker:kube-control'
+- - 'kubernetes-master:certificates'
+  - 'easyrsa:client'
+- - 'etcd:certificates'
+  - 'easyrsa:client'
+- - 'kubernetes-master:etcd'
+  - 'etcd:db'
+- - 'kubernetes-worker:certificates'
+  - 'easyrsa:client'
+- - 'calico:etcd'
+  - 'etcd:db'
+- - 'calico:cni'
+  - 'kubernetes-master:cni'
+- - 'calico:cni'
+  - 'kubernetes-worker:cni'
+- - 'kubernetes-master:ceph-storage'
+  - 'ceph-mon:admin'
+- - 'kubernetes-master:ceph-client'
+  - 'ceph-mon:client'
+- - 'ceph-mon:radosgw'
+  - 'ceph-radosgw:mon'
+- - 'containerd:containerd'
+  - 'kubernetes-worker:container-runtime'
+- - 'containerd:containerd'
+  - 'kubernetes-master:container-runtime'
+- - 'ceph-fs:ceph-mds'
+  - 'ceph-mon:mds'
+- - 'kubernetes-master:kube-api-endpoint'
+  - 'kubeapi-load-balancer:apiserver'
+- - 'kubernetes-master:loadbalancer'
+  - 'kubeapi-load-balancer:loadbalancer'
+- - 'kubernetes-worker:kube-api-endpoint'
+  - 'kubeapi-load-balancer:website'
+- - 'kubeapi-load-balancer:certificates'
+  - 'easyrsa:client'
