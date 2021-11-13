@@ -37,7 +37,7 @@ rocks.canonical.com/cdk/metrics-server-amd64:v0.3.6
 rocks.canonical.com/cdk/metrics-server-arm64:v0.3.6
 rocks.canonical.com/cdk/metrics-server-ppc64le:v0.3.6
 rocks.canonical.com/cdk/metrics-server-s390x:v0.3.6
-rocks.canonical.com/cdk/nvidia/k8s-device-plugin:v0.9.0
+rocks.canonical.com/cdk/nvidia/k8s-device-plugin:v0.10.0
 rocks.canonical.com/cdk/pause:3.2
 rocks.canonical.com/cdk/rancher/rancher:latest
 rocks.canonical.com/cdk/sonatype/nexus3:latest
