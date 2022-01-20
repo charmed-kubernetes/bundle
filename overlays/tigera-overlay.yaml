@@ -10,8 +10,8 @@ relations:
 - - tigera-secure-ee:etcd
   - etcd:db
 - - tigera-secure-ee:cni
-  - kubernetes-master:cni
+  - kubernetes-control-plane:cni
 - - tigera-secure-ee:cni
   - kubernetes-worker:cni
 - - tigera-secure-ee:kube-api-endpoint
-  - kubernetes-master:kube-api-endpoint
+  - kubernetes-control-plane:kube-api-endpoint

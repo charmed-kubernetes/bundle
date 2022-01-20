@@ -8,7 +8,7 @@ This is a scaled-out Kubernetes cluster composed of the following components and
 
 -   Deep integration for public and private clouds, or bare metal
 -   Uses standard upstream Kubernetes
--   Multiple Kubernetes master and worker nodes
+-   Multiple Kubernetes control-plane and worker nodes
 -   Extensive CNI options
 -   Intra-node TLS by default
 -   GPGPU support for high performance AI/ML

@@ -10,6 +10,6 @@ relations:
 - - calico:etcd
   - etcd:db
 - - calico:cni
-  - kubernetes-master:cni
+  - kubernetes-control-plane:cni
 - - calico:cni
   - kubernetes-worker:cni

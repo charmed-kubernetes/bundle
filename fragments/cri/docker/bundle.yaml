@@ -9,4 +9,4 @@ relations:
 - - docker:docker
   - kubernetes-worker:container-runtime
 - - docker:docker
-  - kubernetes-master:container-runtime
+  - kubernetes-control-plane:container-runtime

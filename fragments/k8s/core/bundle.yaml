@@ -3,7 +3,7 @@ description: |-
     A minimal two-machine Kubernetes cluster, appropriate for development.
 series: focal
 applications:
-  "kubernetes-master":
+  "kubernetes-control-plane":
     charm: "cs:~containers/kubernetes-master"
     num_units: 1
     to:
@@ -46,11 +46,11 @@ applications:
       "gui-x": "800"
       "gui-y": "420"
 relations:
-  - - "kubernetes-master:kube-control"
-    - "kubernetes-worker:kube-control"
-  - - "kubernetes-master:certificates"
+  - - "kubernetes-control-plane:kube-control"
+    - "kubernetes-control-plane:kube-control"
+  - - "kubernetes-control-plane:certificates"
     - "easyrsa:client"
-  - - "kubernetes-master:etcd"
+  - - "kubernetes-control-plane:etcd"
     - "etcd:db"
   - - "kubernetes-worker:certificates"
     - "easyrsa:client"

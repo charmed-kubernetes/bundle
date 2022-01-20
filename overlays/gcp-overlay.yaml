@@ -8,5 +8,5 @@ applications:
     num_units: 1
     trust: true
 relations:
-  - ['gcp-integrator', 'kubernetes-master']
+  - ['gcp-integrator', 'kubernetes-control-plane']
   - ['gcp-integrator', 'kubernetes-worker']

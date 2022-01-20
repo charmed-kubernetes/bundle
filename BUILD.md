@@ -100,7 +100,7 @@ relations:
   - - "flannel:etcd"
     - "etcd:db"
   - - "flannel:cni"
-    - "kubernetes-master:cni"
+    - "kubernetes-control-plane:cni"
   - - "flannel:cni"
     - "kubernetes-worker:cni"
 ```

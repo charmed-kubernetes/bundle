@@ -3,7 +3,7 @@ description: |-
     A highly-available, production-grade Kubernetes cluster.
 series: focal
 applications:
-  "kubernetes-master":
+  "kubernetes-control-plane":
     charm: "cs:~containers/kubernetes-master"
     num_units: 2
     options:
@@ -47,17 +47,17 @@ applications:
       "gui-x": "800"
       "gui-y": "420"
 relations:
-  - - "kubernetes-master:loadbalancer-external"
+  - - "kubernetes-control-plane:loadbalancer-external"
     - "kubeapi-load-balancer:lb-consumers"
-  - - "kubernetes-master:loadbalancer-internal"
+  - - "kubernetes-control-plane:loadbalancer-internal"
     - "kubeapi-load-balancer:lb-consumers"
-  - - "kubernetes-master:kube-control"
+  - - "kubernetes-control-plane:kube-control"
     - "kubernetes-worker:kube-control"
-  - - "kubernetes-master:certificates"
+  - - "kubernetes-control-plane:certificates"
     - "easyrsa:client"
   - - "etcd:certificates"
     - "easyrsa:client"
-  - - "kubernetes-master:etcd"
+  - - "kubernetes-control-plane:etcd"
     - "etcd:db"
   - - "kubernetes-worker:certificates"
     - "easyrsa:client"
