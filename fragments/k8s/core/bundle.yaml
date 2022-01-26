@@ -4,7 +4,7 @@ description: |-
 series: focal
 applications:
   "kubernetes-control-plane":
-    charm: "cs:~containers/kubernetes-master"
+    charm: "kubernetes-control-plane"
     num_units: 1
     to:
       - "0"

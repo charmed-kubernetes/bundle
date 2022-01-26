@@ -19,7 +19,7 @@ machines:
     constraints: cores=12 mem=32G root-disk=200G
 applications:
   "kubernetes-control-plane":
-    charm: "cs:~containers/kubernetes-master"
+    charm: "kubernetes-control-plane"
     num_units: 3
     options:
       channel: 1.23/edge
