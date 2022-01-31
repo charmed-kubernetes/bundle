@@ -1,7 +1,7 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 applications:
   "containerd":
-    charm: cs:~containers/containerd
+    charm: containerd
     annotations:
       "gui-x": "475"
       "gui-y": "800"
@@ -9,4 +9,4 @@ relations:
 - - containerd:containerd
   - kubernetes-worker:container-runtime
 - - containerd:containerd
-  - kubernetes-master:container-runtime
+  - kubernetes-control-plane:container-runtime

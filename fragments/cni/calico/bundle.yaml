@@ -1,7 +1,7 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 applications:
   "calico":
-    charm: "cs:~containers/calico"
+    charm: "calico"
     annotations:
       "gui-x": "475"
       "gui-y": "605"
@@ -9,6 +9,6 @@ relations:
   - - "calico:etcd"
     - "etcd:db"
   - - "calico:cni"
-    - "kubernetes-master:cni"
+    - "kubernetes-control-plane:cni"
   - - "calico:cni"
     - "kubernetes-worker:cni"

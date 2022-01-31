@@ -1,10 +1,10 @@
 description: Charmed Kubernetes overlay to add CephFS and Ceph RBD support.
 applications:
   ceph-fs:
-    charm: cs:ceph-fs
+    charm: ceph-fs
     num_units: 1
   ceph-osd:
-    charm: cs:ceph-osd
+    charm: ceph-osd
     num_units: 3
     storage:
       osd-devices: '32G,2'
@@ -17,5 +17,5 @@ applications:
 relations:
   - ['ceph-fs:ceph-mds', 'ceph-mon:mds']
   - ['ceph-osd:mon', 'ceph-mon:osd']
-  - ['ceph-mon:admin', 'kubernetes-master']
-  - ['ceph-mon:client', 'kubernetes-master']
+  - ['ceph-mon:admin', 'kubernetes-control-plane']
+  - ['ceph-mon:client', 'kubernetes-control-plane']

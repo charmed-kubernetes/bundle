@@ -1,34 +1,34 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 applications:
   elasticsearch:
-    charm: "cs:elasticsearch"
+    charm: "elasticsearch"
     constraints: mem=4G root-disk=16G
     num_units: 1
   filebeat:
-    charm: "cs:filebeat"
+    charm: "filebeat"
     options:
       logpath: '/var/log/*.log'
       kube_logs: True
   kibana:
-    charm: "cs:kibana"
+    charm: "kibana"
     num_units: 1
     options:
       dashboards: beats
       port: 8080
     expose: true
   topbeat:
-    charm: "cs:topbeat"
+    charm: "topbeat"
 relations:
   - - "elasticsearch:client"
     - "filebeat:elasticsearch"
   - - "elasticsearch:client"
     - "topbeat:elasticsearch"
   - - "filebeat:beats-host"
-    - "kubernetes-master:juju-info"
+    - "kubernetes-control-plane:juju-info"
   - - "filebeat:beats-host"
     - "kubernetes-worker:juju-info"
   - - "topbeat:beats-host"
-    - "kubernetes-master:juju-info"
+    - "kubernetes-control-plane:juju-info"
   - - "topbeat:beats-host"
     - "kubernetes-worker:juju-info"
   - - "kibana:rest"

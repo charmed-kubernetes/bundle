@@ -1,19 +1,19 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 applications:
   tigera-secure-ee:
-    charm: "cs:~containers/tigera-secure-ee"
+    charm: "tigera-secure-ee"
     annotations:
       "gui-x": "450"
       "gui-y": "750"
-  kubernetes-master:
+  kubernetes-control-plane:
     options:
       allow-privileged: "true"
 relations:
   - - "tigera-secure-ee:etcd"
     - "etcd:db"
   - - "tigera-secure-ee:cni"
-    - "kubernetes-master:cni"
+    - "kubernetes-control-plane:cni"
   - - "tigera-secure-ee:cni"
     - "kubernetes-worker:cni"
   - - "tigera-secure-ee:kube-api-endpoint"
-    - "kubernetes-master:kube-api-endpoint"
+    - "kubernetes-control-plane:kube-api-endpoint"
