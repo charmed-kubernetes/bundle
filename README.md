@@ -26,7 +26,7 @@ To contribute to this bundle, see the [CONTRIBUTING.md](./CONTRIBUTING.md) guide
 
 The Charmed Kubernetes organisation has a large number of repositories. The majority of these are for specific Juju charms, used to deploy the applications which go to make up Charmed Kubernetes. A few which may be of particular interest:
 
-- The Kubernetes Master charm  - <https://github.com/charmed-kubernetes/charm-kubernetes-master>
+- The Kubernetes Control Plane charm  - <https://github.com/charmed-kubernetes/charm-kubernetes-master>
 - The Kubernetes Worker charm - <https://github.com/charmed-kubernetes/charm-kubernetes-worker>
 - The MetalLB operator charm - <https://github.com/charmed-kubernetes/metallb-operator>
 

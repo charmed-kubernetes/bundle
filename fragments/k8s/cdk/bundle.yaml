@@ -3,8 +3,8 @@ description: |-
     A highly-available, production-grade Kubernetes cluster.
 series: focal
 applications:
-  "kubernetes-master":
-    charm: "cs:~containers/kubernetes-master"
+  "kubernetes-control-plane":
+    charm: "kubernetes-control-plane"
     num_units: 2
     options:
       channel: 1.23/stable
@@ -13,7 +13,7 @@ applications:
       "gui-x": "800"
       "gui-y": "850"
   "kubeapi-load-balancer":
-    charm: "cs:~containers/kubeapi-load-balancer"
+    charm: "kubeapi-load-balancer"
     num_units: 1
     expose: true
     constraints: "mem=4G root-disk=8G"
@@ -21,14 +21,14 @@ applications:
       "gui-x": "450"
       "gui-y": "250"
   "easyrsa":
-    charm: "cs:~containers/easyrsa"
+    charm: "easyrsa"
     num_units: 1
     constraints: "root-disk=8G"
     annotations:
       "gui-x": "90"
       "gui-y": "420"
   "kubernetes-worker":
-    charm: "cs:~containers/kubernetes-worker"
+    charm: "kubernetes-worker"
     num_units: 3
     options:
       channel: 1.23/stable
@@ -38,7 +38,7 @@ applications:
       "gui-x": "90"
       "gui-y": "850"
   "etcd":
-    charm: "cs:~containers/etcd"
+    charm: "etcd"
     num_units: 3
     options:
       channel: 3.4/stable
@@ -47,17 +47,17 @@ applications:
       "gui-x": "800"
       "gui-y": "420"
 relations:
-  - - "kubernetes-master:loadbalancer-external"
+  - - "kubernetes-control-plane:loadbalancer-external"
     - "kubeapi-load-balancer:lb-consumers"
-  - - "kubernetes-master:loadbalancer-internal"
+  - - "kubernetes-control-plane:loadbalancer-internal"
     - "kubeapi-load-balancer:lb-consumers"
-  - - "kubernetes-master:kube-control"
+  - - "kubernetes-control-plane:kube-control"
     - "kubernetes-worker:kube-control"
-  - - "kubernetes-master:certificates"
+  - - "kubernetes-control-plane:certificates"
     - "easyrsa:client"
   - - "etcd:certificates"
     - "easyrsa:client"
-  - - "kubernetes-master:etcd"
+  - - "kubernetes-control-plane:etcd"
     - "etcd:db"
   - - "kubernetes-worker:certificates"
     - "easyrsa:client"

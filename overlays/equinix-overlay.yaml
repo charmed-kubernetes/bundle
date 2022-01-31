@@ -83,7 +83,7 @@ applications:
       "": alpha
     to:
     - lxd:1
-  kubernetes-master:
+  kubernetes-control-plane:
     options:
       authorization-mode: "RBAC,Node"
       channel: 1.22/stable
@@ -125,20 +125,20 @@ relations:
 - - 'calico:etcd'
   - 'etcd:db'
 - - 'calico:cni'
-  - 'kubernetes-master:cni'
+  - 'kubernetes-control-plane:cni'
 - - 'calico:cni'
   - 'kubernetes-worker:cni'
-- - 'kubernetes-master:ceph-storage'
+- - 'kubernetes-control-plane:ceph-storage'
   - 'ceph-mon:admin'
-- - 'kubernetes-master:ceph-client'
+- - 'kubernetes-control-plane:ceph-client'
   - 'ceph-mon:client'
 - - 'ceph-mon:radosgw'
   - 'ceph-radosgw:mon'
 - - 'ceph-fs:ceph-mds'
   - 'ceph-mon:mds'
-- - 'kubernetes-master:kube-api-endpoint'
+- - 'kubernetes-control-plane:kube-api-endpoint'
   - 'kubeapi-load-balancer:apiserver'
 - - 'kubeapi-load-balancer:loadbalancer'
-  - 'kubernetes-master:loadbalancer' 
+  - 'kubernetes-control-plane:loadbalancer'
 - - 'kubeapi-load-balancer:website'
   - 'kubernetes-worker:kube-api-endpoint'

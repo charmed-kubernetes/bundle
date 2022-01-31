@@ -6,7 +6,7 @@ import argparse
 import json
 import yaml
 import requests
-import shutil
+import pathlib
 
 
 root_path = os.path.dirname(os.path.abspath(__file__))
@@ -36,6 +36,8 @@ class CharmstoreQueryError(Exception):
 def get_args():
     ''' Parse cli arguments. '''
     parser = argparse.ArgumentParser()
+    parser.add_argument('-n', '--name', default=None,
+                        help='name given to the created bundle.')
     parser.add_argument('-c', '--channel', default='stable',
                         help='the channel to use')
     parser.add_argument('-o', '--outputdir', default='.',
@@ -89,7 +91,17 @@ def validate_components(fragments):
 
 def validate_channel(channel):
     ''' Make sure the supplied channel is a valid one. '''
-    if channel not in ['unpublished', 'stable', 'edge', 'local', 'candidate', 'beta']:
+    track_risk_branch = channel.split("/")
+    if len(track_risk_branch) == 3:
+        track, risk, branch = track_risk_branch
+    elif len(track_risk_branch) == 2:
+        (track, risk), branch = track_risk_branch, None
+    elif len(track_risk_branch) == 1:
+        track, risk, branch = "latest", track_risk_branch[0], None
+    else:
+        raise ChannelInvalid("Invalid channel " + channel)
+
+    if risk not in ['unpublished', 'stable', 'edge', 'local', 'candidate', 'beta']:
         raise ChannelInvalid('Invalid channel ' + channel)
 
 
@@ -235,6 +247,7 @@ def main():
     out_readme_filename = os.path.join(out_bundle_name, 'README.md')
     out_getstarted_filename = os.path.join(out_bundle_name, 'getstarted.md')
     out_postdeployment_filename = os.path.join(out_bundle_name, 'post-deployment.sh')
+    bundle["name"] = args.name or pathlib.Path(out_bundle_name).name
     if os.path.isfile(out_bundle_filename):
         err = '%s already exists. Aborting.' % out_bundle_filename
         raise FileExistsError(err)

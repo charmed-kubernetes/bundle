@@ -1,7 +1,7 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 applications:
   "docker":
-    charm: cs:~containers/docker
+    charm: docker
     annotations:
       "gui-x": "475"
       "gui-y": "800"
@@ -9,4 +9,4 @@ relations:
 - - docker:docker
   - kubernetes-worker:container-runtime
 - - docker:docker
-  - kubernetes-master:container-runtime
+  - kubernetes-control-plane:container-runtime

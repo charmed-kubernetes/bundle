@@ -1,7 +1,7 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 applications:
   "canal":
-    charm: "cs:~containers/canal"
+    charm: "canal"
     annotations:
       "gui-x": "475"
       "gui-y": "605"
@@ -9,6 +9,6 @@ relations:
   - - "canal:etcd"
     - "etcd:db"
   - - "canal:cni"
-    - "kubernetes-master:cni"
+    - "kubernetes-control-plane:cni"
   - - "canal:cni"
     - "kubernetes-worker:cni"

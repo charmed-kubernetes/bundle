@@ -7,14 +7,14 @@
 This is a scaled-out Kubernetes cluster composed of the following components and features:
 
 - Kubernetes (automated deployment, operations, and scaling)
-     - Kubernetes cluster with one master and three worker nodes.
+     - Kubernetes cluster with one control-plane and three worker nodes.
      - TLS used for communication between nodes for security.
      - A CNI plugin (Flannel)
-     - A load balancer for HA kubernetes-master
+     - A load balancer for HA kubernetes-control-plane
      - Optional Ingress Controller (on worker)
-     - Optional Dashboard addon (on master) including Heapster for cluster monitoring
+     - Optional Dashboard addon (on control-plane) including Heapster for cluster monitoring
 - EasyRSA
-     - Performs the role of a certificate authority serving self signed certificates
+     - Performs the role of a certificate authority serving self-signed certificates
        to the requesting units of the cluster.
 - Etcd (distributed key value store)
      - Three node cluster for reliability.
@@ -96,11 +96,11 @@ This allows you to `juju attach` the resources built for the architecture of
 your cloud.
 
 ```
-juju attach kubernetes-master kubectl=/path/to/kubectl.snap
-juju attach kubernetes-master kube-apiserver=/path/to/kube-apiserver.snap
-juju attach kubernetes-master kube-controller-manager=/path/to/kube-controller-manager.snap
-juju attach kubernetes-master kube-scheduler=/path/to/kube-scheduler.snap
-juju attach kubernetes-master cdk-addons=/path/to/cdk-addons.snap
+juju attach kubernetes-control-plane kubectl=/path/to/kubectl.snap
+juju attach kubernetes-control-plane kube-apiserver=/path/to/kube-apiserver.snap
+juju attach kubernetes-control-plane kube-controller-manager=/path/to/kube-controller-manager.snap
+juju attach kubernetes-control-plane kube-scheduler=/path/to/kube-scheduler.snap
+juju attach kubernetes-control-plane cdk-addons=/path/to/cdk-addons.snap
 
 juju attach kubernetes-worker kubectl=/path/to/kubectl.snap
 juju attach kubernetes-worker kubelet=/path/to/kubelet.snap
@@ -114,15 +114,15 @@ You can select a specific version or series of Kubernetes by configuring CDK
 to use a specific snap channel. For example, to use the 1.6 series:
 
 ```
-juju config kubernetes-master channel=1.6/stable
+juju config kubernetes-control-plane channel=1.6/stable
 juju config kubernetes-worker channel=1.6/stable
 ```
 
 After changing the channel, you'll need to manually execute the upgrade action
-on each kubernetes-worker and kubernetes-master unit, e.g.:
+on each kubernetes-worker and kubernetes-control-plane unit, e.g.:
 
 ```
-juju run-action kubernetes-master/0 upgrade
+juju run-action kubernetes-control-plane/0 upgrade
 ...
 juju run-action kubernetes-worker/0 upgrade
 juju run-action kubernetes-worker/1 upgrade
@@ -136,7 +136,7 @@ By default, the channel is set to `stable` on the current minor version of Kuber
 ## Interacting with the Kubernetes cluster
 
 After the cluster is deployed you may assume control over the Kubernetes
-cluster from any kubernetes-master or kubernetes-worker node.
+cluster from any kubernetes-control-plane or kubernetes-worker node.
 
 To download the credentials and client application to your local workstation:
 
@@ -149,7 +149,7 @@ mkdir -p ~/.kube
 Copy the kubeconfig file to the default location.
 
 ```
-juju scp kubernetes-master/0:config ~/.kube/config
+juju scp kubernetes-control-plane/0:config ~/.kube/config
 ```
 
 Install `kubectl` locally.
@@ -169,10 +169,10 @@ kubectl cluster-info
 The Kubernetes dashboard addon is installed by default, along with Metrics Server,
 Heapster, Grafana and InfluxDB for cluster monitoring. The dashboard addons can be
 enabled or disabled by setting the `enable-dashboard-addons` config on the
-`kubernetes-master` application:
+`kubernetes-control-plane` application:
 
 ```
-juju config kubernetes-master enable-dashboard-addons=true
+juju config kubernetes-control-plane enable-dashboard-addons=true
 ```
 
 To access the dashboard, you may establish a secure tunnel to your cluster with
@@ -183,7 +183,7 @@ kubectl proxy
 ```
 
 By default, this establishes a proxy running on your local machine and the
-kubernetes-master unit. To reach the Kubernetes dashboard, visit
+kubernetes-control-plane unit. To reach the Kubernetes dashboard, visit
 `http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/` if using 1.16 or newer or 
 `http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/` if using an older version.
 
@@ -423,8 +423,8 @@ storage devices such as [Ceph](https://ceph.com).
 
 Deploy a minimum of three ceph-mon and three ceph-osd charms:
 ```
-juju deploy cs:ceph-mon -n 3
-juju deploy cs:ceph-osd -n 3
+juju deploy ceph-mon -n 3
+juju deploy ceph-osd -n 3
 ```
 
 Relate the charms:
@@ -457,7 +457,7 @@ juju add-storage ceph-osd/2 osd-devices=ebs,10G,1
 Next relate the storage cluster with the Kubernetes cluster:
 
 ```
-juju add-relation kubernetes-master ceph-mon
+juju add-relation kubernetes-control-plane ceph-mon
 ```
 
 We are now ready to enlist
@@ -465,7 +465,7 @@ We are now ready to enlist
 in Kubernetes, which our workloads can use via Persistent Volume Claims (PVC).
 
 ```
-juju run-action kubernetes-master/0 create-rbd-pv name=test size=50
+juju run-action kubernetes-control-plane/0 create-rbd-pv name=test size=50
 ```
 
 This example created a "test" Radios Block Device (rbd) in the size of 50 MB.
@@ -489,7 +489,7 @@ documentation for more information.
 
  The following are known issues and limitations with the bundle and charm code:
 
- - Destroying the the easyrsa charm will result in loss of public key
+ - Destroying the easyrsa charm will result in loss of public key
    infrastructure (PKI).
 
  - Deployment locally on LXD will require the use of conjure-up to tune
@@ -498,19 +498,19 @@ documentation for more information.
 
  - If resources fail to download during initial deployment for any reason, you
    will need to download and install them manually. For example, if
-   kubernetes-master is missing its resources, download them from the resources
-   section of the sidebar [here](https://jujucharms.com/u/containers/kubernetes-master/)
+   kubernetes-control-plane is missing its resources, download them from the resources
+   section of the sidebar [here](https://charmhub.io/kubernetes-control-plane/)
    and install them by running, for example:
 
-   `juju attach kubernetes-master kube-apiserver=/path/to/snap`.
+   `juju attach kubernetes-control-plane kube-apiserver=/path/to/snap`.
 
    You can find resources for the charmed-kubernetes charms here:
 
-   - [kubernetes-master](https://jujucharms.com/u/containers/kubernetes-master/)
-   - [kubernetes-worker](https://jujucharms.com/u/containers/kubernetes-worker/)
-   - [easyrsa](https://jujucharms.com/u/containers/easyrsa/)
-   - [etcd](https://jujucharms.com/u/containers/etcd/)
-   - [flannel](https://jujucharms.com/u/containers/flannel/)
+   - [kubernetes-control-plane](https://charmhub.io/kubernetes-control-plane/)
+   - [kubernetes-worker](https://charmhub.io/kubernetes-worker/)
+   - [easyrsa](https://charmhub.io/easyrsa/)
+   - [etcd](https://charmhub.io/etcd/)
+   - [flannel](https://charmhub.io/flannel/)
 
 ## Charmed Kubernetes Reference
 

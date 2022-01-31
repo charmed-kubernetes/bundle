@@ -1,6 +1,6 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 description: |-
-    A seven-machine Kubernetes cluster, appropriate for bare metal using MaaS KVM Pods. Includes three Kubernetes-masters and four worker nodes.
+    A seven-machine Kubernetes cluster, appropriate for bare metal using MaaS KVM Pods. Includes three kubernetes-control-plane and four worker nodes.
 series: focal
 machines:
   0:
@@ -18,8 +18,8 @@ machines:
   6:
     constraints: cores=12 mem=32G root-disk=200G
 applications:
-  "kubernetes-master":
-    charm: "cs:~containers/kubernetes-master"
+  "kubernetes-control-plane":
+    charm: "kubernetes-control-plane"
     num_units: 3
     options:
       channel: 1.23/stable
@@ -31,7 +31,7 @@ applications:
       - 1
       - 2
   "kubeapi-load-balancer":
-    charm: "cs:~containers/kubeapi-load-balancer"
+    charm: "kubeapi-load-balancer"
     num_units: 1
     expose: true
     annotations:
@@ -40,15 +40,15 @@ applications:
     to:
      - 3
   "easyrsa":
-    charm: "cs:~containers/easyrsa"
+    charm: "easyrsa"
     num_units: 1
     annotations:
       "gui-x": "90"
       "gui-y": "420"
     to:
-     - lxd:kubernetes-master
+     - lxd:kubernetes-control-plane
   "kubernetes-worker":
-    charm: "cs:~containers/kubernetes-worker"
+    charm: "kubernetes-worker"
     constraints: cores=2 mem=4G root-disk=30G
     num_units: 12
     options:
@@ -70,7 +70,7 @@ applications:
         "kvm:kubernetes-worker-host/2",
         "kvm:kubernetes-worker-host/3"]
   "etcd":
-    charm: "cs:~containers/etcd"
+    charm: "etcd"
     num_units: 3
     annotations:
       "gui-x": "800"
@@ -80,7 +80,7 @@ applications:
         - 1
         - 2
   "kubernetes-worker-host":
-    charm: "cs:ubuntu"
+    charm: "ubuntu"
     num_units: 4
     annotations:
       "gui-x": "90"
@@ -91,17 +91,17 @@ applications:
         - 5
         - 6
 relations:
-  - - "kubernetes-master:loadbalancer-external"
+  - - "kubernetes-control-plane:loadbalancer-external"
     - "kubeapi-load-balancer:lb-consumers"
-  - - "kubernetes-master:loadbalancer-internal"
+  - - "kubernetes-control-plane:loadbalancer-internal"
     - "kubeapi-load-balancer:lb-consumers"
-  - - "kubernetes-master:kube-control"
+  - - "kubernetes-control-plane:kube-control"
     - "kubernetes-worker:kube-control"
-  - - "kubernetes-master:certificates"
+  - - "kubernetes-control-plane:certificates"
     - "easyrsa:client"
   - - "etcd:certificates"
     - "easyrsa:client"
-  - - "kubernetes-master:etcd"
+  - - "kubernetes-control-plane:etcd"
     - "etcd:db"
   - - "kubernetes-worker:certificates"
     - "easyrsa:client"

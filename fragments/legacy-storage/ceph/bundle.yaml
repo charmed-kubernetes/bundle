@@ -1,7 +1,7 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 applications:
   ceph-osd:
-    charm: 'cs:ceph-osd'
+    charm: 'ceph-osd'
     num_units: 3
     annotations:
       gui-x: '300'
@@ -9,7 +9,7 @@ applications:
     to:
      - kubernetes-worker
   ceph-mon:
-    charm: 'cs:ceph-mon'
+    charm: 'ceph-mon'
     num_units: 3
     annotations:
       gui-x: '600'
@@ -17,7 +17,7 @@ applications:
     to:
      - lxd:kubernetes-worker
 relations:
-- - kubernetes-master:ceph-storage
+- - kubernetes-control-plane:ceph-storage
   - ceph-mon:admin
 - - ceph-mon:osd
   - ceph-osd:mon

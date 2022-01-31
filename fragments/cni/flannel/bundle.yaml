@@ -1,7 +1,7 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 applications:
   "flannel":
-    charm: "cs:~containers/flannel"
+    charm: "flannel"
     annotations:
       "gui-x": "475"
       "gui-y": "605"
@@ -9,6 +9,6 @@ relations:
   - - "flannel:etcd"
     - "etcd:db"
   - - "flannel:cni"
-    - "kubernetes-master:cni"
+    - "kubernetes-control-plane:cni"
   - - "flannel:cni"
     - "kubernetes-worker:cni"

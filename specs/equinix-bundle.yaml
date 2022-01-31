@@ -91,7 +91,7 @@ applications:
       kube-proxy: 0
       kubectl: 0
       kubelet: 0
-  kubernetes-master:
+  kubernetes-control-plane:
     charm: cs:~containers/kubernetes-master-1051
     num_units: 2
     annotations:
@@ -169,37 +169,37 @@ applications:
 relations:
 - - 'ceph-mon:osd'
   - 'ceph-osd:mon'
-- - 'kubernetes-master:kube-control'
+- - 'kubernetes-control-plane:kube-control'
   - 'kubernetes-worker:kube-control'
-- - 'kubernetes-master:certificates'
+- - 'kubernetes-control-plane:certificates'
   - 'easyrsa:client'
 - - 'etcd:certificates'
   - 'easyrsa:client'
-- - 'kubernetes-master:etcd'
+- - 'kubernetes-control-plane:etcd'
   - 'etcd:db'
 - - 'kubernetes-worker:certificates'
   - 'easyrsa:client'
 - - 'calico:etcd'
   - 'etcd:db'
 - - 'calico:cni'
-  - 'kubernetes-master:cni'
+  - 'kubernetes-control-plane:cni'
 - - 'calico:cni'
   - 'kubernetes-worker:cni'
-- - 'kubernetes-master:ceph-storage'
+- - 'kubernetes-control-plane:ceph-storage'
   - 'ceph-mon:admin'
-- - 'kubernetes-master:ceph-client'
+- - 'kubernetes-control-plane:ceph-client'
   - 'ceph-mon:client'
 - - 'ceph-mon:radosgw'
   - 'ceph-radosgw:mon'
 - - 'containerd:containerd'
   - 'kubernetes-worker:container-runtime'
 - - 'containerd:containerd'
-  - 'kubernetes-master:container-runtime'
+  - 'kubernetes-control-plane:container-runtime'
 - - 'ceph-fs:ceph-mds'
   - 'ceph-mon:mds'
-- - 'kubernetes-master:kube-api-endpoint'
+- - 'kubernetes-control-plane:kube-api-endpoint'
   - 'kubeapi-load-balancer:apiserver'
-- - 'kubernetes-master:loadbalancer'
+- - 'kubernetes-control-plane:loadbalancer'
   - 'kubeapi-load-balancer:loadbalancer'
 - - 'kubernetes-worker:kube-api-endpoint'
   - 'kubeapi-load-balancer:website'

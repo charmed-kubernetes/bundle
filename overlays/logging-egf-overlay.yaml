@@ -31,6 +31,6 @@ relations:
   - ["apache2:reverseproxy", "graylog:website"]
   - ["graylog:elasticsearch", "elasticsearch:client"]
   - ["graylog:mongodb", "mongodb:database"]
-  - ["filebeat:beats-host", "kubernetes-master:juju-info"]
+  - ["filebeat:beats-host", "kubernetes-control-plane:juju-info"]
   - ["filebeat:beats-host", "kubernetes-worker:juju-info"]
   - ["filebeat:logstash", "graylog:beats"]
