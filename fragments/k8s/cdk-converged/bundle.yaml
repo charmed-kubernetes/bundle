@@ -31,7 +31,7 @@ applications:
       - 1
       - 2
   "kubeapi-load-balancer":
-    charm: "cs:~containers/kubeapi-load-balancer"
+    charm: "kubeapi-load-balancer"
     num_units: 1
     expose: true
     annotations:
@@ -40,7 +40,7 @@ applications:
     to:
      - 3
   "easyrsa":
-    charm: "cs:~containers/easyrsa"
+    charm: "easyrsa"
     num_units: 1
     annotations:
       "gui-x": "90"
@@ -48,7 +48,7 @@ applications:
     to:
      - lxd:kubernetes-control-plane
   "kubernetes-worker":
-    charm: "cs:~containers/kubernetes-worker"
+    charm: "kubernetes-worker"
     constraints: cores=2 mem=4G root-disk=30G
     num_units: 12
     options:
@@ -70,7 +70,7 @@ applications:
         "kvm:kubernetes-worker-host/2",
         "kvm:kubernetes-worker-host/3"]
   "etcd":
-    charm: "cs:~containers/etcd"
+    charm: "etcd"
     num_units: 3
     annotations:
       "gui-x": "800"
@@ -80,7 +80,7 @@ applications:
         - 1
         - 2
   "kubernetes-worker-host":
-    charm: "cs:ubuntu"
+    charm: "ubuntu"
     num_units: 4
     annotations:
       "gui-x": "90"

@@ -15,7 +15,7 @@ This is a scaled-out Kubernetes cluster composed of the following components and
 -   Managed option available
 
 For a more minimal cluster suitable for testing, deploy the smaller
-[kubernetes-core](https://jujucharms.com/kubernetes-core) bundle.
+[kubernetes-core](https://charmhub.io/kubernetes-core) bundle.
 
 For a lightweight upstream K8s, try [MicroK8s](https://microk8s.io)!
 

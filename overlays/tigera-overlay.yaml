@@ -4,7 +4,7 @@ applications:
     annotations:
       gui-x: '450'
       gui-y: '750'
-    charm: cs:~containers/tigera-secure-ee
+    charm: tigera-secure-ee
   flannel:
 relations:
 - - tigera-secure-ee:etcd

@@ -19,7 +19,7 @@ This is a minimal Kubernetes cluster composed of the following components and fe
      - One node for basic functionality.
 
 This bundle is suitable for development and testing purposes. For a more robust, scaled-out cluster, deploy the
-[charmed-kubernetes](https://jaas.ai/charmed-kubernetes) bundle.
+[charmed-kubernetes](https://charmhub.io/charmed-kubernetes) bundle.
 
 For detailed installation and usage, please see the [Charmed Kubernetes documentation](https://ubuntu.com/kubernetes/docs).
 

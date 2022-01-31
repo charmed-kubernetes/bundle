@@ -1,13 +1,13 @@
 description: Charmed Kubernetes overlay to add Ceph RBD support.
 applications:
   ceph-osd:
-    charm: cs:ceph-osd
+    charm: ceph-osd
     num_units: 3
     storage:
       osd-devices: '32G,2'
       osd-journals: '8G,1'
   ceph-mon:
-    charm: cs:ceph-mon
+    charm: ceph-mon
     num_units: 3
 relations:
   - ['ceph-osd:mon', 'ceph-mon:osd']

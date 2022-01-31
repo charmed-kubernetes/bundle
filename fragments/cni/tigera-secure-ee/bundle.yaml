@@ -1,7 +1,7 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 applications:
   tigera-secure-ee:
-    charm: "cs:~containers/tigera-secure-ee"
+    charm: "tigera-secure-ee"
     annotations:
       "gui-x": "450"
       "gui-y": "750"

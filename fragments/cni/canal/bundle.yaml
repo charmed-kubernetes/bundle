@@ -1,7 +1,7 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 applications:
   "canal":
-    charm: "cs:~containers/canal"
+    charm: "canal"
     annotations:
       "gui-x": "475"
       "gui-y": "605"

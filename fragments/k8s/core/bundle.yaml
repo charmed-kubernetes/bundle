@@ -16,7 +16,7 @@ applications:
       "gui-x": "800"
       "gui-y": "850"
   "easyrsa":
-    charm: "cs:~containers/easyrsa"
+    charm: "easyrsa"
     num_units: 1
     to:
       - lxd:0
@@ -24,7 +24,7 @@ applications:
       "gui-x": "90"
       "gui-y": "420"
   "kubernetes-worker":
-    charm: "cs:~containers/kubernetes-worker"
+    charm: "kubernetes-worker"
     num_units: 1
     to:
       - "1"
@@ -36,7 +36,7 @@ applications:
       "gui-x": "90"
       "gui-y": "850"
   "etcd":
-    charm: "cs:~containers/etcd"
+    charm: "etcd"
     num_units: 1
     options:
       channel: 3.4/stable

@@ -4,7 +4,7 @@ applications:
     annotations:
       gui-x: '480'
       gui-y: '750'
-    charm: cs:~containers/calico
+    charm: calico
   flannel:
 relations:
 - - calico:etcd

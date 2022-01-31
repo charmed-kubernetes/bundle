@@ -423,8 +423,8 @@ storage devices such as [Ceph](https://ceph.com).
 
 Deploy a minimum of three ceph-mon and three ceph-osd charms:
 ```
-juju deploy cs:ceph-mon -n 3
-juju deploy cs:ceph-osd -n 3
+juju deploy ceph-mon -n 3
+juju deploy ceph-osd -n 3
 ```
 
 Relate the charms:
@@ -499,18 +499,18 @@ documentation for more information.
  - If resources fail to download during initial deployment for any reason, you
    will need to download and install them manually. For example, if
    kubernetes-control-plane is missing its resources, download them from the resources
-   section of the sidebar [here](https://jujucharms.com/u/containers/kubernetes-master/)
+   section of the sidebar [here](https://charmhub.io/kubernetes-control-plane/)
    and install them by running, for example:
 
    `juju attach kubernetes-control-plane kube-apiserver=/path/to/snap`.
 
    You can find resources for the charmed-kubernetes charms here:
 
-   - [kubernetes-control-plane](https://jujucharms.com/u/containers/kubernetes-master/)
-   - [kubernetes-worker](https://jujucharms.com/u/containers/kubernetes-worker/)
-   - [easyrsa](https://jujucharms.com/u/containers/easyrsa/)
-   - [etcd](https://jujucharms.com/u/containers/etcd/)
-   - [flannel](https://jujucharms.com/u/containers/flannel/)
+   - [kubernetes-control-plane](https://charmhub.io/kubernetes-control-plane/)
+   - [kubernetes-worker](https://charmhub.io/kubernetes-worker/)
+   - [easyrsa](https://charmhub.io/easyrsa/)
+   - [etcd](https://charmhub.io/etcd/)
+   - [flannel](https://charmhub.io/flannel/)
 
 ## Charmed Kubernetes Reference
 
