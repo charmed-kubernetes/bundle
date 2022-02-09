@@ -4,9 +4,9 @@ applications:
     annotations:
       gui-x: "600"
       gui-y: "300"
-    charm: azure-integrator
+    charm: cs:~containers/azure-integrator
     num_units: 1
     trust: true
 relations:
-  - ['azure-integrator', 'kubernetes-control-plane:azure']
+  - ['azure-integrator', 'kubernetes-master:azure']
   - ['azure-integrator', 'kubernetes-worker:azure']

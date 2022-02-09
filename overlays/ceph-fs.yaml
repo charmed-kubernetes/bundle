@@ -10,12 +10,12 @@ applications:
       osd-devices: '32G,2'
       osd-journals: '8G,1'
   ceph-mon:
-    charm: cs:ceph-mon
+    charm: ceph-mon
     num_units: 3
     options:
       monitor-count: '3'
 relations:
   - ['ceph-fs:ceph-mds', 'ceph-mon:mds']
   - ['ceph-osd:mon', 'ceph-mon:osd']
-  - ['ceph-mon:admin', 'kubernetes-control-plane']
-  - ['ceph-mon:client', 'kubernetes-control-plane']
+  - ['ceph-mon:admin', 'kubernetes-master']
+  - ['ceph-mon:client', 'kubernetes-master']

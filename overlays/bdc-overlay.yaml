@@ -5,7 +5,7 @@ machines:
   '1':
     constraints: cores=8 mem=64G root-disk=100G
 applications:
-  kubernetes-control-plane:
+  kubernetes-master:
     options:
       allow-privileged: 'True'
  

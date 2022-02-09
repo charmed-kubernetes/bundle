@@ -7,7 +7,7 @@ machines:
     constraints: mem=32G
 applications:
   calico:
-    charm: cs:~containers/calico-826
+    charm: cs:~containers/calico
     annotations:
       gui-x: '450'
       gui-y: '750'
@@ -36,7 +36,7 @@ applications:
     - lxd:1
     - lxd:2
   ceph-fs:
-    charm: cs:ceph-fs
+    charm: ceph-fs
     num_units: 1
     bindings:
       "": alpha
@@ -46,7 +46,7 @@ applications:
     to:
     - lxd:0
   ceph-mon:
-    charm: 'cs:ceph-mon'
+    charm: ceph-mon
     num_units: 3
     options:
       expected-osd-count: 3
@@ -60,7 +60,7 @@ applications:
      - lxd:1
      - lxd:2
   ceph-osd:
-    charm: cs:ceph-osd
+    charm: ceph-osd
     num_units: 3
     options:
       osd-devices: /dev/sda /dev/sdb
@@ -77,13 +77,13 @@ applications:
     annotations:
       gui-x: '1000'
       gui-y: '250'
-    charm: cs:ceph-radosgw
+    charm: ceph-radosgw
     num_units: 1
     bindings:
       "": alpha
     to:
     - lxd:1
-  kubernetes-control-plane:
+  kubernetes-master:
     options:
       authorization-mode: "RBAC,Node"
       channel: 1.22/stable
@@ -125,20 +125,20 @@ relations:
 - - 'calico:etcd'
   - 'etcd:db'
 - - 'calico:cni'
-  - 'kubernetes-control-plane:cni'
+  - 'kubernetes-master:cni'
 - - 'calico:cni'
   - 'kubernetes-worker:cni'
-- - 'kubernetes-control-plane:ceph-storage'
+- - 'kubernetes-master:ceph-storage'
   - 'ceph-mon:admin'
-- - 'kubernetes-control-plane:ceph-client'
+- - 'kubernetes-master:ceph-client'
   - 'ceph-mon:client'
 - - 'ceph-mon:radosgw'
   - 'ceph-radosgw:mon'
 - - 'ceph-fs:ceph-mds'
   - 'ceph-mon:mds'
-- - 'kubernetes-control-plane:kube-api-endpoint'
+- - 'kubernetes-master:kube-api-endpoint'
   - 'kubeapi-load-balancer:apiserver'
 - - 'kubeapi-load-balancer:loadbalancer'
-  - 'kubernetes-control-plane:loadbalancer'
+  - 'kubernetes-master:loadbalancer'
 - - 'kubeapi-load-balancer:website'
   - 'kubernetes-worker:kube-api-endpoint'
