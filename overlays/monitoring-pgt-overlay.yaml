@@ -1,18 +1,18 @@
 applications:
   prometheus:
-    charm: cs:prometheus2
+    charm: prometheus2
     constraints: "mem=4G root-disk=16G"
     num_units: 1
   grafana:
-    charm: cs:grafana
+    charm: grafana
     expose: true
     num_units: 1
   telegraf:
-    charm: cs:telegraf
+    charm: telegraf
 relations:
   - [prometheus:grafana-source, grafana:grafana-source]
   - [telegraf:prometheus-client, prometheus:target]
-  - [kubernetes-control-plane:juju-info, telegraf:juju-info]
+  - [kubernetes-master:juju-info, telegraf:juju-info]
   - [kubernetes-worker:juju-info, telegraf:juju-info]
-  - [kubernetes-control-plane:prometheus, prometheus:manual-jobs]
-  - [kubernetes-control-plane:grafana, grafana:dashboards]
+  - [kubernetes-master:prometheus, prometheus:manual-jobs]
+  - [kubernetes-master:grafana, grafana:dashboards]
