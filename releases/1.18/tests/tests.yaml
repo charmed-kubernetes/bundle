@@ -1,0 +1,11 @@
+tests: "*"
+# Exclude individual charm tests, only run bundle tests
+excludes:
+  - 'cs:'
+# Adding tims PPA so we get current dependencies
+sources:
+  - ppa:tvansteenburgh/ppa
+packages:
+  - python3-juju-deployer
+  - python3-yaml
+reset: false
