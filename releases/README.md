@@ -1,3 +1,4 @@
-This path preserves each release bundle published to the charmstore in an format which can be read now that the charmstore has inaccessible API. 
+This `releases` directory preserves each release bundle published to the charmstore 
+in an format which can no longer be reached via the charmstore API. 
 
-Within each release directory, the original bundles are preserved as originally published without modification.
+Within each release directory, the original bundles are preserved as published without modification.
