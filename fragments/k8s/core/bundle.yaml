@@ -47,7 +47,7 @@ applications:
       "gui-y": "420"
 relations:
   - - "kubernetes-control-plane:kube-control"
-    - "kubernetes-control-plane:kube-control"
+    - "kubernetes-worker:kube-control"
   - - "kubernetes-control-plane:certificates"
     - "easyrsa:client"
   - - "kubernetes-control-plane:etcd"
