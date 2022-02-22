@@ -115,6 +115,12 @@ def local_bundle(bundle, root):
     return copy
 
 
+def _charmpath(charm):
+    if charm.startswith("cs:~"):
+        return charm[3:]
+    return charm
+
+
 def version_bundle(bundle, channel, overrides):
     ''' Acquire and assign versions to charms according to their channel. '''
     copy = json.loads(json.dumps(bundle))
@@ -128,29 +134,39 @@ def version_bundle(bundle, channel, overrides):
                 copy['applications'][application]['charm'] = name + '-' + revision
                 break
         else:
-            resp = requests.get('https://api.jujucharms.com/charmstore/v5/meta/id',
-                                params={'id': charm, 'channel': channel})
-            if not resp.ok:
-                err = "Couldn't query %s %s, is it public?" % (charm, channel)
-                raise CharmstoreQueryError(err)
-            meta = resp.json()
-            meta = [meta[k] for k in meta][0]
-            copy['applications'][application]['charm'] = meta['Id']
+            if charm.startswith("cs:"):
+                resp = requests.get(f'https://api.jujucharms.com/charmstore/v5/{_charmpath(charm)}/meta/any',
+                                    params={'channel': channel})
+                if not resp.ok:
+                    err = "Couldn't query %s %s, is it public?" % (charm, channel)
+                    raise CharmstoreQueryError(err)
+                meta = resp.json()
+                copy['applications'][application]['charm'] = meta['Id']
+            else:
+                copy['applications'][application]['channel'] = channel
 
     # pin resource revisions
     for application in bundle['applications']:
         charm = bundle['applications'][application]['charm']
-        resp = requests.get('https://api.jujucharms.com/charmstore/v5/meta/resources',
-                            params={'id': charm, 'channel': channel})
-        if not resp.ok:
-            err = "Couldn't query resources for %s %s, is it public?" % (charm, channel)
-            raise CharmstoreQueryError(err)
-        response_data = resp.json()
-        copy['applications'][application].setdefault('resources', {})
-        for resource in response_data[charm]:
-            name = resource['Name']
-            revision = resource['Revision']
-            copy['applications'][application]['resources'][name] = revision
+        if charm.startswith("cs:"):
+            resp = requests.get(f'https://api.jujucharms.com/charmstore/v5/{_charmpath(charm)}/meta/resources',
+                                params={'channel': channel})
+            try:
+                response_data = resp.json()
+            except json.JSONDecodeError:
+                response_data = None
+
+            if not resp.ok:
+                if response_data and response_data["Message"] == "metadata not found":
+                    response_data = []
+                else:
+                    err = "Couldn't query resources for %s %s, is it public?" % (charm, channel)
+                    raise CharmstoreQueryError(err)
+            copy['applications'][application].setdefault('resources', {})
+            for resource in response_data:
+                name = resource['Name']
+                revision = resource['Revision']
+                copy['applications'][application]['resources'][name] = revision
 
     return copy
 
