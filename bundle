@@ -127,6 +127,12 @@ def local_bundle(bundle, root):
     return copy
 
 
+def _charmpath(charm):
+    if charm.startswith("cs:~"):
+        return charm[3:]
+    return charm
+
+
 def version_bundle(bundle, channel, overrides):
     ''' Acquire and assign versions to charms according to their channel. '''
     copy = json.loads(json.dumps(bundle))
@@ -141,8 +147,8 @@ def version_bundle(bundle, channel, overrides):
                 break
         else:
             if charm.startswith("cs:"):
-                resp = requests.get('https://api.jujucharms.com/charmstore/v5/meta/id',
-                                    params={'id': charm, 'channel': channel})
+                resp = requests.get(f'https://api.jujucharms.com/charmstore/v5/{_charmpath(charm)}/meta/any',
+                                    params={'channel': channel})
                 if not resp.ok:
                     err = "Couldn't query %s %s, is it public?" % (charm, channel)
                     raise CharmstoreQueryError(err)
@@ -156,12 +162,19 @@ def version_bundle(bundle, channel, overrides):
     for application in bundle['applications']:
         charm = bundle['applications'][application]['charm']
         if charm.startswith("cs:"):
-            resp = requests.get('https://api.jujucharms.com/charmstore/v5/meta/resources',
-                                params={'id': charm, 'channel': channel})
+            resp = requests.get(f'https://api.jujucharms.com/charmstore/v5/{_charmpath(charm)}/meta/resources',
+                                params={'channel': channel})
+            try:
+                response_data = resp.json()
+            except json.JSONDecodeError:
+                response_data = None
+
             if not resp.ok:
-                err = "Couldn't query resources for %s %s, is it public?" % (charm, channel)
-                raise CharmstoreQueryError(err)
-            response_data = resp.json()
+                if response_data and response_data["Message"] == "metadata not found":
+                    response_data = []
+                else:
+                    err = "Couldn't query resources for %s %s, is it public?" % (charm, channel)
+                    raise CharmstoreQueryError(err)
             copy['applications'][application].setdefault('resources', {})
             for resource in response_data[charm]:
                 name = resource['Name']
