@@ -153,7 +153,6 @@ def version_bundle(bundle, channel, overrides):
                     err = "Couldn't query %s %s, is it public?" % (charm, channel)
                     raise CharmstoreQueryError(err)
                 meta = resp.json()
-                meta = [meta[k] for k in meta][0]
                 copy['applications'][application]['charm'] = meta['Id']
             else:
                 copy['applications'][application]['channel'] = channel
@@ -176,7 +175,7 @@ def version_bundle(bundle, channel, overrides):
                     err = "Couldn't query resources for %s %s, is it public?" % (charm, channel)
                     raise CharmstoreQueryError(err)
             copy['applications'][application].setdefault('resources', {})
-            for resource in response_data[charm]:
+            for resource in response_data:
                 name = resource['Name']
                 revision = resource['Revision']
                 copy['applications'][application]['resources'][name] = revision
