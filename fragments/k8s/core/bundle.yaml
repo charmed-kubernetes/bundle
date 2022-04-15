@@ -9,9 +9,9 @@ applications:
     to:
       - "0"
     options:
-      channel: 1.23/edge
+      channel: 1.24/edge
     expose: true
-    constraints: "cores=2 mem=4G root-disk=16G"
+    constraints: "cores=2 mem=8G root-disk=16G"
     annotations:
       "gui-x": "800"
       "gui-y": "850"
@@ -29,9 +29,9 @@ applications:
     to:
       - "1"
     options:
-      channel: 1.23/edge
+      channel: 1.24/edge
     expose: true
-    constraints: "cores=4 mem=4G root-disk=16G"
+    constraints: "cores=2 mem=8G root-disk=16G"
     annotations:
       "gui-x": "90"
       "gui-y": "850"
@@ -59,7 +59,7 @@ relations:
 machines:
   "0":
     series: focal
-    constraints: "cores=2 mem=4G root-disk=16G"
+    constraints: "cores=2 mem=8G root-disk=16G"
   "1":
     series: focal
-    constraints: "cores=4 mem=4G root-disk=16G"
+    constraints: "cores=2 mem=8G root-disk=16G"
