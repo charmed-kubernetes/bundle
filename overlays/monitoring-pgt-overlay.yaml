@@ -1,14 +1,14 @@
 applications:
   prometheus:
-    charm: cs:prometheus2
+    charm: prometheus2
     constraints: "mem=4G root-disk=16G"
     num_units: 1
   grafana:
-    charm: cs:grafana
+    charm: grafana
     expose: true
     num_units: 1
   telegraf:
-    charm: cs:telegraf
+    charm: telegraf
 relations:
   - [prometheus:grafana-source, grafana:grafana-source]
   - [telegraf:prometheus-client, prometheus:target]

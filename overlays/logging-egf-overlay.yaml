@@ -1,29 +1,29 @@
 applications:
   apache2:
-    charm: cs:apache2
+    charm: apache2
     num_units: 1
     expose: true
     options:
       enable_modules: "headers proxy_html proxy_http"
   elasticsearch:
-    charm: cs:elasticsearch
+    charm: elasticsearch
     constraints: mem=7G root-disk=16G
     num_units: 1
     options:
       apt-repository: "deb https://artifacts.elastic.co/packages/6.x/apt stable main"
   filebeat:
-    charm: cs:filebeat
+    charm: filebeat
     options:
       install_sources: "deb https://artifacts.elastic.co/packages/6.x/apt stable main"
       kube_logs: True
   graylog:
-    charm: cs:graylog
+    charm: graylog
     constraints: mem=7G root-disk=16G
     num_units: 1
     options:
       channel: "3/stable"
   mongodb:
-    charm: cs:mongodb
+    charm: mongodb
     num_units: 1
     options:
       extra_daemon_options: "--bind_ip_all"
