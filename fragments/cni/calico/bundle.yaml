@@ -5,6 +5,8 @@ applications:
     annotations:
       "gui-x": "475"
       "gui-y": "605"
+    options:
+      vxlan: "Always"
 relations:
   - - "calico:etcd"
     - "etcd:db"
