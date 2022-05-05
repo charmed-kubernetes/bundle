@@ -4,12 +4,12 @@ applications:
     annotations:
       gui-x: '450'
       gui-y: '750'
-    charm: cs:~containers/canal
+    charm: canal
   flannel:
 relations:
 - - canal:etcd
   - etcd:db
 - - canal:cni
-  - kubernetes-master:cni
+  - kubernetes-control-plane:cni
 - - canal:cni
   - kubernetes-worker:cni
