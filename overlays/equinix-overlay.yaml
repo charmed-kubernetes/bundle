@@ -128,8 +128,6 @@ relations:
   - 'kubernetes-control-plane:cni'
 - - 'calico:cni'
   - 'kubernetes-worker:cni'
-- - 'kubernetes-control-plane:ceph-storage'
-  - 'ceph-mon:admin'
 - - 'kubernetes-control-plane:ceph-client'
   - 'ceph-mon:client'
 - - 'ceph-mon:radosgw'
