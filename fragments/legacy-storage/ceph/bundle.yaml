@@ -17,7 +17,7 @@ applications:
     to:
      - lxd:kubernetes-worker
 relations:
-- - kubernetes-control-plane:ceph-storage
-  - ceph-mon:admin
+- - kubernetes-control-plane:ceph-client
+  - ceph-mon:client
 - - ceph-mon:osd
   - ceph-osd:mon
