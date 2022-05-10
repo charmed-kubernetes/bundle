@@ -4,12 +4,12 @@ applications:
     annotations:
       gui-x: '480'
       gui-y: '750'
-    charm: calico
+    charm: cs:~containers/calico
   flannel:
 relations:
 - - calico:etcd
   - etcd:db
 - - calico:cni
-  - kubernetes-control-plane:cni
+  - kubernetes-master:cni
 - - calico:cni
   - kubernetes-worker:cni

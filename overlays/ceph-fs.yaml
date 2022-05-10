@@ -17,5 +17,5 @@ applications:
 relations:
   - ['ceph-fs:ceph-mds', 'ceph-mon:mds']
   - ['ceph-osd:mon', 'ceph-mon:osd']
-  - ['ceph-mon:admin', 'kubernetes-control-plane']
-  - ['ceph-mon:client', 'kubernetes-control-plane']
+  - ['ceph-mon:admin', 'kubernetes-master']
+  - ['ceph-mon:client', 'kubernetes-master']
