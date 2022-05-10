@@ -9,7 +9,7 @@ applications:
     charm: percona-cluster
     num_units: 1
 relations:
-- - kubernetes-control-plane:certificates
+- - kubernetes-master:certificates
   - vault:certificates
 - - etcd:certificates
   - vault:certificates

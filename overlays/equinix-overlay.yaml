@@ -7,7 +7,7 @@ machines:
     constraints: mem=32G
 applications:
   calico:
-    charm: calico
+    charm: cs:~containers/calico
     annotations:
       gui-x: '450'
       gui-y: '750'
@@ -83,7 +83,7 @@ applications:
       "": alpha
     to:
     - lxd:1
-  kubernetes-control-plane:
+  kubernetes-master:
     options:
       authorization-mode: "RBAC,Node"
       channel: 1.22/stable
@@ -125,18 +125,20 @@ relations:
 - - 'calico:etcd'
   - 'etcd:db'
 - - 'calico:cni'
-  - 'kubernetes-control-plane:cni'
+  - 'kubernetes-master:cni'
 - - 'calico:cni'
   - 'kubernetes-worker:cni'
-- - 'kubernetes-control-plane:ceph-client'
+- - 'kubernetes-master:ceph-storage'
+  - 'ceph-mon:admin'
+- - 'kubernetes-master:ceph-client'
   - 'ceph-mon:client'
 - - 'ceph-mon:radosgw'
   - 'ceph-radosgw:mon'
 - - 'ceph-fs:ceph-mds'
   - 'ceph-mon:mds'
-- - 'kubernetes-control-plane:kube-api-endpoint'
+- - 'kubernetes-master:kube-api-endpoint'
   - 'kubeapi-load-balancer:apiserver'
 - - 'kubeapi-load-balancer:loadbalancer'
-  - 'kubernetes-control-plane:loadbalancer'
+  - 'kubernetes-master:loadbalancer'
 - - 'kubeapi-load-balancer:website'
   - 'kubernetes-worker:kube-api-endpoint'
