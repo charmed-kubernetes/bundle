@@ -12,10 +12,10 @@ applications:
 relations:
   - [prometheus:grafana-source, grafana:grafana-source]
   - [telegraf:prometheus-client, prometheus:target]
-  - [kubernetes-master:juju-info, telegraf:juju-info]
+  - [kubernetes-control-plane:juju-info, telegraf:juju-info]
   - [kubernetes-worker:juju-info, telegraf:juju-info]
-  - [kubernetes-master:prometheus, prometheus:manual-jobs]
-  - [kubernetes-master:grafana, grafana:dashboards]
+  - [kubernetes-control-plane:prometheus, prometheus:manual-jobs]
+  - [kubernetes-control-plane:grafana, grafana:dashboards]
   - [prometheus:certificates, easyrsa:client]
   - [etcd:grafana, grafana:dashboards]
   - [etcd:prometheus, prometheus:manual-jobs]
