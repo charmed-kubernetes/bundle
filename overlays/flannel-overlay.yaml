@@ -1,0 +1,15 @@
+description: Charmed Kubernetes overlay to add Flannel CNI.
+applications:
+  flannel:
+    annotations:
+      gui-x: '480'
+      gui-y: '750'
+    charm: flannel
+  calico:
+relations:
+- - flannel:etcd
+  - etcd:db
+- - flannel:cni
+  - kubernetes-control-plane:cni
+- - flannel:cni
+  - kubernetes-worker:cni
