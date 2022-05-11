@@ -4,13 +4,16 @@
 import os
 import argparse
 import json
-import yaml
-import requests
 import pathlib
+import re
+from urllib import response
+import requests
+import yaml
 
 
 root_path = os.path.dirname(os.path.abspath(__file__))
 required = ['k8s', 'cni']
+promulgated = ["etcd"]
 
 
 class FragmentRequired(Exception):
@@ -38,7 +41,7 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-n', '--name', default=None,
                         help='name given to the created bundle.')
-    parser.add_argument('-c', '--channel', default='stable',
+    parser.add_argument('-c', '--channel', default='edge',
                         help='the channel to use')
     parser.add_argument('-o', '--outputdir', default='.',
                         help='output directory')
@@ -46,14 +49,16 @@ def get_args():
                         help='charm root path for local bundle')
     parser.add_argument('-r', '--override', default=[], action='append', dest='overrides',
                         help='override charm revision, format: charm,revision')
+    parser.add_argument("--release", action="store_true",
+                        help="Indicates the fragment is an existing release")
     parser.add_argument('fragments', metavar='frags', type=str, nargs='+',
                         help='the bundle fragments to include in this bundle')
     return parser.parse_args()
 
 
-def fragment_paths(fragment):
+def fragment_paths(fragment, base_path):
     ''' Get the root and bundle-related paths for a fragment. '''
-    frag_path = os.path.join(root_path, 'fragments',
+    frag_path = os.path.join(root_path, base_path,
                              os.path.join(*fragment.split('/')))
     return {
         'root': frag_path,
@@ -72,10 +77,10 @@ def validate_required(fragments):
             raise FragmentRequired('Required fragment type %s not found.' % r)
 
 
-def validate_components(fragments):
+def validate_components(fragments, base_path):
     ''' Make sure the fragment path, bundle.yaml, and README.md exist. '''
     for frag in fragments:
-        paths = fragment_paths(frag)
+        paths = fragment_paths(frag, base_path)
         if not os.path.isdir(paths['root']):
             raise FragmentUnknown('Unknown fragment ' + frag)
         if not os.path.exists(paths['bundle']):
@@ -133,6 +138,44 @@ def _charmpath(charm):
     return charm
 
 
+def _charm_resources(charm, channel=None):
+    resp = requests.get(f'https://api.jujucharms.com/charmstore/v5/{_charmpath(charm)}/meta/resources',
+                    params={'channel': channel} if channel else None)
+    try:
+        response_data = resp.json()
+    except json.JSONDecodeError:
+        response_data = None
+
+    if not resp.ok:
+        if response_data and response_data["Message"] == "metadata not found":
+            response_data = []
+        else:
+            err = "Couldn't query resources for %s %s, is it public?" % (charm, channel)
+            raise CharmstoreQueryError(err)
+    return response_data
+
+
+
+def release_bundle(bundle, channel, overrides):
+    """ Rebuild release bundle based on charmhub identies. """
+    copy = json.loads(json.dumps(bundle))
+    charmcraft_release = []
+    charm_rev = re.compile(r"cs:(?:~containers\/)(\S+)-(\d+)")
+    applications = copy.pop("applications", None) or copy.pop('services', None) or {}
+    copy['applications'] = applications
+    for app_name, app in applications.items():
+        charm = app['charm']
+        response_data = _charm_resources(charm)
+        charm_parts = charm_rev.match(charm)
+        if charm_parts:
+            name, rev = charm_parts.groups()
+            ch_name = f"{'' if name in promulgated else 'containers-'}{name}"
+            copy['applications'][app_name]['charm'] = ch_name
+            resources = " ".join(f"--resource {r['Name']}:{r['Revision']}" for r in response_data)
+            charmcraft_release.append(f"charmcraft release {ch_name} --revision={rev} --channel={channel}{resources}")
+    return version_bundle(copy, channel, overrides), charmcraft_release
+
+
 def version_bundle(bundle, channel, overrides):
     ''' Acquire and assign versions to charms according to their channel. '''
     copy = json.loads(json.dumps(bundle))
@@ -161,19 +204,7 @@ def version_bundle(bundle, channel, overrides):
     for application in bundle['applications']:
         charm = bundle['applications'][application]['charm']
         if charm.startswith("cs:"):
-            resp = requests.get(f'https://api.jujucharms.com/charmstore/v5/{_charmpath(charm)}/meta/resources',
-                                params={'channel': channel})
-            try:
-                response_data = resp.json()
-            except json.JSONDecodeError:
-                response_data = None
-
-            if not resp.ok:
-                if response_data and response_data["Message"] == "metadata not found":
-                    response_data = []
-                else:
-                    err = "Couldn't query resources for %s %s, is it public?" % (charm, channel)
-                    raise CharmstoreQueryError(err)
+            response_data = _charm_resources(charm)
             copy['applications'][application].setdefault('resources', {})
             for resource in response_data:
                 name = resource['Name']
@@ -214,17 +245,20 @@ def serialize(bundle):
 def main():
     ''' Build a bundle. '''
     args = get_args()
-    validate_required(args.fragments)
-    validate_components(args.fragments)
+    base_path = "fragments" if not args.release else "releases"
+    if not args.release:
+        validate_required(args.fragments)
+    validate_components(args.fragments, base_path)
     validate_channel(args.channel)
     bundle = {}
     readme = ""
     getstarted = ""
     postdeployment = ""
+    postbuild = ""
 
     for frag in args.fragments:
-        print('Processing fragment %s...' % frag)
-        paths = fragment_paths(frag)
+        print('Processing %s %s...' % ('release' if args.release else 'fragment', frag))
+        paths = fragment_paths(frag, base_path)
         with open(paths['bundle'], 'r') as f:
             frag_bundle = yaml.safe_load(f)
         merge(frag_bundle, bundle)
@@ -240,6 +274,9 @@ def main():
             postdeployment = '\n'.join([postdeployment, frag_postdeployment])
     if args.channel == 'local':
         bundle = local_bundle(bundle, args.localpath)
+    elif args.release:
+        bundle, cmds = release_bundle(bundle, args.channel, args.overrides)
+        postbuild = "\n".join(cmds)
     else:
         bundle = version_bundle(bundle, args.channel, args.overrides)
     out_bundle_name = os.path.abspath(args.outputdir)
@@ -247,6 +284,7 @@ def main():
     out_readme_filename = os.path.join(out_bundle_name, 'README.md')
     out_getstarted_filename = os.path.join(out_bundle_name, 'getstarted.md')
     out_postdeployment_filename = os.path.join(out_bundle_name, 'post-deployment.sh')
+    out_postbuilde_filename = os.path.join(out_bundle_name, 'post-build.sh')
     bundle["name"] = args.name or pathlib.Path(out_bundle_name).name
     if os.path.isfile(out_bundle_filename):
         err = '%s already exists. Aborting.' % out_bundle_filename
@@ -273,6 +311,10 @@ def main():
     if postdeployment:
         with open(out_postdeployment_filename, 'w') as out_postdeployment_file:
             out_postdeployment_file.write(postdeployment)
+    if postbuild:
+        with open(out_postbuilde_filename, 'w') as out_postbuild_file:
+            out_postbuild_file.write(postbuild)
+        print(f"Post Build Script generated: {out_postbuilde_filename}")
 
     print('Done. Your bundle can be found in %s' %
           os.path.abspath(out_bundle_name))
