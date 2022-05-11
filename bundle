@@ -318,10 +318,11 @@ def main():
                     zf.write(os.path.join(root, filename), filename)
 
         out_postbuild_filename = "post-build.sh"
-        postbuild.insert(0, "#!/bin/bash")
-        postbuild += [
+        postbuild = [
+            "#!/bin/bash",
+            f"# beginning of {bundle['name']} {args.channel}",
+        ] + postbuild + [
             f"charmcraft upload --name {bundle['name']} --release={args.channel}, {bundle_zip}",
-            f"# end of {bundle['name']} {args.channel}",
             "",
         ]
         with open(out_postbuild_filename, 'a') as out_postbuild_file:
