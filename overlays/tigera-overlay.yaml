@@ -5,7 +5,7 @@ applications:
       gui-x: '450'
       gui-y: '750'
     charm: tigera-secure-ee
-  flannel:
+  calico:
 relations:
 - - tigera-secure-ee:etcd
   - etcd:db
