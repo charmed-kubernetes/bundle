@@ -28,7 +28,7 @@ rocks.canonical.com/cdk/kubernetes-ingress-controller/nginx-ingress-controller-p
 rocks.canonical.com/cdk/kubernetesui/dashboard:v2.5.1
 rocks.canonical.com/cdk/kubernetesui/metrics-scraper:v1.0.7
 rocks.canonical.com/cdk/metrics-server/metrics-server:v0.5.2
-rocks.canonical.com/cdk/nvidia/k8s-device-plugin:v0.11.0
+rocks.canonical.com/cdk/nvidia/k8s-device-plugin:v0.12.0-rc.1
 rocks.canonical.com/cdk/pause:3.6
 rocks.canonical.com/cdk/sig-storage/csi-attacher:v3.3.0
 rocks.canonical.com/cdk/sig-storage/csi-attacher:v3.4.0
