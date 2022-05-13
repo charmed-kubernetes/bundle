@@ -192,7 +192,7 @@ def version_bundle(bundle, channel: Channel, overrides):
                 break
         else:
             if charm.startswith("cs:"):
-                assert channel.track == "latest", f"Charmstore doesn't support numerical track {channel} for {charm}"
+                assert channel.track == "latest", f"Charmstore only supports track=latest, not {channel} for {charm}"
                 resp = requests.get(f'https://api.jujucharms.com/charmstore/v5/{_charmpath(charm)}/meta/any',
                                     params={'channel': channel.charm})
                 if not resp.ok:
@@ -207,7 +207,7 @@ def version_bundle(bundle, channel: Channel, overrides):
     for application in bundle['applications']:
         charm = bundle['applications'][application]['charm']
         if charm.startswith("cs:"):
-            assert channel.track == "latest", f"Charmstore doesn't support numerical track {channel} for {charm}"
+            assert channel.track == "latest", f"Charmstore only supports track=latest, not {channel} for {charm}"
             response_data = _charm_resources(charm)
             copy['applications'][application].setdefault('resources', {})
             for resource in response_data:
