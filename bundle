@@ -4,9 +4,9 @@
 import os
 import argparse
 import json
-import yaml
-import requests
 import pathlib
+import requests
+import yaml
 
 
 root_path = os.path.dirname(os.path.abspath(__file__))
@@ -38,7 +38,7 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-n', '--name', default=None,
                         help='name given to the created bundle.')
-    parser.add_argument('-c', '--channel', default='stable',
+    parser.add_argument('-c', '--channel', default='stable', type=Channel,
                         help='the channel to use')
     parser.add_argument('-o', '--outputdir', default='.',
                         help='output directory')
@@ -89,20 +89,48 @@ def validate_components(fragments):
             raise FragmentMissingComponent(err)
 
 
-def validate_channel(channel):
-    ''' Make sure the supplied channel is a valid one. '''
-    track_risk_branch = channel.split("/")
-    if len(track_risk_branch) == 3:
-        track, risk, branch = track_risk_branch
-    elif len(track_risk_branch) == 2:
-        (track, risk), branch = track_risk_branch, None
-    elif len(track_risk_branch) == 1:
-        track, risk, branch = "latest", track_risk_branch[0], None
-    else:
-        raise ChannelInvalid("Invalid channel " + channel)
+class Channel:
+    def __init__(self, channel):
+        ''' Make sure the supplied channel is a valid one. '''
+        track_risk_branch = channel.split("/")
+        if len(track_risk_branch) == 3:
+            track, risk, branch = track_risk_branch
+        elif len(track_risk_branch) == 2:
+            (track, risk), branch = track_risk_branch, None
+        elif len(track_risk_branch) == 1:
+            track, risk, branch = "latest", track_risk_branch[0], None
+        else:
+            raise ChannelInvalid("Invalid channel " + channel)
 
-    if risk not in ['unpublished', 'stable', 'edge', 'local', 'candidate', 'beta']:
-        raise ChannelInvalid('Invalid channel ' + channel)
+        if risk not in ['unpublished', 'stable', 'edge', 'local', 'candidate', 'beta']:
+            raise ChannelInvalid('Invalid channel ' + channel)
+        
+        self.track, self.risk, self.branch = track, risk, branch
+    
+    def __eq__(self, o: object) -> bool:
+        if isinstance(o, Channel):
+            return (
+                self.track == o.track and 
+                self.risk == o.risk and 
+                self.branch == o.branch
+            )
+        elif isinstance(o, str):
+            return self == Channel(o)
+        raise TypeError()
+
+    def __str__(self) -> str:
+        channel_set = self.track, self.risk, self.branch
+        return "/".join(filter(None, channel_set))
+
+    @property
+    def charm(self):
+        """ 
+        Enforce <number>/$risk bundles reference <number>/$risk charms.
+        Enforce latest/$risk bundles reference $risk charms.
+        """
+        if self.track == "latest":
+            return self.risk
+        return str(self)
 
 
 def merge(src, dst):
@@ -133,7 +161,24 @@ def _charmpath(charm):
     return charm
 
 
-def version_bundle(bundle, channel, overrides):
+def _charm_resources(charm, channel=None):
+    resp = requests.get(f'https://api.jujucharms.com/charmstore/v5/{_charmpath(charm)}/meta/resources',
+                    params={'channel': channel.charm} if channel else None)
+    try:
+        response_data = resp.json()
+    except json.JSONDecodeError:
+        response_data = None
+
+    if not resp.ok:
+        if response_data and response_data["Message"] == "metadata not found":
+            response_data = []
+        else:
+            err = "Couldn't query resources for %s %s, is it public?" % (charm, channel)
+            raise CharmstoreQueryError(err)
+    return response_data
+
+
+def version_bundle(bundle, channel: Channel, overrides):
     ''' Acquire and assign versions to charms according to their channel. '''
     copy = json.loads(json.dumps(bundle))
 
@@ -147,33 +192,23 @@ def version_bundle(bundle, channel, overrides):
                 break
         else:
             if charm.startswith("cs:"):
+                assert channel.track == "latest", f"Charmstore only supports track=latest, not {channel} for {charm}"
                 resp = requests.get(f'https://api.jujucharms.com/charmstore/v5/{_charmpath(charm)}/meta/any',
-                                    params={'channel': channel})
+                                    params={'channel': channel.charm})
                 if not resp.ok:
                     err = "Couldn't query %s %s, is it public?" % (charm, channel)
                     raise CharmstoreQueryError(err)
                 meta = resp.json()
                 copy['applications'][application]['charm'] = meta['Id']
             else:
-                copy['applications'][application]['channel'] = channel
+                copy['applications'][application]['channel'] = channel.charm
 
     # pin resource revisions
     for application in bundle['applications']:
         charm = bundle['applications'][application]['charm']
         if charm.startswith("cs:"):
-            resp = requests.get(f'https://api.jujucharms.com/charmstore/v5/{_charmpath(charm)}/meta/resources',
-                                params={'channel': channel})
-            try:
-                response_data = resp.json()
-            except json.JSONDecodeError:
-                response_data = None
-
-            if not resp.ok:
-                if response_data and response_data["Message"] == "metadata not found":
-                    response_data = []
-                else:
-                    err = "Couldn't query resources for %s %s, is it public?" % (charm, channel)
-                    raise CharmstoreQueryError(err)
+            assert channel.track == "latest", f"Charmstore only supports track=latest, not {channel} for {charm}"
+            response_data = _charm_resources(charm)
             copy['applications'][application].setdefault('resources', {})
             for resource in response_data:
                 name = resource['Name']
@@ -216,7 +251,6 @@ def main():
     args = get_args()
     validate_required(args.fragments)
     validate_components(args.fragments)
-    validate_channel(args.channel)
     bundle = {}
     readme = ""
     getstarted = ""
