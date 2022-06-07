@@ -1,4 +1,21 @@
 #!/usr/bin/env python3
+"""
+images.py
+
+Usages:
+
+# add to an existing line with `add-to`
+./images.py add-to ci-static --images k8s.gcr.io/sig-storage/livenessprobe:v2.6.0
+
+# copy an existing line to a new one with `copy-from`
+./images.py copy-from v1.24-static --new_line_id v1.25-static
+
+# delete an image from a line with `delete-from`
+./images.py delete-from ci-static --images k8s.gcr.io/sig-storage/livenessprobe:v2.6.0
+
+# create a new line with `create`
+./images.py create v1.26-static --images k8s.gcr.io/sig-storage/livenessprobe:v2.6.0
+"""
 
 
 import argparse
@@ -86,7 +103,6 @@ def _arguments():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawTextHelpFormatter
     )
-    parser.add_argument("line_id", type=LineId, help="Name of line to adjust")
     parser.add_argument(
         "operation",
         type=str,
@@ -97,6 +113,7 @@ def _arguments():
         "delete-from: updates line to remove only the listed images\n"
         "copy-from: duplicates line_id to new line with new_line_id\n",
     )
+    parser.add_argument("line_id", type=LineId, help="Name of line to adjust")
     parser.add_argument(
         "--new_line_id", type=LineId, help="Name of copied line"
     )
