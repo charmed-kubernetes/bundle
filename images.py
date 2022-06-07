@@ -128,7 +128,7 @@ def _arguments():
 
 @contextmanager
 def _at_line(line_id):
-    all_lines = CONTAINER_IMAGE_TXT.read_text().splitlines()
+    all_lines = CONTAINER_IMAGE_TXT.read_text().strip().splitlines()
     matches = []
     for line_no, line_text in enumerate(all_lines):
         if line_text.startswith(f"{line_id}: "):
