@@ -1,19 +1,34 @@
 applications:
   easyrsa: null
+  mysql-innodb-cluster:
+    channel: 8.0/stable
+    charm: mysql-innodb-cluster
+    constraints: cores=2 mem=8G root-disk=64G
+    num_units: 3
+    options:
+      enable-binlogs: true
+      innodb-buffer-pool-size: 256M
+      max-connections: 2000
+      wait-timeout: 3600
   vault:
+    channel: 1.7/stable
     charm: vault
     num_units: 1
     options:
       auto-generate-root-ca-cert: true
-  percona-cluster:
-    charm: percona-cluster
-    num_units: 1
+  vault-mysql-router:
+    channel: 8.0/stable
+    charm: mysql-router
 relations:
-- - kubernetes-control-plane:certificates
-  - vault:certificates
 - - etcd:certificates
+  - vault:certificates
+- - kubeapi-load-balancer:certificates
+  - vault:certificates
+- - kubernetes-control-plane:certificates
   - vault:certificates
 - - kubernetes-worker:certificates
   - vault:certificates
-- - vault:shared-db
-  - percona-cluster:shared-db
+- - mysql-innodb-cluster:db-router
+  - vault-mysql-router:db-router
+- - vault-mysql-router:shared-db
+  - vault:shared-db
