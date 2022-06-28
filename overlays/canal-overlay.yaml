@@ -5,7 +5,7 @@ applications:
       gui-x: '450'
       gui-y: '750'
     charm: canal
-  flannel:
+  calico:
 relations:
 - - canal:etcd
   - etcd:db
