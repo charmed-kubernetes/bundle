@@ -1,5 +1,4 @@
 applications:
-  easyrsa: null
   mysql-innodb-cluster:
     channel: 8.0/stable
     charm: mysql-innodb-cluster
@@ -14,20 +13,12 @@ applications:
     channel: 1.7/stable
     charm: vault
     num_units: 1
-    options:
-      auto-generate-root-ca-cert: true
   vault-mysql-router:
     channel: 8.0/stable
     charm: mysql-router
 relations:
-- - etcd:certificates
-  - vault:certificates
-- - kubeapi-load-balancer:certificates
-  - vault:certificates
-- - kubernetes-control-plane:certificates
-  - vault:certificates
-- - kubernetes-worker:certificates
-  - vault:certificates
+- - kubernetes-control-plane:vault-kv
+  - vault:secrets
 - - mysql-innodb-cluster:db-router
   - vault-mysql-router:db-router
 - - vault-mysql-router:shared-db
