@@ -152,7 +152,7 @@ def _at_line(line_id):
     if line.new_line:
         all_lines.append(line.new_line.text)
 
-    CONTAINER_IMAGE_TXT.write_text("\n".join(all_lines))
+    CONTAINER_IMAGE_TXT.write_text("\n".join(all_lines) + "\n")
 
 
 def create(args):
