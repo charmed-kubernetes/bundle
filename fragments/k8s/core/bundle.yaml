@@ -61,8 +61,6 @@ relations:
     - "easyrsa:client"
 machines:
   "0":
-    series: focal
     constraints: "cores=2 mem=8G root-disk=16G"
   "1":
-    series: focal
     constraints: "cores=2 mem=8G root-disk=16G"
