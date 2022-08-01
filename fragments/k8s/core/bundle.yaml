@@ -1,7 +1,10 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 description: |-
     A minimal two-machine Kubernetes cluster, appropriate for development.
+issues: https://bugs.launchpad.net/charmed-kubernetes-bundles
 series: focal
+source: https://github.com/charmed-kubernetes/bundle
+website: https://ubuntu.com/kubernetes/charmed-k8s
 applications:
   "kubernetes-control-plane":
     charm: "kubernetes-control-plane"
