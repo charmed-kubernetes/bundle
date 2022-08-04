@@ -18,7 +18,7 @@ feedback. For more on contributing, see the [official documentation][get-in-touc
 ## This Juju bundle
 
 This repository contains the code to generate charm bundles used to deploy Charmed Kubernetes, as well as some bundle overlays used to preconfigure certain features
-(for example, for running on particular clouds). In general, users will fetch the published bundles from the [Charm Store][], not this repository. If you are working
+(for example, for running on particular clouds). In general, users will fetch the published bundles from [Charmhub][], not this repository. If you are working
 on the bundle itself, see the [BUILD.md](./BUILD.md) file for more information on building the Charmed Kubernetes bundles.
 To contribute to this bundle, see the [CONTRIBUTING.md](./CONTRIBUTING.md) guide.
 
@@ -52,9 +52,8 @@ each image listed in this file in sync with its upstream source at rocks.canonic
 
 The Charmed Kubernetes organisation has a large number of repositories. The majority of these are for specific Juju charms, used to deploy the applications which go to make up Charmed Kubernetes. A few which may be of particular interest:
 
-- The Kubernetes Control Plane charm  - <https://github.com/charmed-kubernetes/charm-kubernetes-master>
+- The Kubernetes Control Plane charm  - <https://github.com/charmed-kubernetes/charm-kubernetes-control-plane>
 - The Kubernetes Worker charm - <https://github.com/charmed-kubernetes/charm-kubernetes-worker>
-- The MetalLB operator charm - <https://github.com/charmed-kubernetes/metallb-operator>
 
 Other repositories include:
 
@@ -63,6 +62,6 @@ Other repositories include:
  
 
 <!-- LINKS -->
-[Charm Store]: https://jaas.ai/charmed-kubernetes/bundle
+[Charmhub]: https://charmhub.io/charmed-kubernetes
 [docs]: https://ubuntu.com/kubernetes/docs
 [get-in-touch]: https://ubuntu.com/kubernetes/docs/get-in-touch
