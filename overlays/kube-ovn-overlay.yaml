@@ -1,0 +1,11 @@
+description: Charmed Kubernetes overlay to add Kube-OVN CNI.
+applications:
+  calico: null
+  kube-ovn:
+    charm: kube-ovn
+  kubernetes-control-plane:
+    options:
+      allow-privileged: "true"
+relations:
+- [kube-ovn:cni, kubernetes-control-plane:cni]
+- [kube-ovn:cni, kubernetes-worker:cni]
