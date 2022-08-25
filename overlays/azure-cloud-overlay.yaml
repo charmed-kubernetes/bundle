@@ -2,7 +2,6 @@ description: Charmed Kubernetes overlay to add native Azure support.
 applications:
   kubernetes-control-plane:
     options:
-      register-with-taints: ""
       allow-privileged: "true"
   azure-integrator:
     charm: azure-integrator
