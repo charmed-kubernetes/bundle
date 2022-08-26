@@ -1,0 +1,21 @@
+description: Charmed Kubernetes overlay to add native Azure support.
+applications:
+  kubernetes-control-plane:
+    options:
+      allow-privileged: "true"
+  azure-integrator:
+    charm: azure-integrator
+    num_units: 1
+    trust: true
+  azure-cloud-provider:
+    charm: azure-cloud-provider
+
+relations:
+- - azure-cloud-provider:certificates
+  - easyrsa:client   # or whichever application supplies cluster certs
+- - azure-cloud-provider:kube-control
+  - kubernetes-control-plane:kube-control
+- - azure-cloud-provider:external-cloud-provider
+  - kubernetes-control-plane:external-cloud-provider
+- - azure-cloud-provider:azure-integration
+  - azure-integrator:clients
