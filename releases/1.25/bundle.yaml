@@ -1,0 +1,96 @@
+description: A highly-available, production-grade Kubernetes cluster.
+issues: https://bugs.launchpad.net/charmed-kubernetes-bundles
+series: focal
+source: https://github.com/charmed-kubernetes/bundle
+website: https://ubuntu.com/kubernetes/charmed-k8s
+name: charmed-kubernetes
+applications:
+  calico:
+    annotations:
+      gui-x: '475'
+      gui-y: '605'
+    channel: 1.25/stable
+    charm: calico
+    options:
+      vxlan: Always
+  containerd:
+    annotations:
+      gui-x: '475'
+      gui-y: '800'
+    channel: 1.25/stable
+    charm: containerd
+  easyrsa:
+    annotations:
+      gui-x: '90'
+      gui-y: '420'
+    channel: 1.25/stable
+    charm: easyrsa
+    constraints: cores=1 mem=4G root-disk=16G
+    num_units: 1
+  etcd:
+    annotations:
+      gui-x: '800'
+      gui-y: '420'
+    channel: 1.25/stable
+    charm: etcd
+    constraints: cores=2 mem=8G root-disk=16G
+    num_units: 3
+    options:
+      channel: 3.4/stable
+  kubeapi-load-balancer:
+    annotations:
+      gui-x: '450'
+      gui-y: '250'
+    channel: 1.25/stable
+    charm: kubeapi-load-balancer
+    constraints: cores=1 mem=4G root-disk=16G
+    expose: true
+    num_units: 1
+  kubernetes-control-plane:
+    annotations:
+      gui-x: '800'
+      gui-y: '850'
+    channel: 1.25/stable
+    charm: kubernetes-control-plane
+    constraints: cores=2 mem=8G root-disk=16G
+    num_units: 2
+    options:
+      channel: 1.25/stable
+  kubernetes-worker:
+    annotations:
+      gui-x: '90'
+      gui-y: '850'
+    channel: 1.25/stable
+    charm: kubernetes-worker
+    constraints: cores=2 mem=8G root-disk=16G
+    expose: true
+    num_units: 3
+    options:
+      channel: 1.25/stable
+relations:
+- - kubernetes-control-plane:loadbalancer-external
+  - kubeapi-load-balancer:lb-consumers
+- - kubernetes-control-plane:loadbalancer-internal
+  - kubeapi-load-balancer:lb-consumers
+- - kubernetes-control-plane:kube-control
+  - kubernetes-worker:kube-control
+- - kubernetes-control-plane:certificates
+  - easyrsa:client
+- - etcd:certificates
+  - easyrsa:client
+- - kubernetes-control-plane:etcd
+  - etcd:db
+- - kubernetes-worker:certificates
+  - easyrsa:client
+- - kubeapi-load-balancer:certificates
+  - easyrsa:client
+- - calico:etcd
+  - etcd:db
+- - calico:cni
+  - kubernetes-control-plane:cni
+- - calico:cni
+  - kubernetes-worker:cni
+- - containerd:containerd
+  - kubernetes-worker:container-runtime
+- - containerd:containerd
+  - kubernetes-control-plane:container-runtime
