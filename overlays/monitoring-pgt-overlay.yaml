@@ -1,5 +1,6 @@
 applications:
   prometheus:
+    series: focal
     charm: prometheus2
     constraints: "mem=4G root-disk=16G"
     num_units: 1
@@ -13,9 +14,10 @@ relations:
   - [prometheus:grafana-source, grafana:grafana-source]
   - [telegraf:prometheus-client, prometheus:target]
   - [kubernetes-control-plane:juju-info, telegraf:juju-info]
-  - [kubernetes-worker:juju-info, telegraf:juju-info]
   - [kubernetes-control-plane:prometheus, prometheus:manual-jobs]
   - [kubernetes-control-plane:grafana, grafana:dashboards]
   - [prometheus:certificates, easyrsa:client]
+  - [kubernetes-worker:juju-info, telegraf:juju-info]
+  - [kubernetes-worker:scrape, prometheus:scrape]
   - [etcd:grafana, grafana:dashboards]
   - [etcd:prometheus, prometheus:manual-jobs]
