@@ -6,6 +6,9 @@ applications:
   ceph-osd:
     charm: ceph-osd
     num_units: 3
+    storage:
+      ods-device: '32G,2'
+      osd-journals: '8G,1'
   ceph-mon:
     charm: ceph-mon
     num_units: 3
@@ -18,5 +21,4 @@ relations:
 - ['ceph-radosgw:mon', 'ceph-mon:radosgw']
 - ['ceph-fs:ceph-mds', 'ceph-mon:mds']
 - ['ceph-osd:mon', 'ceph-mon:osd']
-- ['ceph-mon:admin', 'kubernetes-control-plane']
 - ['ceph-mon:client', 'kubernetes-control-plane']
