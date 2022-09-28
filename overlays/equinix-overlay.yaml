@@ -1,0 +1,21 @@
+description: |
+  Charmed Kubernetes overlay to support an equinix cloud provider.
+  There's no charm currently which natively supports the equinix metal
+  cloud provider, so this bundle manually sets up worker and control-plane
+  such that they're directed to use an external cloud provider.
+applications:
+  calico:
+    options:
+      ignore-loose-rpf: true
+  kubernetes-control-plane:
+    options:
+      kubelet-extra-config: "{failSwapOn: false}"
+      kubelet-extra-args: "cloud-provider=external"
+  kubernetes-worker:
+    options:
+      kubelet-extra-config: "{failSwapOn: false}"
+      kubelet-extra-args: "cloud-provider=external"
+  kubeapi-loadbalancer:
+    options:
+      port: 6443
+  
