@@ -15,7 +15,8 @@ applications:
     options:
       kubelet-extra-config: "{failSwapOn: false}"
       kubelet-extra-args: "cloud-provider=external"
-  kubeapi-loadbalancer:
+  kubeapi-load-balancer:
+    expose: true
     options:
       port: 6443
   
