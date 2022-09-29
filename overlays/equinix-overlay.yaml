@@ -1,142 +1,22 @@
-machines:
-  '0':
-    constraints: mem=32G
-  '1':
-    constraints: mem=32G
-  '2':
-    constraints: mem=32G
+description: |
+  Charmed Kubernetes overlay to support an equinix cloud provider.
+  There's no charm currently which natively supports the equinix metal
+  cloud provider, so this bundle manually sets up worker and control-plane
+  such that they're directed to use an external cloud provider.
 applications:
   calico:
-    charm: calico
-    annotations:
-      gui-x: '450'
-      gui-y: '750'
     options:
       ignore-loose-rpf: true
-    resources:
-      calico: 922
-      calico-arm64: 921
-      calico-node-image: 604
-      calico-upgrade: 749
-      calico-upgrade-arm64: 749
-  easyrsa:
-    to:
-    - lxd:2
-    bindings:
-      "": alpha
-  flannel:
-  etcd:
-    num_units: 3
-    bindings:
-      "": alpha
-    options:
-      channel: 3.4/stable
-    to:
-    - lxd:0
-    - lxd:1
-    - lxd:2
-  ceph-fs:
-    charm: ceph-fs
-    num_units: 1
-    bindings:
-      "": alpha
-    annotations:
-      gui-x: '300'
-      gui-y: '300'
-    to:
-    - lxd:0
-  ceph-mon:
-    charm: ceph-mon
-    num_units: 3
-    options:
-      expected-osd-count: 3
-    annotations:
-      gui-x: '600'
-      gui-y: '300'
-    bindings:
-      "": alpha
-    to:
-     - lxd:0
-     - lxd:1
-     - lxd:2
-  ceph-osd:
-    charm: ceph-osd
-    num_units: 3
-    options:
-      osd-devices: /dev/sda /dev/sdb
-    bindings:
-      "": alpha
-    annotations:
-      gui-x: '300'
-      gui-y: '300'
-    to:
-    - 0
-    - 1
-    - 2
-  ceph-radosgw:
-    annotations:
-      gui-x: '1000'
-      gui-y: '250'
-    charm: ceph-radosgw
-    num_units: 1
-    bindings:
-      "": alpha
-    to:
-    - lxd:1
   kubernetes-control-plane:
-    options:
-      authorization-mode: "RBAC,Node"
-      channel: 1.22/stable
-    bindings:
-      "": alpha
-    constraints:
-    to:
-    - lxd:0
-    - lxd:1
-  kubernetes-worker:
-    num_units: 3
-    expose: true
-    bindings:
-      "": alpha
     options:
       kubelet-extra-config: "{failSwapOn: false}"
       kubelet-extra-args: "cloud-provider=external"
-      channel: 1.22/stable
-    constraints:
-    to:
-    - 0
-    - 1
-    - 2  
+  kubernetes-worker:
+    options:
+      kubelet-extra-config: "{failSwapOn: false}"
+      kubelet-extra-args: "cloud-provider=external"
   kubeapi-load-balancer:
-    num_units: 3
     expose: true
     options:
       port: 6443
-    bindings:
-      "": alpha
-    to:
-    - 0
-    - 1
-    - 2
-
-relations:
-- - 'ceph-mon:osd'
-  - 'ceph-osd:mon'
-- - 'calico:etcd'
-  - 'etcd:db'
-- - 'calico:cni'
-  - 'kubernetes-control-plane:cni'
-- - 'calico:cni'
-  - 'kubernetes-worker:cni'
-- - 'kubernetes-control-plane:ceph-client'
-  - 'ceph-mon:client'
-- - 'ceph-mon:radosgw'
-  - 'ceph-radosgw:mon'
-- - 'ceph-fs:ceph-mds'
-  - 'ceph-mon:mds'
-- - 'kubernetes-control-plane:kube-api-endpoint'
-  - 'kubeapi-load-balancer:apiserver'
-- - 'kubeapi-load-balancer:loadbalancer'
-  - 'kubernetes-control-plane:loadbalancer'
-- - 'kubeapi-load-balancer:website'
-  - 'kubernetes-worker:kube-api-endpoint'
+  
