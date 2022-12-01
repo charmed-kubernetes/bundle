@@ -8,7 +8,7 @@ rocks.canonical.com/cdk/dns/k8s-dns-dnsmasq-nanny:1.22.13
 rocks.canonical.com/cdk/dns/k8s-dns-kube-dns:1.22.13
 rocks.canonical.com/cdk/dns/k8s-dns-sidecar:1.22.13
 rocks.canonical.com/cdk/k8scloudprovider/cinder-csi-plugin:v1.25.0
-rocks.canonical.com/cdk/k8scloudprovider/k8s-keystone-auth:latest
+rocks.canonical.com/cdk/k8scloudprovider/k8s-keystone-auth:v1.25.3
 rocks.canonical.com/cdk/k8scloudprovider/openstack-cloud-controller-manager:v1.25.0
 rocks.canonical.com/cdk/kube-state-metrics/kube-state-metrics:v2.6.0
 rocks.canonical.com/cdk/kubernetesui/dashboard:v2.7.0
