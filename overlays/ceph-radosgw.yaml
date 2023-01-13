@@ -7,7 +7,7 @@ applications:
     charm: ceph-osd
     num_units: 3
     storage:
-      ods-device: '32G,2'
+      osd-devices: '32G,2'
       osd-journals: '8G,1'
   ceph-mon:
     charm: ceph-mon
