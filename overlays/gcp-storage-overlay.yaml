@@ -1,0 +1,23 @@
+description: Charmed Kubernetes overlay to add native GCP support.
+applications:
+  kubernetes-control-plane:
+    options:
+      allow-privileged: "true"
+  gcp-integrator:
+    annotations:
+      gui-x: "600"
+      gui-y: "300"
+    charm: gcp-integrator
+    num_units: 1
+    trust: true
+  gcp-k8s-storage:
+    charm: gcp-k8s-storage
+    trust: true
+    options:
+      image-registry: k8s.gcr.io
+relations:
+- ['gcp-k8s-storage:certificates', 'easyrsa:client']
+- ['gcp-k8s-storage:kube-control', 'kubernetes-control-plane:kube-control']
+- ['gcp-k8s-storage', 'gcp-integrator:gcp']
+- ['gcp-integrator', 'kubernetes-control-plane']
+- ['gcp-integrator', 'kubernetes-worker']
