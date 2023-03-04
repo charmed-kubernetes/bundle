@@ -27,7 +27,7 @@ rocks.canonical.com/cdk/dns/k8s-dns-dnsmasq-nanny:1.22.13
 rocks.canonical.com/cdk/dns/k8s-dns-kube-dns:1.22.13
 rocks.canonical.com/cdk/dns/k8s-dns-sidecar:1.22.13
 rocks.canonical.com/cdk/external_storage/nfs-client-provisioner:v3.1.0-k8s1.11
-rocks.canonical.com/cdk/k8s-artifacts-prod/ingress-nginx/controller:v1.2.0
+rocks.canonical.com/cdk/ingress-nginx/controller:v1.2.0
 rocks.canonical.com/cdk/k8scloudprovider/cinder-csi-plugin:v1.25.0
 rocks.canonical.com/cdk/k8scloudprovider/k8s-keystone-auth:v1.25.3
 rocks.canonical.com/cdk/k8scloudprovider/openstack-cloud-controller-manager:v1.25.0
