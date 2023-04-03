@@ -7,6 +7,13 @@ applications:
     charm: aws-integrator
     num_units: 1
     trust: true
+  aws-cloud-provider:
+    charm: aws-cloud-provider
+
 relations:
-  - ['aws-integrator', 'kubernetes-control-plane']
-  - ['aws-integrator', 'kubernetes-worker']
+  - ["aws-integrator", "kubernetes-control-plane"]
+  - ["aws-integrator", "kubernetes-worker"]
+  - ["aws-cloud-provider:certificates",            "easyrsa"]
+  - ["aws-cloud-provider:kube-control",            "kubernetes-control-plane"]
+  - ["aws-cloud-provider:external-cloud-provider", "kubernetes-control-plane"]
+  - ["aws-cloud-provider:aws-integration",         "aws-integrator"]
