@@ -1,0 +1,11 @@
+description: Charmed Kubernetes overlay to add Cilium CNI.
+applications:
+  calico: null
+  cilium:
+    charm: cilium
+  kubernetes-control-plane:
+    options:
+      allow-privileged: "true"
+relations:
+- [cilium:cni, kubernetes-control-plane:cni]
+- [cilium:cni, kubernetes-worker:cni]
