@@ -20,6 +20,14 @@ default: clean
 	./bundle k8s/core cni/canal monitor/elastic -o ./bundles/core-canal-elastic
 	./bundle k8s/cdk-converged cni/canal -o ./bundles/cdk-converged-canal
 	./bundle k8s/cdk-converged cni/canal legacy-storage/ceph -o ./bundles/cdk-converged-canal-ceph
+	./bundle k8s/cdk cni/cilium -o ./bundles/cdk-cilium
+	./bundle k8s/cdk cni/cilium legacy-storage/ceph -o ./bundles/cdk-cilium-ceph
+	./bundle k8s/cdk cni/cilium monitor/elastic -o ./bundles/cdk-cilium-elastic
+	./bundle k8s/core cni/cilium -o ./bundles/core-cilium
+	./bundle k8s/core cni/cilium monitor/elastic -o ./bundles/core-cilium-elastic
+	./bundle k8s/cdk-converged cni/cilium -o ./bundles/cdk-converged-cilium
+	./bundle k8s/cdk-converged cni/cilium legacy-storage/ceph -o ./bundles/cdk-converged-cilium-ceph
+
 
 clean:
 	rm -rf ./bundles
