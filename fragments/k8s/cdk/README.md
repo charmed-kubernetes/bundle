@@ -1,6 +1,9 @@
 # Charmed Kubernetes
 
-![](https://img.shields.io/badge/kubernetes-1.26-brightgreen.svg) ![](https://img.shields.io/badge/juju-2.9+-brightgreen.svg)
+![](https://img.shields.io/badge/kubernetes-1.28-brightgreen.svg) 
+![](https://img.shields.io/badge/juju-2.9+-brightgreen.svg)
+![](https://img.shields.io/badge/juju-3.1+-brightgreen.svg)
+
 
 ## Overview
 
