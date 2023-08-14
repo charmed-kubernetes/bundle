@@ -1,0 +1,10 @@
+# This is an incomplete bundle fragment. Do not attempt to deploy.
+applications:
+  "cilium":
+    charm: "cilium"
+    annotations:
+      "gui-x": "475"
+      "gui-y": "605"
+relations:
+- [cilium:cni, kubernetes-control-plane:cni]
+- [cilium:cni, kubernetes-worker:cni]
