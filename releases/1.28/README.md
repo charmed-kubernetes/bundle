@@ -28,16 +28,3 @@ For a lightweight upstream K8s, try [MicroK8s](https://microk8s.io)!
 For detailed instructions on how to deploy and manage **Charmed Kubernetes**, please visit the 
 [official Charmed Kubernetes docs](https://www.ubuntu.com/kubernetes/docs/).
 
-
-# Calico
-
-Calico is used as a CNI plugin to manage networking for the Kubernetes cluster.
-
-## Configuration
-
-**ipip**: Enable IP tunneling. *string, default Never*
-
-**nat-outgoing**: NAT outgoing traffic. *boolean, default true*
-
-**vxlan**: VXLAN encapsulation mode. *string, default Always*
-
