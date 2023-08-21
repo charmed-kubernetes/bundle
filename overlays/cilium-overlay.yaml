@@ -6,6 +6,10 @@ applications:
   kubernetes-control-plane:
     options:
       allow-privileged: "true"
+      sysctl: &sysctl "{net.ipv4.conf.all.forwarding: 1, net.ipv4.conf.all.rp_filter: 0, net.ipv4.neigh.default.gc_thresh1: 128, net.ipv4.neigh.default.gc_thresh2: 28672, net.ipv4.neigh.default.gc_thresh3: 32768, net.ipv6.neigh.default.gc_thresh1: 128, net.ipv6.neigh.default.gc_thresh2: 28672, net.ipv6.neigh.default.gc_thresh3: 32768, fs.inotify.max_user_instances: 8192, fs.inotify.max_user_watches: 1048576, kernel.panic: 10, kernel.panic_on_oops: 1, vm.overcommit_memory: 1}"
+  kubernetes-worker:
+    options:
+      sysctl: *sysctl
 relations:
 - [cilium:cni, kubernetes-control-plane:cni]
 - [cilium:cni, kubernetes-worker:cni]
