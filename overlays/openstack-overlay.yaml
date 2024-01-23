@@ -9,10 +9,8 @@ applications:
     trust: true
   openstack-cloud-controller:
     charm: openstack-integrator
-    channel: edge
   cinder-csi:
     charm: cinder-csi
-    channel: edge
 relations:
   - [openstack-cloud-controller:certificates,            easyrsa:client]
   - [openstack-cloud-controller:kube-control,            kubernetes-control-plane:kube-control]
