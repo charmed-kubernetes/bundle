@@ -19,4 +19,4 @@ relations:
   - [easyrsa:client,                                     cinder-csi:certificates]
   - [kubernetes-control-plane:kube-control,              cinder-csi:kube-control]
   - [openstack-integrator:clients,                       cinder-csi:openstack]
-  - [kubernetes-control-plane:loadbalancer-external,     openstack-integrator:lb-consumer]
+  - [kubernetes-control-plane:loadbalancer-external,     openstack-integrator:lb-consumers]
