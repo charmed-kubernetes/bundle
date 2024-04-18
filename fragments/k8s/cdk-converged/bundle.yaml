@@ -22,7 +22,7 @@ applications:
     charm: "kubernetes-control-plane"
     num_units: 3
     options:
-      channel: 1.29/edge
+      channel: 1.30/stable
     annotations:
       "gui-x": "800"
       "gui-y": "850"
@@ -52,7 +52,7 @@ applications:
     constraints: cores=2 mem=4G root-disk=30G
     num_units: 12
     options:
-      channel: 1.29/edge
+      channel: 1.30/stable
     expose: true
     annotations:
       "gui-x": "90"
