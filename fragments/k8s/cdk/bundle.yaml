@@ -10,8 +10,8 @@ applications:
     charm: "kubernetes-control-plane"
     num_units: 2
     options:
-      channel: 1.29/edge
-    constraints: "cores=2 mem=8G root-disk=64G"
+      channel: 1.30/edge
+    constraints: "cores=2 mem=8G root-disk=16G"
     annotations:
       "gui-x": "800"
       "gui-y": "850"
@@ -34,7 +34,7 @@ applications:
     charm: "kubernetes-worker"
     num_units: 3
     options:
-      channel: 1.29/edge
+      channel: 1.30/edge
     expose: true
     constraints: "cores=2 mem=8G root-disk=64G"
     annotations:
