@@ -2,7 +2,7 @@
 description: |-
     A minimal two-machine Kubernetes cluster, appropriate for development.
 issues: https://bugs.launchpad.net/charmed-kubernetes-bundles
-series: jammy
+default-base: ubuntu@22.04
 source: https://github.com/charmed-kubernetes/bundle
 website: https://ubuntu.com/kubernetes/charmed-k8s
 applications:
