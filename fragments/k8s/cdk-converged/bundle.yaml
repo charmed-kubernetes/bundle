@@ -1,7 +1,7 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 description: |-
     A seven-machine Kubernetes cluster, appropriate for bare metal using MaaS KVM Pods. Includes three kubernetes-control-plane and four worker nodes.
-series: jammy
+default-base: ubuntu@22.04
 machines:
   0:
     constraints: cores=8 mem=16G root-disk=100G
