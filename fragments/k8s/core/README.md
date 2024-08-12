@@ -1,7 +1,8 @@
 # Kubernetes Core Bundle
 
-![](https://img.shields.io/badge/kubernetes-1.30-brightgreen.svg)
+![](https://img.shields.io/badge/kubernetes-1.31-brightgreen.svg)
 ![](https://img.shields.io/badge/juju-3.1+-brightgreen.svg)
+![](https://img.shields.io/badge/juju-3.5+-brightgreen.svg)
 
 ## Overview
 
