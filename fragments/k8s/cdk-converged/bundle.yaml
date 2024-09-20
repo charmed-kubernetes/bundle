@@ -2,6 +2,7 @@
 description: |-
     A seven-machine Kubernetes cluster, appropriate for bare metal using MaaS KVM Pods. Includes three kubernetes-control-plane and four worker nodes.
 default-base: ubuntu@22.04
+docs: https://discourse.charmhub.io/t/charmed-kubernetes-bundle/14447
 machines:
   0:
     constraints: cores=8 mem=16G root-disk=100G
