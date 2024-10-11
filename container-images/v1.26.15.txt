@@ -5,14 +5,6 @@ rocks.canonical.com/cdk/calico/pod2daemon-flexvol:v3.21.4
 rocks.canonical.com/cdk/cdkbot/microbot-amd64:latest
 rocks.canonical.com/cdk/cdkbot/microbot-arm64:latest
 rocks.canonical.com/cdk/cdkbot/microbot-s390x:latest
-rocks.canonical.com/cdk/cloud-provider-vsphere/cpi/release/manager:v1.18.0
-rocks.canonical.com/cdk/cloud-provider-vsphere/cpi/release/manager:v1.19.0
-rocks.canonical.com/cdk/cloud-provider-vsphere/cpi/release/manager:v1.2.1
-rocks.canonical.com/cdk/cloud-provider-vsphere/cpi/release/manager:v1.20.0
-rocks.canonical.com/cdk/cloud-provider-vsphere/cpi/release/manager:v1.21.1
-rocks.canonical.com/cdk/cloud-provider-vsphere/cpi/release/manager:v1.22.3
-rocks.canonical.com/cdk/cloud-provider-vsphere/csi/release/driver:v2.5.1
-rocks.canonical.com/cdk/cloud-provider-vsphere/csi/release/syncer:v2.5.1
 rocks.canonical.com/cdk/defaultbackend-amd64:1.5
 rocks.canonical.com/cdk/defaultbackend-arm64:1.5
 rocks.canonical.com/cdk/defaultbackend-ppc64le:1.5
