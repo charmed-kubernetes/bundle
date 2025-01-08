@@ -1,7 +1,6 @@
 # The Charmed Distribution of Kubernetes (converged)
 
-![](https://img.shields.io/badge/kubernetes-1.29-brightgreen.svg)
-![](https://img.shields.io/badge/juju-2.9+-brightgreen.svg)
+![](https://img.shields.io/badge/kubernetes-1.32-brightgreen.svg)
 ![](https://img.shields.io/badge/juju-3.1+-brightgreen.svg)
 
 
@@ -187,7 +186,7 @@ kubectl proxy
 
 By default, this establishes a proxy running on your local machine and the
 kubernetes-control-plane unit. To reach the Kubernetes dashboard, visit
-`http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/` if using 1.16 or newer or 
+`http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/` if using 1.16 or newer or
 `http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/` if using an older version.
 
 Logging in to the dashboard will require either a valid kubeconfig or a basic auth
