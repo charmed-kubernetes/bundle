@@ -1,6 +1,6 @@
 # Charmed Kubernetes
 
-![](https://img.shields.io/badge/kubernetes-1.31-brightgreen.svg)
+![](https://img.shields.io/badge/kubernetes-1.32-brightgreen.svg)
 ![](https://img.shields.io/badge/juju-3.1+-brightgreen.svg)
 
 
@@ -24,6 +24,5 @@ For a lightweight upstream K8s, try [MicroK8s](https://microk8s.io)!
 
 # Documentation
 
-For detailed instructions on how to deploy and manage **Charmed Kubernetes**, please visit the 
+For detailed instructions on how to deploy and manage **Charmed Kubernetes**, please visit the
 [official Charmed Kubernetes docs](https://www.ubuntu.com/kubernetes/docs/).
-
