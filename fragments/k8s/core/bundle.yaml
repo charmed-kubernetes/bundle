@@ -1,6 +1,7 @@
 # This is an incomplete bundle fragment. Do not attempt to deploy.
 description: |-
     A minimal two-machine Kubernetes cluster, appropriate for development.
+docs: https://discourse.charmhub.io/t/charmed-kubernetes-bundle/14447
 issues: https://bugs.launchpad.net/charmed-kubernetes-bundles
 default-base: ubuntu@22.04
 source: https://github.com/charmed-kubernetes/bundle
