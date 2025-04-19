@@ -1,7 +1,7 @@
 # Kubernetes Core Bundle
 
-![](https://img.shields.io/badge/kubernetes-1.30-brightgreen.svg)
-![](https://img.shields.io/badge/juju-3.1+-brightgreen.svg)
+![](https://img.shields.io/badge/kubernetes-1.33-brightgreen.svg)
+![](https://img.shields.io/badge/juju-3.6+-brightgreen.svg)
 
 ## Overview
 
@@ -23,4 +23,3 @@ This bundle is suitable for development and testing purposes. For a more robust,
 [charmed-kubernetes](https://charmhub.io/charmed-kubernetes) bundle.
 
 For detailed installation and usage, please see the [Charmed Kubernetes documentation](https://ubuntu.com/kubernetes/docs).
-
