@@ -3,6 +3,7 @@ description: |-
     A highly-available, production-grade Kubernetes cluster.
 docs: https://discourse.charmhub.io/t/charmed-kubernetes-bundle/14447
 issues: https://bugs.launchpad.net/charmed-kubernetes-bundles
+series: noble
 source: https://github.com/charmed-kubernetes/bundle
 website: https://ubuntu.com/kubernetes/charmed-k8s
 applications:
