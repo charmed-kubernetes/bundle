@@ -13,7 +13,7 @@ This is a scaled-out Kubernetes cluster composed of the following components and
 -   Multiple Kubernetes control-plane and worker nodes
 -   Extensive CNI options
 -   Intra-node TLS by default
--   GPGPU support for high performance AI/ML
+-   GPU support for high performance AI/ML
 -   Managed option available
 
 For a more minimal cluster suitable for testing, deploy the smaller
