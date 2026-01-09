@@ -13,7 +13,7 @@ applications:
     to:
       - "0"
     options:
-      channel: 1.34/edge
+      channel: 1.35/stable
     expose: true
     constraints: "cores=2 mem=8G root-disk=16G"
     annotations:
@@ -33,7 +33,7 @@ applications:
     to:
       - "1"
     options:
-      channel: 1.34/edge
+      channel: 1.35/stable
     expose: true
     constraints: "cores=2 mem=8G root-disk=16G"
     annotations:
