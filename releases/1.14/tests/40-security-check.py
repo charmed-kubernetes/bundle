@@ -55,7 +55,7 @@ class IntegrationTest(unittest.TestCase):
     def test_unauthenticated(self):
         '''Test if the master services are accessible without credentials.'''
         url = 'https://{}:443/'.format(self.loadbalancers[0].info['public-address'])
-        r = requests.get(url, verify=False)
+        r = requests.get(url, verify=False) # nosec B501
         self.assertEqual(r.status_code, 401)
 
     def test_basic(self):
@@ -107,7 +107,7 @@ class IntegrationTest(unittest.TestCase):
         url = "https://{}:443{}".format(ip_addr, url_path)
         print("Requesting dashboard from: {}".format(url))
         r = requests.get(url, auth=requests.auth.HTTPBasicAuth(user, password),
-                         verify=False)
+                         verify=False) # nosec B501
         return r.status_code
 
     def get_password(self):
