@@ -82,7 +82,7 @@ class ShuffleTest(unittest.TestCase):
 
         # Check that the LB can still reach the masters
         url = 'https://{}:443/ui/'.format(lb_ip)
-        r = requests.get(url, verify=False)
+        r = requests.get(url, verify=False) # nosec B501
         # UI is protected via basic auth so we should get a 401
         # In case the LB was not pointing to the masters we were to get
         # a connection timeout.
